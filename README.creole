@@ -2,6 +2,8 @@
 
 MC6809 is a Open source (GPL v3 or later) emulator for the legendary **6809** CPU, used in 30 years old homecomputer {{{Dragon 32}}} and {{{Tandy TRS-80 Color Computer}}} (CoCo)...
 
+Tested with Python 2.7, 3.4 and PyPy
+
 | {{https://travis-ci.org/6809/MC6809.svg|Build Status on travis-ci.org}} | [[https://travis-ci.org/6809/MC6809/|travis-ci.org/6809/MC6809]] |
 | {{https://coveralls.io/repos/6809/MC6809/badge.svg|Coverage Status on coveralls.io}} | [[https://coveralls.io/r/6809/MC6809|coveralls.io/r/6809/MC6809]] |
 
