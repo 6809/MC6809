@@ -13,7 +13,7 @@ install:
 
 script:
     # - python -m unittest discover
-    - coverage --source=MC6809 run ./setup.py test
+    - coverage run --source=MC6809 ./setup.py test
 
 after_success:
     coveralls
