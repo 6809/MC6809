@@ -6,6 +6,17 @@ MC6809 is a Open source (GPL v3 or later) emulator for the legendary **6809** CP
 | {{https://coveralls.io/repos/6809/MC6809/badge.svg|Coverage Status on coveralls.io}} | [[https://coveralls.io/r/6809/MC6809|coveralls.io/r/6809/MC6809]] |
 
 
+=== TODO
+
+# Use bottle for http control server part
+
+unimplemented OPs:
+
+ * RESET
+ * SWI / SWI2 / SWI3
+ * SYNC
+
+
 == History
 
 (Some of the points are related to [[https://github.com/jedie/DragonPy|DragonPy Emulator]])
