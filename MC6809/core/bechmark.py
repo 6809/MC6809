@@ -6,7 +6,7 @@
     =======================================
 
     :created: 2014 by Jens Diemer - www.jensdiemer.de
-    :copyleft: 2014 by the DragonPy team, see AUTHORS for more details.
+    :copyleft: 2014-2015 by the MC6809 team, see AUTHORS for more details.
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
@@ -23,7 +23,7 @@ import unittest
 import logging
 
 from dragonlib.utils import six
-from dragonpy.tests.test_6809_program import Test6809_Program, \
+from MC6809.tests.test_6809_program import Test6809_Program, \
     Test6809_Program_Division2
 from dragonpy.utils.humanize import locale_format_number
 

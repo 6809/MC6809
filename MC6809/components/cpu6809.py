@@ -42,7 +42,7 @@ import time
 import warnings
 
 
-from dragonpy.core.cpu_control_server import start_http_control_server
+from MC6809.core.cpu_control_server import start_http_control_server
 from MC6809.components.cpu_utils.MC6809_registers import (
     ValueStorage8Bit, ConcatenatedAccumulator,
     ValueStorage16Bit, ConditionCodeRegister, UndefinedRegister
