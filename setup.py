@@ -5,7 +5,7 @@
     distutils setup
     ~~~~~~~~~~~~~~~
 
-    :copyleft: 2014 by the DragonPy team, see AUTHORS for more details.
+    :copyleft: 2014-2015 by the MC6809 team, see AUTHORS for more details.
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
@@ -15,7 +15,7 @@ from setuptools import setup, find_packages
 import os
 import sys
 
-import dragonpy
+import MC6809
 
 
 PACKAGE_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -34,24 +34,19 @@ else:
 
 
 setup(
-    name="DragonPyEmulator", # Name conflict with https://github.com/jpanganiban/dragonpy :(
-    version=dragonpy.__version__,
-    py_modules=["DragonPy"],
-    provides=["DragonPy"],
+    name="MC6809",
+    version=MC6809.__version__,
+    py_modules=["MC6809"],
+    provides=["MC6809"],
     install_requires=[
         "dragonlib",
-        "pygments",
     ],
     author="Jens Diemer",
-    author_email="DragonPy@jensdiemer.de",
-    description="Emulator for 6809 CPU based system like Dragon 32 / CoCo written in Python...",
-    keywords="Emulator 6809 Dragon CoCo Vectrex tkinter pypy",
+    author_email="MC6809@jensdiemer.de",
+    description="MC6809 CPU emulator written in Python",
+    keywords="Emulator 6809",
     long_description=long_description,
-    url="https://github.com/jedie/DragonPy",
-    # TODO:
-#    entry_points={
-#        "console_scripts": ["DragonPy_CLI = mod:func"],
-#    },
+    url="https://github.com/6809/MC6809",
     license="GPL v3+",
     classifiers=[
         # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -77,5 +72,5 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
-    test_suite="dragonpy.tests", # or: .../dragonpy $ python3 -m unittest discover
+    test_suite="MC6809.tests", # or: .../dragonpy $ python3 -m unittest discover
 )
