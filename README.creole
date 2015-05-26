@@ -8,19 +8,24 @@ MC6809 is a Open source (GPL v3 or later) emulator for the legendary **6809** CP
 
 There is a simple benchmark. Run e.g.:
 {{{
-~$ cd MC6809
-~/MC6809 $ python2 ./MC6809/cli.py
-~/MC6809 $ python3 ./MC6809/cli.py --help
-~/MC6809 $ pypy ./MC6809/cli.py --loops 20
+~$ MC6809 benchmark --help
+
+# run benchmark with default settings:
+~$ MC6809 benchmark
+
+# run with own settings:
+~$ MC6809 benchmark --loops 10 --multiply 20
 }}}
+(**MC6809** is the cli installed by **setup.py**)
 
 
 You can run unittests in different ways, e.g.:
 {{{
+~$ MC6809 tests --verbosity=3 --failfast
+
 ~$ cd MC6809
 ~/MC6809 $ ./setup.py test
 ~/MC6809 $ python3 -m unittest discover
-~/MC6809 $ ./MC6809/cli.py tests --verbosity=3 --failfast
 }}}
 
 

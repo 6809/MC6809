@@ -50,7 +50,13 @@ setup(
     version=MC6809.__version__,
     py_modules=["MC6809"],
     provides=["MC6809"],
-    install_requires=[],
+    install_requires=[
+        "click",
+    ],
+    entry_points='''
+        [console_scripts]
+        MC6809=MC6809.cli:cli
+    ''',
     author="Jens Diemer",
     author_email="MC6809@jensdiemer.de",
     description="MC6809 CPU emulator written in Python",
