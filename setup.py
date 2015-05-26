@@ -88,5 +88,5 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
-    test_suite="MC6809.tests.get_tests", # or: .../dragonpy $ python3 -m unittest discover
+    test_suite="MC6809.tests.get_tests",
 )
