@@ -6,6 +6,14 @@ MC6809 is a Open source (GPL v3 or later) emulator for the legendary **6809** CP
 | {{https://coveralls.io/repos/6809/MC6809/badge.svg|Coverage Status on coveralls.io}} | [[https://coveralls.io/r/6809/MC6809|coveralls.io/r/6809/MC6809]] |
 
 
+There is a simple benchmark. Run e.g.:
+{{{
+~$ cd MC6809
+~/MC6809 $ python2 ./MC6809/cli.py
+~/MC6809 $ python3 ./MC6809/cli.py --help
+~/MC6809 $ pypy ./MC6809/cli.py --loops 20
+}}}
+
 === TODO
 
 # Use bottle for http control server part
