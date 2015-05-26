@@ -14,7 +14,7 @@ from __future__ import absolute_import, division, print_function
 
 import threading
 
-from dragonlib.core.basic import log_program_dump
+from MC6809.core.basic import log_program_dump
 import logging
 
 log=logging.getLogger("MC6809")

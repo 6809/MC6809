@@ -12,10 +12,13 @@
 """
 
 from __future__ import absolute_import, division, print_function
-from dragonlib.utils import six
-xrange = six.moves.xrange
 
 import os
+import sys
+
+PY2 = sys.version_info[0] == 2
+if PY2:
+    range = xrange
 
 from MC6809.components.MC6809data.MC6809_op_data import OP_DATA, BYTE, WORD
 from MC6809.components.MC6809data.MC6809_op_docs import OP_DOC
@@ -105,7 +108,7 @@ for instruction, instr_data in sorted(OP_DATA.items()):
 
 
 # add rowspan information
-for colum_no in xrange(len(data[0])):
+for colum_no in range(len(data[0])):
     old_cell = None
     same_count = 0
     for row in reversed(data):

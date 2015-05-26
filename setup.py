@@ -50,9 +50,7 @@ setup(
     version=MC6809.__version__,
     py_modules=["MC6809"],
     provides=["MC6809"],
-    install_requires=[
-        "dragonlib",
-    ],
+    install_requires=[],
     author="Jens Diemer",
     author_email="MC6809@jensdiemer.de",
     description="MC6809 CPU emulator written in Python",
