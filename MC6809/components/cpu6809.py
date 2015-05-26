@@ -2,7 +2,7 @@
 # coding: utf-8
 
 """
-    DragonPy - Dragon 32 emulator in Python
+    MC6809 - 6809 CPU emulator in Python
     =======================================
 
     6809 is Big-Endian
@@ -12,7 +12,7 @@
         http://www.burgins.com/m6809.html
         http://koti.mbnet.fi/~atjs/mc6809/
 
-    :copyleft: 2013-2014 by the DragonPy team, see AUTHORS for more details.
+    :copyleft: 2013-2014 by the MC6809 team, see AUTHORS for more details.
     :license: GNU GPL v3 or above, see LICENSE for more details.
 
     Based on:
@@ -22,8 +22,6 @@
 """
 
 from __future__ import absolute_import, division, print_function
-from dragonlib.utils import six
-xrange = six.moves.xrange
 
 try:
     # Python 3
@@ -33,6 +31,7 @@ except ImportError:
     # Python 2
     import Queue as queue
     import thread as _thread
+    range = xrange
 
 import inspect
 import logging
@@ -48,15 +47,15 @@ from MC6809.components.cpu_utils.MC6809_registers import (
     ValueStorage16Bit, ConditionCodeRegister, UndefinedRegister
 )
 from MC6809.components.cpu_utils.instruction_caller import OpCollection
-from dragonpy.utils.bits import is_bit_set, get_bit
-from dragonlib.utils.byte_word_values import signed8, signed16, signed5
+from MC6809.utils.bits import is_bit_set, get_bit
+from MC6809.utils.byte_word_values import signed8, signed16, signed5
 from MC6809.components.MC6809data.MC6809_op_data import (
     REG_A, REG_B, REG_CC, REG_D, REG_DP, REG_PC,
     REG_S, REG_U, REG_X, REG_Y
 )
 
 
-log = logging.getLogger(__name__)
+log = logging.getLogger("MC6809")
 
 
 # HTML_TRACE = True
@@ -280,7 +279,7 @@ class CPU(object):
             except TypeError: # e.g: op_address or opcode is None
                 msg = "%s - op address: %r - opcode: %r" % (err, op_address, opcode)
             exception = err.__class__ # Use origin Exception class, e.g.: KeyError
-            six.reraise(exception, exception(msg), sys.exc_info()[2])
+            raise exception(msg)
 
     def quit(self):
         log.critical("CPU quit() called.")
@@ -333,8 +332,8 @@ class CPU(object):
         # https://wiki.python.org/moin/PythonSpeed/PerformanceTips#Avoiding_dots...
         get_and_call_next_op = self.get_and_call_next_op
 
-        for __ in xrange(self.burst_op_count):
-            for __ in xrange(self.sync_op_count):
+        for __ in range(self.burst_op_count):
+            for __ in range(self.sync_op_count):
                 get_and_call_next_op()
 
             self.call_sync_callbacks()
@@ -418,7 +417,7 @@ class CPU(object):
         get_and_call_next_op = self.get_and_call_next_op
         program_counter = self.program_counter.get
 
-        for __ in xrange(max_ops):
+        for __ in range(max_ops):
             if program_counter() == end:
                 return
             get_and_call_next_op()

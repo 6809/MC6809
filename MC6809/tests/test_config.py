@@ -1,18 +1,18 @@
 # coding: utf-8
 
 """
-    DragonPy - Dragon 32 emulator in Python
+    MC6809 - 6809 CPU emulator in Python
     =======================================
 
     :created: 2014 by Jens Diemer - www.jensdiemer.de
-    :copyleft: 2014 by the DragonPy team, see AUTHORS for more details.
+    :copyleft: 2014 by the MC6809 team, see AUTHORS for more details.
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
 from __future__ import absolute_import, division, print_function
 
 
-from dragonpy.core.configs import BaseConfig
+from MC6809.core.configs import BaseConfig
 
 
 class TestCfg(BaseConfig):

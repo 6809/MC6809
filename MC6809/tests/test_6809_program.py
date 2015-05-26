@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# encoding:utf-8
 
 """
     6809 unittests
@@ -8,7 +7,7 @@
     Test CPU with some small Assembler programs
 
     :created: 2014 by Jens Diemer - www.jensdiemer.de
-    :copyleft: 2014 by the DragonPy team, see AUTHORS for more details.
+    :copyleft: 2014-2015 by the MC6809 team, see AUTHORS for more details.
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
@@ -20,12 +19,12 @@ import logging
 import sys
 import unittest
 
-from dragonlib.utils.unittest_utils import TextTestRunner2
-from dragonlib.utils import six
 from MC6809.tests.test_base import BaseStackTestCase
 
 
-log = logging.getLogger(__name__)
+log = logging.getLogger("MC6809")
+
+PY3 = sys.version_info[0] == 3
 
 
 class Test6809_Program(BaseStackTestCase):
@@ -146,7 +145,7 @@ class Test6809_Program(BaseStackTestCase):
         return crc32 ^ 0xFFFFFFFF
 
     def _test_crc32(self, txt):
-        if six.PY3:
+        if PY3:
             txt = bytes(txt, encoding="UTF-8")
         crc32 = self._crc32(txt)
         excpected_crc32 = binascii.crc32(txt) & 0xffffffff
@@ -388,15 +387,6 @@ class Test6809_Program_Division2(BaseStackTestCase):
 
 
 if __name__ == '__main__':
-    setup_logging(log,
-#        level=1 # hardcore debug ;)
-#        level=10 # DEBUG
-#        level=20 # INFO
-#        level=30 # WARNING
-#         level=40 # ERROR
-        level=50 # CRITICAL/FATAL
-    )
-
     unittest.main(
         argv=(
             sys.argv[0],
@@ -406,7 +396,6 @@ if __name__ == '__main__':
 #             "Test6809_Program.test_division",
 #             "Test6809_Program_Division2",
         ),
-        testRunner=TextTestRunner2,
 #         verbosity=1,
         verbosity=2,
         failfast=True,

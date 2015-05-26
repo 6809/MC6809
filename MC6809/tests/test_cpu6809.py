@@ -1,52 +1,33 @@
 #!/usr/bin/env python
-# encoding:utf-8
 
 """
-    :created: 2013-2014 by Jens Diemer - www.jensdiemer.de
-    :copyleft: 2013-2014 by the DragonPy team, see AUTHORS for more details.
+    6809 unittests
+    ~~~~~~~~~~~~~~
+
+    :created: 2013 by Jens Diemer - www.jensdiemer.de
+    :copyleft: 2013-2014 by the MC6809 team, see AUTHORS for more details.
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
 from __future__ import absolute_import, division, print_function
-from dragonlib.utils.unittest_utils import TextTestRunner2
-from dragonlib.utils import six
-xrange = six.moves.xrange
 
 import logging
 import sys
 import unittest
 
-from MC6809.components.cpu6809 import CPU
-from dragonpy.Dragon32.config import Dragon32Cfg
-from dragonpy.Dragon32.mem_info import DragonMemInfo
+PY2 = sys.version_info[0] == 2
+if PY2:
+    range = xrange
+
 from MC6809.tests.test_base import BaseCPUTestCase, BaseStackTestCase
 
 
 log = logging.getLogger("MC6809")
 
 
-class BaseDragon32TestCase(BaseCPUTestCase):
-    # http://archive.worldofdragon.org/phpBB3/viewtopic.php?f=8&t=4462
-    INITIAL_SYSTEM_STACK_ADDR = 0x7f36
-    INITIAL_USER_STACK_ADDR = 0x82ec
-
-    def setUp(self):
-        cmd_args = UnittestCmdArgs
-        cfg = Dragon32Cfg(cmd_args)
-        self.assertFalse(cfg.bus is None)
-        cfg.mem_info = DragonMemInfo(log.debug)
-        try:
-            self.cpu = CPU(cfg)
-        except IOError as err:
-            log.error("Missing ROM? %s", err)
-        else:
-            self.cpu.system_stack_pointer.set(self.INITIAL_SYSTEM_STACK_ADDR)
-            self.cpu.user_stack_pointer.set(self.INITIAL_USER_STACK_ADDR)
-
-
 class Test6809_Register(BaseCPUTestCase):
     def test_registerA(self):
-        for i in xrange(255):
+        for i in range(255):
             self.cpu.accu_a.set(i)
             t = self.cpu.accu_a.get()
             self.assertEqual(i, t)
@@ -193,7 +174,7 @@ class Test6809_CC(BaseCPUTestCase):
         self.assertEqual(status_byte, 0)
 
     def test_from_to(self):
-        for i in xrange(256):
+        for i in range(256):
             self.cpu.cc.set(i)
             status_byte = self.cpu.cc.get()
             self.assertEqual(status_byte, i)
@@ -203,7 +184,7 @@ class Test6809_CC(BaseCPUTestCase):
         excpected_values += list(range(0, 128))
         excpected_values += list(range(0, 4))
 
-        for i in xrange(260):
+        for i in range(260):
             self.cpu.accu_a.set(i)
             self.cpu.cc.set(0x0e) # Set affected flags: ....NZV.
             self.cpu_test_run(start=0x1000, end=None, mem=[
@@ -254,7 +235,7 @@ class Test6809_Ops(BaseCPUTestCase):
     def test_CMPU_immediate(self):
         u = 0x80
         self.cpu.user_stack_pointer.set(u)
-        for m in xrange(0x7e, 0x83):
+        for m in range(0x7e, 0x83):
             self.cpu_test_run(start=0x0000, end=None, mem=[
                 0x11, 0x83, # CMPU (immediate word)
                 0x00, m # the word that CMP reads
@@ -295,7 +276,7 @@ class Test6809_Ops(BaseCPUTestCase):
     def test_CMPA_immediate_byte(self):
         a = 0x80
         self.cpu.accu_a.set(a)
-        for m in xrange(0x7e, 0x83):
+        for m in range(0x7e, 0x83):
             self.cpu_test_run(start=0x0000, end=None, mem=[
                 0x81, m # CMPA (immediate byte)
             ])
@@ -338,7 +319,7 @@ class Test6809_Ops(BaseCPUTestCase):
     def test_CMPX_immediate_word(self):
         x = 0x80
         self.cpu.index_x.set(x)
-        for m in xrange(0x7e, 0x83):
+        for m in range(0x7e, 0x83):
             self.cpu_test_run(start=0x0000, end=None, mem=[
                 0x8c, 0x00, m # CMPX (immediate word)
             ])
@@ -416,7 +397,7 @@ class Test6809_TestInstructions(BaseCPUTestCase):
         self.assertEqual(self.cpu.cc.C, 1)
 
     def test_TST_direct(self):
-        for i in xrange(255):
+        for i in range(255):
             self.cpu.accu_a.set(i)
             self.cpu.cc.set(0xff) # Set all CC flags
 
@@ -428,7 +409,7 @@ class Test6809_TestInstructions(BaseCPUTestCase):
             self.assertTST(i)
 
     def test_TST_extended(self):
-        for i in xrange(255):
+        for i in range(255):
             self.cpu.accu_a.set(i)
             self.cpu.cc.set(0xff) # Set all CC flags
 
@@ -440,7 +421,7 @@ class Test6809_TestInstructions(BaseCPUTestCase):
             self.assertTST(i)
 
     def test_TSTA(self):
-        for i in xrange(255):
+        for i in range(255):
             self.cpu.accu_a.set(i)
             self.cpu.cc.set(0xff) # Set all CC flags
             self.cpu_test_run(start=0x1000, end=None, mem=[
@@ -449,7 +430,7 @@ class Test6809_TestInstructions(BaseCPUTestCase):
             self.assertTST(i)
 
     def test_TSTB(self):
-        for i in xrange(255):
+        for i in range(255):
             self.cpu.accu_b.set(i)
             self.cpu.cc.set(0xff) # Set all CC flags
             self.cpu_test_run(start=0x1000, end=None, mem=[
@@ -702,17 +683,6 @@ class TestSimple6809ROM(BaseCPUTestCase):
 
 
 if __name__ == '__main__':
-    from dragonlib.utils.logging_utils import setup_logging
-
-    setup_logging(log,
-#         level=1 # hardcore debug ;)
-#        level=10 # DEBUG
-#        level=20 # INFO
-#        level=30 # WARNING
-#         level=40 # ERROR
-        level=50 # CRITICAL/FATAL
-    )
-
     unittest.main(
         argv=(
             sys.argv[0],
@@ -730,7 +700,6 @@ if __name__ == '__main__':
 #             "TestSimple6809ROM",
 #             "Test6809_Code",
         ),
-        testRunner=TextTestRunner2,
 #         verbosity=1,
         verbosity=2,
         failfast=True,

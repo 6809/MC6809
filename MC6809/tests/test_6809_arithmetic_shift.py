@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# encoding:utf-8
 
 """
     6809 unittests
@@ -8,21 +7,22 @@
     Test shift / rotate
 
     :created: 2013-2014 by Jens Diemer - www.jensdiemer.de
-    :copyleft: 2013-2014 by the DragonPy team, see AUTHORS for more details.
+    :copyleft: 2013-2015 by the MC6809 team, see AUTHORS for more details.
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
 from __future__ import absolute_import, division, print_function
-from dragonlib.utils.unittest_utils import TextTestRunner2
-from dragonlib.utils import six
-xrange = six.moves.xrange
 
 import logging
 import sys
 import unittest
 
+PY2 = sys.version_info[0] == 2
+if PY2:
+    range = xrange
+
 from MC6809.tests.test_base import BaseCPUTestCase
-from dragonpy.utils.bits import is_bit_set, get_bit
+from MC6809.utils.bits import is_bit_set, get_bit
 
 
 log = logging.getLogger("MC6809")
@@ -48,7 +48,7 @@ loop:
         LEAU 1,U    ; inc U
         JMP loop
         """
-        for i in xrange(0x100):
+        for i in range(0x100):
             self.cpu.accu_a.set(i)
             self.cpu.cc.set(0x00) # Clear all CC flags
             self.cpu_test_run(start=0x1000, end=None, mem=[
@@ -86,7 +86,7 @@ loop:
             self.assertEqual(self.cpu.cc.C, source_bit0)
 
     def test_LSLA_inherent(self):
-        for i in xrange(260):
+        for i in range(260):
             self.cpu.accu_a.set(i)
             self.cpu.cc.set(0x00) # Clear all CC flags
             self.cpu_test_run(start=0x1000, end=None, mem=[
@@ -130,10 +130,10 @@ loop:
 
     def test_ASR_inherent(self):
         """
-        Jedes Bit der Speicherzelle bzw. des Akkumulators A/B wird um eine Position nach rechts verschoben.
-        Bit 7 wird auf '0' gesetzt, und Bit 0 wird ins Carry Flag übertragen.
+        Shifts all bits of the operand one place to the right.
+        Bit seven is held constant. Bit zero is shifted into the C (carry) bit.
         """
-        for src in xrange(0x100):
+        for src in range(0x100):
             self.cpu.accu_b.set(src)
             self.cpu.cc.set(0x00) # Set all CC flags
             self.cpu_test_run(start=0x1000, end=None, mem=[
@@ -229,7 +229,7 @@ class Test6809_Rotate(BaseCPUTestCase):
                 self.assertEqual(self.cpu.cc.C, 0)
 
     def test_ROLA_with_clear_carry(self):
-        for a in xrange(0x100):
+        for a in range(0x100):
             self.cpu.cc.set(0x00) # clear all CC flags
             a = self.cpu.accu_a.set(a)
             self.cpu_test_run(start=0x0000, end=None, mem=[
@@ -242,7 +242,7 @@ class Test6809_Rotate(BaseCPUTestCase):
             self.assertEqual(self.cpu.cc.H, 0)
 
     def test_ROLA_with_set_carry(self):
-        for a in xrange(0x100):
+        for a in range(0x100):
             self.cpu.cc.set(0xff) # set all CC flags
             a = self.cpu.accu_a.set(a)
             self.cpu_test_run(start=0x0000, end=None, mem=[
@@ -255,7 +255,7 @@ class Test6809_Rotate(BaseCPUTestCase):
             self.assertEqual(self.cpu.cc.H, 1)
 
     def test_ROL_memory_with_clear_carry(self):
-        for a in xrange(0x100):
+        for a in range(0x100):
             self.cpu.cc.set(0x00) # clear all CC flags
             self.cpu.memory.write_byte(0x0050, a)
             self.cpu_test_run(start=0x0000, end=None, mem=[
@@ -268,7 +268,7 @@ class Test6809_Rotate(BaseCPUTestCase):
             self.assertEqual(self.cpu.cc.H, 0)
 
     def test_ROL_memory_with_set_carry(self):
-        for a in xrange(0x100):
+        for a in range(0x100):
             self.cpu.cc.set(0xff) # set all CC flags
             self.cpu.memory.write_byte(0x0050, a)
             self.cpu_test_run(start=0x0000, end=None, mem=[
@@ -313,7 +313,7 @@ class Test6809_Rotate(BaseCPUTestCase):
                 self.assertEqual(self.cpu.cc.C, 0)
 
     def test_RORA_with_clear_carry(self):
-        for a in xrange(0x100):
+        for a in range(0x100):
             self.cpu.cc.set(0x00) # clear all CC flags
             a = self.cpu.accu_a.set(a)
             self.cpu_test_run(start=0x0000, end=None, mem=[
@@ -327,7 +327,7 @@ class Test6809_Rotate(BaseCPUTestCase):
             self.assertEqual(self.cpu.cc.V, 0)
 
     def test_RORA_with_set_carry(self):
-        for a in xrange(0x100):
+        for a in range(0x100):
             self.cpu.cc.set(0xff) # set all CC flags
             a = self.cpu.accu_a.set(a)
             self.cpu_test_run(start=0x0000, end=None, mem=[
@@ -341,7 +341,7 @@ class Test6809_Rotate(BaseCPUTestCase):
             self.assertEqual(self.cpu.cc.V, 1)
 
     def test_ROR_memory_with_clear_carry(self):
-        for a in xrange(0x100):
+        for a in range(0x100):
             self.cpu.cc.set(0x00) # clear all CC flags
             self.cpu.memory.write_byte(0x0050, a)
             self.cpu_test_run(start=0x0000, end=None, mem=[
@@ -355,7 +355,7 @@ class Test6809_Rotate(BaseCPUTestCase):
             self.assertEqual(self.cpu.cc.V, 0)
 
     def test_ROR_memory_with_set_carry(self):
-        for a in xrange(0x100):
+        for a in range(0x100):
             self.cpu.cc.set(0xff) # set all CC flags
             self.cpu.memory.write_byte(0x0050, a)
             self.cpu_test_run(start=0x0000, end=None, mem=[
@@ -370,24 +370,12 @@ class Test6809_Rotate(BaseCPUTestCase):
 
 
 if __name__ == '__main__':
-    from dragonlib.utils.logging_utils import setup_logging
-
-    setup_logging(log,
-#         level=1 # hardcore debug ;)
-#        level=10 # DEBUG
-#        level=20 # INFO
-#        level=30 # WARNING
-#         level=40 # ERROR
-        level=50 # CRITICAL/FATAL
-    )
-
     unittest.main(
         argv=(
             sys.argv[0],
 #            "Test6809_LogicalShift.test_ASR_inherent",
 #            "Test6809_Rotate",
         ),
-        testRunner=TextTestRunner2,
 #         verbosity=1,
         verbosity=2,
 #         failfast=True,

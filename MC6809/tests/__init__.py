@@ -16,3 +16,7 @@ def run_tests(verbosity=2, failfast=False):
         failfast=failfast,
     )
     test_runner.run(tests)
+
+
+if __name__ == '__main__':
+    run_tests()

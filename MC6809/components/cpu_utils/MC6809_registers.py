@@ -1,23 +1,23 @@
 #!/usr/bin/env python
 
 """
-    DragonPy - Dragon 32 emulator in Python
+    MC6809 - 6809 CPU emulator in Python
     =======================================
 
     some code is borrowed from:
     XRoar emulator by Ciaran Anscomb (GPL license) more info, see README
 
-    :copyleft: 2013-2014 by the DragonPy team, see AUTHORS for more details.
+    :copyleft: 2013-2014 by the MC6809 team, see AUTHORS for more details.
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
 from __future__ import absolute_import, division, print_function
 
 
-from dragonpy.utils.humanize import cc_value2txt
+from MC6809.utils.humanize import cc_value2txt
 import logging
 
-log=logging.getLogger(__name__)
+log=logging.getLogger("MC6809")
 
 
 class ValueStorage(object):

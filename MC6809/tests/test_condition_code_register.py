@@ -1,32 +1,36 @@
 #!/usr/bin/env python
 
 """
-    DragonPy - Dragon 32 emulator in Python
-    =======================================
+    6809 unittests
+    ~~~~~~~~~~~~~~
 
-    :copyleft: 2013-2014 by the DragonPy team, see AUTHORS for more details.
+    :created: 2013 by Jens Diemer - www.jensdiemer.de
+    :copyleft: 2013-2014 by the MC6809 team, see AUTHORS for more details.
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
 from __future__ import absolute_import, division, print_function
-from dragonlib.utils import six
-xrange = six.moves.xrange
 
 import unittest
+import sys
+
+PY2 = sys.version_info[0] == 2
+if PY2:
+    range = xrange
 
 from MC6809.tests.test_base import BaseCPUTestCase
-from dragonlib.utils.byte_word_values import signed8
+from MC6809.utils.byte_word_values import signed8
 
 
 class CCTestCase(BaseCPUTestCase):
     def test_set_get(self):
-        for i in xrange(256):
+        for i in range(256):
             self.cpu.cc.set(i)
             status_byte = self.cpu.cc.get()
             self.assertEqual(status_byte, i)
 
     def test_HNZVC_8(self):
-        for i in xrange(280):
+        for i in range(280):
             self.cpu.cc.set(0x00)
             r = i + 1 # e.g. ADDA 1 loop
             self.cpu.cc.update_HNZVC_8(a=i, b=1, r=r)

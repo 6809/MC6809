@@ -1,42 +1,25 @@
 # coding: utf-8
 
 """
-    DragonPy - Dragon 32 emulator in Python
+    MC6809 - 6809 CPU emulator in Python
     =======================================
 
     :created: 2013 by Jens Diemer - www.jensdiemer.de
-    :copyleft: 2013-2014 by the DragonPy team, see AUTHORS for more details.
+    :copyleft: 2013-2014 by the MC6809 team, see AUTHORS for more details.
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
 from __future__ import absolute_import, division, print_function
-from dragonlib.utils import six
-xrange = six.moves.xrange
 
 import inspect
 import logging
+import sys
 
-log = logging.getLogger(__name__)
+PY2 = sys.version_info[0] == 2
+if PY2:
+    range = xrange
 
-
-DRAGON32 = "Dragon32"
-DRAGON64 = "Dragon64"
-COCO2B = "CoCo2b"
-SBC09 = "sbc09"
-SIMPLE6809 = "Simple6809"
-MULTICOMP6809 = "Multicomp6809"
-VECTREX = "Vectrex"
-
-
-class MachineDict(dict):
-    DEFAULT = None
-    def register(self, name, cls, default=False):
-        dict.__setitem__(self, name, cls)
-        if default:
-            assert self.DEFAULT is None
-            self.DEFAULT = name
-
-machine_dict = MachineDict()
+log = logging.getLogger("MC6809")
 
 
 class DummyMemInfo(object):
@@ -60,7 +43,7 @@ class AddressAreas(dict):
             self.add_area(start_addr, end_addr, txt)
 
     def add_area(self, start_addr, end_addr, txt):
-        for addr in xrange(start_addr, end_addr + 1):
+        for addr in range(start_addr, end_addr + 1):
             dict.__setitem__(self, addr, txt)
 
 

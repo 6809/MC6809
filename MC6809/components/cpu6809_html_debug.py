@@ -2,10 +2,10 @@
 # coding: utf-8
 
 """
-    DragonPy - Dragon 32 emulator in Python
+    MC6809 - 6809 CPU emulator in Python
     =======================================
 
-    :copyleft: 2014 by the DragonPy team, see AUTHORS for more details.
+    :copyleft: 2014 by the MC6809 team, see AUTHORS for more details.
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 

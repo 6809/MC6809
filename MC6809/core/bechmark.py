@@ -2,7 +2,7 @@
 # encoding:utf8
 
 """
-    DragonPy - Dragon 32 emulator in Python
+    MC6809 - 6809 CPU emulator in Python
     =======================================
 
     :created: 2014 by Jens Diemer - www.jensdiemer.de
@@ -11,24 +11,23 @@
 """
 
 from __future__ import absolute_import, division, print_function
-from dragonlib.utils import six
-xrange = six.moves.xrange
 
-import binascii
-import io
+import sys
 import locale
 import string
 import time
-import unittest
 import logging
 
-from dragonlib.utils import six
 from MC6809.tests.test_6809_program import Test6809_Program, \
     Test6809_Program_Division2
-from dragonpy.utils.humanize import locale_format_number
+from MC6809.utils.humanize import locale_format_number
+
+PY2 = sys.version_info[0] == 2
+if PY2:
+    range = xrange
 
 
-log = logging.getLogger(__name__)
+log = logging.getLogger("MC6809")
 
 
 class Test6809_Program2(Test6809_Program):
@@ -43,7 +42,7 @@ class Test6809_Program2(Test6809_Program):
 
         txt = string.printable
 
-        if six.PY3:
+        if not PY2:
             txt = bytes(txt, encoding="UTF-8")
 
         txt = txt * multiply
@@ -53,7 +52,7 @@ class Test6809_Program2(Test6809_Program):
         ))
 
         start_time = time.time()
-        for __ in xrange(loops):
+        for __ in range(loops):
             self._crc32(txt)
         duration = time.time() - start_time
 
@@ -97,7 +96,7 @@ def run_benchmark(loops):
 
 
 if __name__ == '__main__':
-    from dragonlib.utils.logging_utils import setup_logging
+    from MC6809.utils.logging_utils import setup_logging
 
     setup_logging(log,
 #        level=1 # hardcore debug ;)

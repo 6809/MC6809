@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 
 """
-    DragonPy - Dragon 32 emulator in Python
-    =======================================
+    6809 unittests
+    ~~~~~~~~~~~~~~
 
-    :copyleft: 2013-2014 by the DragonPy team, see AUTHORS for more details.
+    :created: 2013 by Jens Diemer - www.jensdiemer.de
+    :copyleft: 2013-2014 by the MC6809 team, see AUTHORS for more details.
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 

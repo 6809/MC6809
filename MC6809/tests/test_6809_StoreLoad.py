@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# encoding:utf-8
 
 """
     6809 unittests
@@ -8,7 +7,7 @@
     Test store and load ops
 
     :created: 2014 by Jens Diemer - www.jensdiemer.de
-    :copyleft: 2014 by the DragonPy team, see AUTHORS for more details.
+    :copyleft: 2014-2015 by the MC6809 team, see AUTHORS for more details.
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
@@ -18,7 +17,6 @@ import logging
 import sys
 import unittest
 
-from dragonlib.utils.unittest_utils import TextTestRunner2
 from MC6809.tests.test_base import BaseStackTestCase
 
 
@@ -63,25 +61,11 @@ class Test6809_Load(BaseStackTestCase):
 
 
 if __name__ == '__main__':
-    log.setLevel(
-        1
-#        10 # DEBUG
-#         20 # INFO
-#         30 # WARNING
-#         40 # ERROR
-#        50 # CRITICAL/FATAL
-    )
-    log.addHandler(logging.StreamHandler())
-
-    # XXX: Disable hacked XRoar trace
-    import cpu6809; cpu6809.trace_file = None
-
     unittest.main(
         argv=(
             sys.argv[0],
-            "Test6809_Store.test_STS_indexed",
+            # "Test6809_Store.test_STS_indexed",
         ),
-        testRunner=TextTestRunner2,
 #         verbosity=1,
         verbosity=2,
 #         failfast=True,

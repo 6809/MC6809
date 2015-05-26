@@ -7,7 +7,7 @@
 
     TODO: Use bottle!
 
-    :copyleft: 2013-2014 by the DragonPy team, see AUTHORS for more details.
+    :copyleft: 2013-2014 by the MC6809 team, see AUTHORS for more details.
     :license: GNU GPL v3 or above, see LICENSE for more details.
 
     Based on:
@@ -17,13 +17,13 @@
 """
 
 from __future__ import absolute_import, division, print_function
-from dragonlib.utils import six
-xrange = six.moves.xrange
 
 try:
     from http.server import BaseHTTPRequestHandler # Python 3
 except ImportError:
     from BaseHTTPServer import BaseHTTPRequestHandler # Python 2
+    range = xrange
+    
 
 import json
 import logging
@@ -36,7 +36,7 @@ import traceback
 
 import logging
 
-log=logging.getLogger(__name__)
+log=logging.getLogger("MC6809")
 
 
 class ControlHandler(BaseHTTPRequestHandler):
@@ -163,7 +163,7 @@ class ControlHandler(BaseHTTPRequestHandler):
             end = int(e)
         else:
             end = addr
-        self.response("".join([chr(self.cpu.read_byte(x)) for x in xrange(addr, end + 1)]))
+        self.response("".join([chr(self.cpu.read_byte(x)) for x in range(addr, end + 1)]))
 
     def get_memory(self, m):
         addr = int(m.group(1), 16)

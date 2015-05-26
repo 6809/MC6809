@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-    DragonPy - Dragon 32 emulator in Python
+    MC6809 - 6809 CPU emulator in Python
     =======================================
 
     TODO:
@@ -10,7 +10,7 @@
 
     6809 is Big-Endian
 
-    :copyleft: 2013-2014 by the DragonPy team, see AUTHORS for more details.
+    :copyleft: 2013-2014 by the MC6809 team, see AUTHORS for more details.
     :license: GNU GPL v3 or above, see LICENSE for more details.
 
     Based on:
@@ -20,19 +20,22 @@
 """
 
 from __future__ import absolute_import, division, print_function
-from dragonlib.utils import six
-xrange = six.moves.xrange
 
 import array
 import os
 import sys
 import logging
 
-from dragonlib.utils import six
-from dragonlib.utils.logging_utils import log_hexlist
+PY2 = sys.version_info[0] == 2
+if PY2:
+    range = xrange
+    string_type = basestring
+else:
+    # Py 3
+    string_type = str
 
 
-log = logging.getLogger(__name__)
+log = logging.getLogger("MC6809")
 
 
 class Memory(object):
@@ -131,7 +134,7 @@ class Memory(object):
         if end_addr is None:
             callbacks_dict[start_addr] = callback_func
         else:
-            for addr in xrange(start_addr, end_addr + 1):
+            for addr in range(start_addr, end_addr + 1):
                 callbacks_dict[addr] = callback_func
 
     #---------------------------------------------------------------------------
@@ -166,7 +169,7 @@ class Memory(object):
 
 
     def load(self, address, data):
-        if isinstance(data, six.string_types):
+        if isinstance(data, string_type):
             data = [ord(c) for c in data]
 
         log.debug("ROM load at $%04x: %s", address,
@@ -309,10 +312,10 @@ class Memory(object):
         """
         used in unittests
         """
-        return [self.read_byte(addr) for addr in xrange(start, end)]
+        return [self.read_byte(addr) for addr in range(start, end)]
 
     def iter_bytes(self, start, end):
-        for addr in xrange(start, end):
+        for addr in range(start, end):
             yield addr, self.read_byte(addr)
 
     def get_dump(self, start, end):
@@ -331,23 +334,3 @@ class Memory(object):
         print("\n".join(["\t%s" % line for line in dump_lines]))
 
 
-def test_run():
-    import subprocess
-    cmd_args = [sys.executable,
-        "DragonPy_CLI.py",
-#         "--verbosity=5",
-#         "--verbosity=10",
-#         "--verbosity=20",
-#         "--verbosity=30",
-#         "--verbosity=40",
-        "--verbosity=50",
-        "--machine=Simple6809",
-#         "--max=100000",
-#         "--max=30000",
-#         "--max=20000",
-    ]
-    print("Startup CLI with: %s" % " ".join(cmd_args[1:]))
-    subprocess.Popen(cmd_args, cwd="..").wait()
-
-if __name__ == "__main__":
-    test_run()

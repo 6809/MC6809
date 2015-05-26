@@ -8,7 +8,7 @@
     Test store and load ops
 
     :created: 2014 by Jens Diemer - www.jensdiemer.de
-    :copyleft: 2014 by the DragonPy team, see AUTHORS for more details.
+    :copyleft: 2014-2015 by the MC6809 team, see AUTHORS for more details.
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
@@ -18,7 +18,6 @@ import logging
 import sys
 import unittest
 
-from dragonlib.utils.unittest_utils import TextTestRunner2
 from MC6809.tests.test_base import BaseCPUTestCase
 
 
@@ -228,23 +227,11 @@ class Test6809_AddressModes_Indexed(BaseCPUTestCase):
 
 
 if __name__ == '__main__':
-    from dragonlib.utils.logging_utils import setup_logging
-
-    setup_logging(log,
-#         level=1 # hardcore debug ;)
-#        level=10 # DEBUG
-#        level=20 # INFO
-#        level=30 # WARNING
-#         level=40 # ERROR
-        level=50 # CRITICAL/FATAL
-    )
-
     unittest.main(
         argv=(
             sys.argv[0],
 #            "Test6809_AddressModes_Indexed.test_8bit_offset",
         ),
-        testRunner=TextTestRunner2,
 #         verbosity=1,
         verbosity=2,
 #         failfast=True,
