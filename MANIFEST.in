@@ -1,10 +1,4 @@
 include AUTHORS LICENSE MANIFEST.in README.creole
 include *.sh *.py
-include dragonpy/sbc09/v09.rom
-include dragonpy/vectrex/SYSTEM.IMG
 recursive-exclude * *.py[co]
 recursive-include * *.creole
-recursive-include * *.bas
-recursive-include * *.sha1
-recursive-include * *.cmd
-recursive-include * *.sh
