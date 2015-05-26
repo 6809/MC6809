@@ -12,7 +12,7 @@
 
 from __future__ import absolute_import, division, print_function
 
-from dragonpy.components.MC6809data.MC6809_op_data import OP_DATA
+from MC6809.components.MC6809data.MC6809_op_data import OP_DATA
 
 
 def get_flat_opdata(OP_DATA):

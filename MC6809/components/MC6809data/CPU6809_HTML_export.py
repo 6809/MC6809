@@ -17,8 +17,8 @@ xrange = six.moves.xrange
 
 import os
 
-from dragonpy.components.MC6809data.MC6809_op_data import OP_DATA, BYTE, WORD
-from dragonpy.components.MC6809data.MC6809_op_docs import OP_DOC
+from MC6809.components.MC6809data.MC6809_op_data import OP_DATA, BYTE, WORD
+from MC6809.components.MC6809data.MC6809_op_docs import OP_DOC
 
 
 OUTFILENAME = "CPU6809_opcodes.html"

@@ -18,8 +18,8 @@ from dragonlib.core.basic import log_program_dump
 import logging
 
 log=logging.getLogger(__name__)
-from dragonpy.components.cpu6809 import CPU
-from dragonpy.components.memory import Memory
+from MC6809.components.cpu6809 import CPU
+from MC6809.components.memory import Memory
 from dragonpy.utils.simple_debugger import print_exc_plus
 
 
@@ -59,7 +59,7 @@ class Machine(object):
             raise TypeError("%s - class: %s" % (err, self.periphery_class.__name__))
 
         self.cpu_init_state = self.cpu.get_state() # Used for hard reset
-#        from dragonpy.tests.test_base import print_cpu_state_data
+#        from MC6809.tests.test_base import print_cpu_state_data
 #        print_cpu_state_data(self.cpu_init_state)
 
         self.cpu.reset()
@@ -112,7 +112,7 @@ class Machine(object):
 
     def hard_reset(self):
         self.periphery.reset()
-#        from dragonpy.tests.test_base import print_cpu_state_data
+#        from MC6809.tests.test_base import print_cpu_state_data
 #        print_cpu_state_data(self.cpu_init_state)
         self.cpu.set_state(self.cpu_init_state)
 #        print_cpu_state_data(self.cpu.get_state())

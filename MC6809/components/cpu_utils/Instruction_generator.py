@@ -13,11 +13,11 @@ from __future__ import absolute_import, division, print_function
 import os
 import sys
 
-from dragonpy.components.MC6809data.MC6809_op_data import (
+from MC6809.components.MC6809data.MC6809_op_data import (
     OP_DATA, BYTE, WORD, REG_A, REG_B, REG_CC, REG_D , REG_DP, REG_PC,
     REG_S, REG_U, REG_X, REG_Y
 )
-from dragonpy.components.MC6809data.MC6809_data_utils import MC6809OP_DATA_DICT
+from MC6809.components.MC6809data.MC6809_data_utils import MC6809OP_DATA_DICT
 
 
 SPECIAL_FUNC_NAME = "special"
@@ -55,7 +55,7 @@ INIT_CODE = '''
 """
 
 
-from dragonpy.components.cpu_utils.instruction_base import InstructionBase
+from MC6809.components.cpu_utils.instruction_base import InstructionBase
 
 class PrepagedInstructions(InstructionBase):
 

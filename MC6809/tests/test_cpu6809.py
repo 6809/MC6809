@@ -16,13 +16,13 @@ import logging
 import sys
 import unittest
 
-from dragonpy.components.cpu6809 import CPU
+from MC6809.components.cpu6809 import CPU
 from dragonpy.Dragon32.config import Dragon32Cfg
 from dragonpy.Dragon32.mem_info import DragonMemInfo
-from dragonpy.tests.test_base import BaseCPUTestCase, BaseStackTestCase
+from MC6809.tests.test_base import BaseCPUTestCase, BaseStackTestCase
 
 
-log = logging.getLogger("DragonPy")
+log = logging.getLogger("MC6809")
 
 
 class BaseDragon32TestCase(BaseCPUTestCase):

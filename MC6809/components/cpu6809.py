@@ -43,14 +43,14 @@ import warnings
 
 
 from dragonpy.core.cpu_control_server import start_http_control_server
-from dragonpy.components.cpu_utils.MC6809_registers import (
+from MC6809.components.cpu_utils.MC6809_registers import (
     ValueStorage8Bit, ConcatenatedAccumulator,
     ValueStorage16Bit, ConditionCodeRegister, UndefinedRegister
 )
-from dragonpy.components.cpu_utils.instruction_caller import OpCollection
+from MC6809.components.cpu_utils.instruction_caller import OpCollection
 from dragonpy.utils.bits import is_bit_set, get_bit
 from dragonlib.utils.byte_word_values import signed8, signed16, signed5
-from dragonpy.components.MC6809data.MC6809_op_data import (
+from MC6809.components.MC6809data.MC6809_op_data import (
     REG_A, REG_B, REG_CC, REG_D, REG_DP, REG_PC,
     REG_S, REG_U, REG_X, REG_Y
 )

@@ -12,7 +12,7 @@ from __future__ import absolute_import, division, print_function
 
 
 import unittest
-from dragonpy.tests.test_base import BaseCPUTestCase
+from MC6809.tests.test_base import BaseCPUTestCase
 
 
 class CC_AccumulatorTestCase(BaseCPUTestCase):

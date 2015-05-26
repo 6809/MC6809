@@ -22,7 +22,7 @@ import unittest
 
 from dragonlib.utils.unittest_utils import TextTestRunner2
 from dragonlib.utils import six
-from dragonpy.tests.test_base import BaseStackTestCase
+from MC6809.tests.test_base import BaseStackTestCase
 
 
 log = logging.getLogger(__name__)

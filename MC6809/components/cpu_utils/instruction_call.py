@@ -10,7 +10,7 @@
 """
 
 
-from dragonpy.components.cpu_utils.instruction_base import InstructionBase
+from MC6809.components.cpu_utils.instruction_base import InstructionBase
 
 class PrepagedInstructions(InstructionBase):
 

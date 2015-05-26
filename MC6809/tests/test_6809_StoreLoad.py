@@ -19,10 +19,10 @@ import sys
 import unittest
 
 from dragonlib.utils.unittest_utils import TextTestRunner2
-from dragonpy.tests.test_base import BaseStackTestCase
+from MC6809.tests.test_base import BaseStackTestCase
 
 
-log = logging.getLogger("DragonPy")
+log = logging.getLogger("MC6809")
 
 
 class Test6809_Store(BaseStackTestCase):

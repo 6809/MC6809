@@ -12,10 +12,10 @@ from __future__ import absolute_import, division, print_function
 
 import inspect
 
-from dragonpy.components.MC6809data.MC6809_data_utils import MC6809OP_DATA_DICT
-from dragonpy.components.cpu_utils.Instruction_generator import func_name_from_op_code
-from dragonpy.components.cpu_utils.instruction_call import PrepagedInstructions
-from dragonpy.components.cpu6809_trace import InstructionTrace
+from MC6809.components.MC6809data.MC6809_data_utils import MC6809OP_DATA_DICT
+from MC6809.components.cpu_utils.Instruction_generator import func_name_from_op_code
+from MC6809.components.cpu_utils.instruction_call import PrepagedInstructions
+from MC6809.components.cpu6809_trace import InstructionTrace
 
 
 class OpCollection(object):
@@ -69,10 +69,10 @@ class OpCollection(object):
 
 
 if __name__ == "__main__":
-    from dragonpy.components.cpu6809 import CPU
-    from dragonpy.tests.test_base import BaseCPUTestCase
+    from MC6809.components.cpu6809 import CPU
+    from MC6809.tests.test_base import BaseCPUTestCase
     from dragonpy.Dragon32.config import Dragon32Cfg
-    from dragonpy.components.memory import Memory
+    from MC6809.components.memory import Memory
 
     cmd_args = BaseCPUTestCase.UNITTEST_CFG_DICT
     cfg = Dragon32Cfg(cmd_args)

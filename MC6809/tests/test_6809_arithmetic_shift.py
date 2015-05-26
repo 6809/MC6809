@@ -21,11 +21,11 @@ import logging
 import sys
 import unittest
 
-from dragonpy.tests.test_base import BaseCPUTestCase
+from MC6809.tests.test_base import BaseCPUTestCase
 from dragonpy.utils.bits import is_bit_set, get_bit
 
 
-log = logging.getLogger("DragonPy")
+log = logging.getLogger("MC6809")
 
 
 class Test6809_LogicalShift(BaseCPUTestCase):

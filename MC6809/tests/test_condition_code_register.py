@@ -14,7 +14,7 @@ xrange = six.moves.xrange
 
 import unittest
 
-from dragonpy.tests.test_base import BaseCPUTestCase
+from MC6809.tests.test_base import BaseCPUTestCase
 from dragonlib.utils.byte_word_values import signed8
 
 

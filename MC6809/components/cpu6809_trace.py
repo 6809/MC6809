@@ -16,8 +16,8 @@ from __future__ import absolute_import, division, print_function
 import sys
 import logging
 
-from dragonpy.components.MC6809data.MC6809_data_utils import MC6809OP_DATA_DICT
-from dragonpy.components.cpu_utils.instruction_call import PrepagedInstructions
+from MC6809.components.MC6809data.MC6809_data_utils import MC6809OP_DATA_DICT
+from MC6809.components.cpu_utils.instruction_call import PrepagedInstructions
 
 
 log = logging.getLogger("DragonPy.cpu6809.trace")
