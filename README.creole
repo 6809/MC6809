@@ -14,6 +14,16 @@ There is a simple benchmark. Run e.g.:
 ~/MC6809 $ pypy ./MC6809/cli.py --loops 20
 }}}
 
+
+You can run unittests in different ways, e.g.:
+{{{
+~$ cd MC6809
+~/MC6809 $ ./setup.py test
+~/MC6809 $ python3 -m unittest discover
+~/MC6809 $ ./MC6809/cli.py tests --verbosity=3 --failfast
+}}}
+
+
 === TODO
 
 # Use bottle for http control server part
