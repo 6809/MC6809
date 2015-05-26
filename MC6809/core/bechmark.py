@@ -62,28 +62,28 @@ class Test6809_Program2(Test6809_Program):
 
         return duration, self.cpu.cycles
 
-    def crc32_benchmark(self, loops):
-        return self.bench(loops, 10, self._crc32, "CRC32")
+    def crc32_benchmark(self, loops, multiply):
+        return self.bench(loops, multiply, self._crc32, "CRC32")
 
-    def crc16_benchmark(self, loops):
-        return self.bench(loops, 20, self._crc16, "CRC16")
+    def crc16_benchmark(self, loops, multiply):
+        return self.bench(loops, multiply, self._crc16, "CRC16")
 
 
 
-def run_benchmark(loops):
+def run_benchmark(loops, multiply):
     total_duration = 0
     total_cycles = 0
     bench_class = Test6809_Program2()
 
     #--------------------------------------------------------------------------
 
-    duration, cycles = bench_class.crc16_benchmark(loops)
+    duration, cycles = bench_class.crc16_benchmark(loops, multiply)
     total_duration += duration
     total_cycles += cycles
 
     #--------------------------------------------------------------------------
 
-    duration, cycles = bench_class.crc32_benchmark(loops)
+    duration, cycles = bench_class.crc32_benchmark(loops, multiply)
     total_duration += duration
     total_cycles += cycles
 

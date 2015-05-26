@@ -34,11 +34,14 @@ def cli():
 
 
 DEFAULT_LOOPS = 5
+DEFAULT_MULTIPLY = 15
 @cli.command(help="Run a 6809 Emulation benchmark")
 @click.option("--loops", default=DEFAULT_LOOPS,
     help="How many benchmark loops should be run? (default: %i)" % DEFAULT_LOOPS)
-def benchmark(loops):
-    run_benchmark(loops)
+@click.option("--multiply", default=DEFAULT_MULTIPLY,
+    help="Test data multiplier (default: %i)" % DEFAULT_MULTIPLY)
+def benchmark(loops, multiply):
+    run_benchmark(loops, multiply)
 
 
 @cli.command(help="Run unittests")
