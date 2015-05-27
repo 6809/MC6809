@@ -49,7 +49,6 @@ class Machine(object):
 
         memory = Memory(self.cfg)
         self.cpu = CPU(memory, self.cfg)
-        memory.cpu = self.cpu  # FIXME
 
         try:
             self.periphery = self.periphery_class(

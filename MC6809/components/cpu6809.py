@@ -121,6 +121,7 @@ class CPU(object):
 
     def __init__(self, memory, cfg, cpu_status_queue=None):
         self.memory = memory
+        self.memory.cpu = self # FIXME
         self.cfg = cfg
 
         self.running = True

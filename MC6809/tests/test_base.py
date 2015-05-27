@@ -101,8 +101,6 @@ class BaseCPUTestCase(BaseTestCase):
         cfg = TestCfg(self.UNITTEST_CFG_DICT)
         memory = Memory(cfg)
         self.cpu = CPU(memory, cfg)
-        memory.cpu = self.cpu # FIXME
-        self.cpu.cc.set(0x00)
 
     def cpu_test_run(self, start, end, mem):
         for cell in mem:
