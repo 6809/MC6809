@@ -8,6 +8,9 @@ Tested with Python 2.7, 3.4 and PyPy
 | {{https://coveralls.io/repos/6809/MC6809/badge.svg|Coverage Status on coveralls.io}} | [[https://coveralls.io/r/6809/MC6809|coveralls.io/r/6809/MC6809]] |
 
 
+A example usage can be find in: [[https://github.com/6809/MC6809/blob/master/MC6809/example6809.py|MC6809/example6809.py]]
+
+
 There is a simple benchmark. Run e.g.:
 {{{
 ~$ MC6809 benchmark --help
