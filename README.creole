@@ -74,4 +74,5 @@ unimplemented OPs:
 
 == donation
 
+* [[https://flattr.com/submit/auto?uid=jedie&url=https%3A%2F%2Fgithub.com%2F6809%2FMC6809%2F|Flattr This!]]
 * Send [[http://www.bitcoin.org/|Bitcoins]] to [[https://blockexplorer.com/address/1823RZ5Md1Q2X5aSXRC5LRPcYdveCiVX6F|1823RZ5Md1Q2X5aSXRC5LRPcYdveCiVX6F]]
