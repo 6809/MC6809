@@ -45,6 +45,30 @@ else:
     long_description = get_long_description(PACKAGE_ROOT)
 
 
+if "test" in sys.argv or "nosetests" in sys.argv:
+    """
+    nose is a optional dependency, so test import.
+    Otherwise the user get only the error:
+        error: invalid command 'nosetests'
+    """
+    try:
+        import nose
+    except ImportError as err:
+        print("\nError: Can't import 'nose': %s" % err)
+        print("\nMaybe 'nose' is not installed or virtualenv not activated?!?")
+        print("e.g.:")
+        print("    ~/your/env/$ source bin/activate")
+        print("    ~/your/env/$ pip install nose")
+        print("    ~/your/env/$ ./setup.py nosetests\n")
+        sys.exit(-1)
+    else:
+        if "test" in sys.argv:
+            print("\nPlease use 'nosetests' instead of 'test' to cover all tests!\n")
+            print("e.g.:")
+            print("     $ ./setup.py nosetests\n")
+            sys.exit(-1)
+
+
 setup(
     name="MC6809",
     version=MC6809.__version__,
@@ -52,6 +76,9 @@ setup(
     provides=["MC6809"],
     install_requires=[
         "click",
+    ],
+    tests_require=[
+        "nose", # https://pypi.python.org/pypi/nose
     ],
     entry_points='''
         [console_scripts]
@@ -88,5 +115,4 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
-    test_suite="MC6809.tests.get_tests",
 )

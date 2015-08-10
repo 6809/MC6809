@@ -1,27 +1,27 @@
-# Config file for automatic testing at travis-ci.org
-
 language: python
+sudo: false
 
 python:
     - "2.7"
+    - "3.3"
     - "3.4"
     - "pypy"
+    - "pypy3"
+
+os:
+    - osx
+    - linux
 
 install:
-    - "pip install ."
-    - "pip install coveralls"
+    - pip install --upgrade pip
+    - pip install .
+    - pip install coveralls
 
 script:
-    # - python -m unittest discover
-    - coverage run --source=MC6809 ./setup.py test
+    - coverage run --source=MC6809 ./setup.py nosetests
 
 after_success:
-    coveralls
-
-branches:
-    only:
-        - master
-        - stable
+    - coveralls
 
 notifications:
     irc: "irc.freenode.org#pylucid"
