@@ -24,6 +24,7 @@
 import binascii
 import string
 import time
+import sys
 
 from MC6809.components.cpu6809 import CPU
 from MC6809.components.memory import Memory
@@ -126,6 +127,12 @@ class MC6809Example(object):
         return crc32 ^ 0xFFFFFFFF
 
     def compare_crc32(self, data):
+
+        if sys.version_info > (3,):
+            data = bytes(data, encoding="ASCII")
+
+        print("Compare CRC32 with: %r" % data)
+
         print("\nCreate CRC32 with binascii:")
         start_time = time.time()
         excpected_crc32 = binascii.crc32(data) & 0xffffffff
@@ -149,8 +156,7 @@ class MC6809Example(object):
 def run_example():
     mc6809 = MC6809Example()
 
-    data = bytes(string.digits + string.ascii_letters + string.punctuation, encoding="ASCII")
-    print("Compare CRC32 with: %r" % data)
+    data = string.digits + string.ascii_letters + string.punctuation
     ok = mc6809.compare_crc32(data)
 
     return ok # Used in unittests ;)
