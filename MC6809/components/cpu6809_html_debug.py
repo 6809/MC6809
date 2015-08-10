@@ -24,7 +24,7 @@ DEBUG_FILENAME = os.path.abspath(os.path.join(
 ))
 
 
-HTML_OUT = file(DEBUG_FILENAME, "w")
+HTML_OUT = open(DEBUG_FILENAME, "w")
 HTML_OUT.write("""<!DOCTYPE html>
 <html><head>
 <style>
