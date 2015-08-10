@@ -682,25 +682,4 @@ class TestSimple6809ROM(BaseCPUTestCase):
         self._is_carriage_return(a=0x0d, pc=0x4011)
 
 
-if __name__ == '__main__':
-    unittest.main(
-        argv=(
-            sys.argv[0],
-#             "Test6809_Register"
-#             "Test6809_ZeroFlag",
-#             "Test6809_Ops",
-#             "Test6809_Ops.test_CMPA_immediate_byte",
-#              "Test6809_Ops.test_CMPX_immediate_word",
-#              "Test6809_TestInstructions",
-#             "Test6809_AddressModes",
-#             "Test6809_Ops2",
-#             "Test6809_Ops2.test_TFR_CC_B",
-#              "Test6809_Stack",
-#              "Test6809_Stack.test_PushPullSystemStack_03",
-#             "TestSimple6809ROM",
-#             "Test6809_Code",
-        ),
-#         verbosity=1,
-        verbosity=2,
-        failfast=True,
-    )
+
