@@ -134,30 +134,28 @@ class MC6809Example(object):
 
         print("\nCreate CRC32 with Emulated 6809 CPU:")
         start_time = time.time()
-        crc32_value = mc6809.crc32(data)
+        crc32_value = self.crc32(data)
         duration = time.time() - start_time
         print("\tMC6809 crc32..: $%X calculated in %.2fsec" % (crc32_value, duration))
         print()
         if crc32_value==excpected_crc32:
-            print(" *** CRC32 values from 6809 and binascii are the same, ok.")
+            print(" *** CRC32 values from 6809 and binascii are the same, ok.\n")
+            return True
         else:
-            print(" *** ERROR: CRC32 are different!")
-        print("\n")
+            print(" *** ERROR: CRC32 are different!\n")
+            return False
 
 
-if __name__ == '__main__':
+def run_example():
     mc6809 = MC6809Example()
 
     data = bytes(string.digits + string.ascii_letters + string.punctuation, encoding="ASCII")
     print("Compare CRC32 with: %r" % data)
-    mc6809.compare_crc32(data)
+    ok = mc6809.compare_crc32(data)
+
+    return ok # Used in unittests ;)
 
 
-    filename = __file__
-    print("Read %r..." % filename)
-    with open(filename, "rb") as f:
-        data = f.read()
-
-    print("Compare CRC32 with content of %r" % filename)
-    mc6809.compare_crc32(data)
+if __name__ == '__main__':
+    run_example()
 
