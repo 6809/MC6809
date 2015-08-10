@@ -5,7 +5,10 @@
     MC6809 - 6809 CPU emulator in Python
     =======================================
 
-    :copyleft: 2014 by the MC6809 team, see AUTHORS for more details.
+    TODO:
+        Need update to new API and unittests!
+
+    :copyleft: 2014-2015 by the MC6809 team, see AUTHORS for more details.
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
@@ -17,6 +20,7 @@ import atexit
 import os
 import datetime
 
+from MC6809.components.cpu_utils.instruction_call import PrepagedInstructions
 
 DEBUG_FILENAME = os.path.abspath(os.path.join(
     os.path.dirname(__file__),
@@ -55,7 +59,7 @@ def close_html_debug():
 
 
 CALL_NO = 0
-class InstructionHTMLdebug(Instruction):
+class InstructionHTMLdebug(PrepagedInstructions):
 
     def __init__(self, *args, **kwargs):
         super(InstructionHTMLdebug, self).__init__(*args, **kwargs)
