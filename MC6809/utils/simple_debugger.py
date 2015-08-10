@@ -17,72 +17,13 @@ from __future__ import absolute_import, division, print_function
 import sys
 import traceback
 
+import click
+
 PY2 = sys.version_info[0] == 2
 if PY2:
     range = xrange
 
-
 MAX_CHARS = 256
-
-
-class ColorOut(object):
-    """
-    Borrowed from Django:
-    http://code.djangoproject.com/browser/django/trunk/django/utils/termcolors.py
-
-    >>> c = ColorOut()
-    >>> c.supports_colors()
-    True
-    >>> c.color_support = True
-    >>> c.colorize('no color')
-    'no color'
-    >>> c.colorize('bold', opts=("bold",))
-    '\\x1b[1mbold\\x1b[0m'
-    >>> c.colorize("colors!", foreground="red", background="blue", opts=("bold", "blink"))
-    '\\x1b[31;44;1;5mcolors!\\x1b[0m'
-    """
-    COLOR_NAMES = ('black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white')
-    OPT_DICT = {'bold': '1', 'underscore': '4', 'blink': '5', 'reverse': '7', 'conceal': '8'}
-
-    def __init__(self):
-        self.color_support = self.supports_colors()
-
-        self.foreground_colors = dict([(self.COLOR_NAMES[x], '3%s' % x) for x in range(8)])
-        self.background_colors = dict([(self.COLOR_NAMES[x], '4%s' % x) for x in range(8)])
-
-    def supports_colors(self):
-        if sys.platform in ('win32', 'Pocket PC'):
-            return False
-
-        # isatty is not always implemented!
-        if hasattr(sys.stdout, 'isatty') and sys.stdout.isatty():
-            return True
-        else:
-            return False
-
-    def colorize(self, text, foreground=None, background=None, opts=()):
-        """
-        Returns your text, enclosed in ANSI graphics codes.
-        """
-        if not self.color_support:
-            return text
-
-        code_list = []
-
-        if foreground:
-            code_list.append(self.foreground_colors[foreground])
-        if background:
-            code_list.append(self.background_colors[background])
-
-        for option in opts:
-            code_list.append(self.OPT_DICT[option])
-
-        if not code_list:
-            return text
-
-        return "\x1b[%sm%s\x1b[0m" % (';'.join(code_list), text)
-c = ColorOut()
-
 
 def print_exc_plus():
     """
@@ -107,33 +48,33 @@ def print_exc_plus():
     txt_lines = txt.splitlines()
     first_line = txt_lines.pop(0)
     last_line = txt_lines.pop(-1)
-    print(c.colorize(first_line, foreground="red"))
+    click.secho(first_line, fg='red')
+
     for line in txt_lines:
         if line.strip().startswith("File"):
             print(line)
         else:
-            print(c.colorize(line, foreground="white", opts=("bold",)))
-    print(c.colorize(last_line, foreground="red"))
+            click.secho(line, fg='white', bold=True)
+            click.secho(line, fg="white", bold=True)
+    click.secho(last_line, fg="red")
 
     print()
-    print(c.colorize(
+    click.secho(
         "Locals by frame, most recent call first:",
-        foreground="blue", opts=("bold",)
-    ))
+        fg="blue", bold=True
+    )
     for frame in stack:
-
-        print("\n ***", c.colorize(
-            'File "%s", line %i, in %s' % (
+        click.secho('\n *** File "%s", line %i, in %s' % (
                 frame.f_code.co_filename,
                 frame.f_lineno,
                 frame.f_code.co_name,
             ),
-            foreground="white",
-            opts=("bold", "underscore")
-        ))
+            fg="white",
+            bold=True
+        )
 
         for key, value in list(frame.f_locals.items()):
-            print("%30s = " % c.colorize(key, opts=("bold",)), end=' ')
+            print(click.style("%30s = " % key, bold=True), end=' ')
             # We have to be careful not to cause a new error in our error
             # printer! Calling str() on an unknown object could cause an
             # error we don't want.
@@ -149,3 +90,4 @@ def print_exc_plus():
                 print(value)
             except:
                 print("<ERROR WHILE PRINTING VALUE>")
+
