@@ -13,7 +13,6 @@ from __future__ import absolute_import, division, print_function
 
 
 import sys
-import unittest
 
 try:
     import click
@@ -24,7 +23,6 @@ except ImportError as err:
     print("more info: http://click.pocoo.org")
     sys.exit(-1)
 
-from MC6809.tests import run_tests
 from MC6809.core.bechmark import run_benchmark
 
 
@@ -43,12 +41,6 @@ DEFAULT_MULTIPLY = 15
 def benchmark(loops, multiply):
     run_benchmark(loops, multiply)
 
-
-@cli.command(help="Run unittests")
-@click.option('--verbosity', default=2, help='Number for verbosity settings')
-@click.option('--failfast', default=False, help='Number for verbosity settings', is_flag=True)
-def tests(verbosity, failfast):
-    run_tests(verbosity, failfast)
 
 
 if __name__ == "__main__":

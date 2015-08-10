@@ -80,7 +80,6 @@ class CLITestCase(unittest.TestCase):
             "cli.py [OPTIONS] COMMAND [ARGS]...",
             "Commands:",
             "benchmark  Run a 6809 Emulation benchmark",
-            "tests      Run unittests",
         ], cli_out)
 
         errors = ["Error", "Traceback"]
@@ -114,5 +113,3 @@ class CLITestCase(unittest.TestCase):
         self.assertNotInMultiline(errors, cli_err)
 
 
-if __name__ == '__main__':
-    unittest.main(verbosity=2)
