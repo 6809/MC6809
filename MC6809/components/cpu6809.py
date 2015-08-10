@@ -422,8 +422,9 @@ class CPU(object):
             if program_counter() == end:
                 return
             get_and_call_next_op()
-        raise RuntimeError("Max ops %i arrived!" % max_ops)
         log.critical("Max ops %i arrived!", max_ops)
+        raise RuntimeError("Max ops %i arrived!" % max_ops)
+
 
     def test_run2(self, start, count):
 #        log.warning("CPU test_run2(): from $%x count: %i" % (start, count))
