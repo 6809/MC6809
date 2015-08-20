@@ -17,7 +17,7 @@ import sys
 import subprocess
 import shutil
 
-from MC6809 import __version__
+from MC6809 import __version__, ENTRY_POINT_NAME
 
 
 PACKAGE_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -205,14 +205,14 @@ setup(
     provides=["MC6809"],
     install_requires=[
         "click",
+        "six",
     ],
     tests_require=[
         "nose", # https://pypi.python.org/pypi/nose
     ],
-    entry_points='''
-        [console_scripts]
-        MC6809=MC6809.cli:cli
-    ''',
+    entry_points={
+        "console_scripts": ["%s = MC6809.cli:cli" % ENTRY_POINT_NAME],
+    },
     author="Jens Diemer",
     author_email="MC6809@jensdiemer.de",
     description="MC6809 CPU emulator written in Python",
