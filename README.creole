@@ -48,9 +48,10 @@ unimplemented OPs:
 
 (Some of the points are related to [[https://github.com/jedie/DragonPy|DragonPy Emulator]])
 
-* 21.08.2015 - [[https://github.com/6809/MC6809/compare/v0.4.4...master|v0.4.5]] **not released, yet**
+* 21.08.2015 - [[https://github.com/6809/MC6809/compare/v0.4.4...v0.4.5|v0.4.5]]
 ** deactivate 'cpu6809_html_debug.py' - TODO: update it!
-** update README
+** update cli unittests
+** update README and code cleanup
 * 10.08.2015 - [[https://github.com/6809/MC6809/compare/v0.4.3...v0.4.4|v0.4.4]] - bugfix and cleanup the tests
 * 10.08.2015 - [[https://github.com/6809/MC6809/compare/v0.4.2...v0.4.3|v0.4.3]] - run unittests with nose
 * 27.05.2015 - [[https://github.com/6809/MC6809/compare/v0.4.1...v0.4.2|v0.4.2]] - Add MC6809/example6809.py
