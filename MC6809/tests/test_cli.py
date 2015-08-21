@@ -10,16 +10,12 @@
 
 from __future__ import absolute_import, division, print_function
 
-import os
-import subprocess
-import sys
 import unittest
 
-CLI = os.path.normpath(
-    os.path.join(
-        os.path.abspath(os.path.dirname(__file__)), "..", "cli.py"
-    )
-)
+from click.testing import CliRunner
+
+import MC6809
+from MC6809.cli import cli
 
 
 class CLITestCase(unittest.TestCase):
@@ -27,89 +23,70 @@ class CLITestCase(unittest.TestCase):
     TODO: Do more than this simple tests
     """
 
-    def _get(self, *args):
-        self.assertTrue(os.path.isfile(CLI), "Not a file: %r" % CLI)
-        cmd_args = [
-            sys.executable,
-            CLI
-        ]
-        cmd_args += args
-        # print("\nStartup CLI with: %s" % " ".join(cmd_args[1:]))
+    def _invoke(self, *args):
+        runner = CliRunner()
+        result = runner.invoke(cli, args)
 
-        p = subprocess.Popen(
-            cmd_args,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            universal_newlines=True,
-        )
-        retcode = p.wait()
-
-        cli_out = p.stdout.read()
-        p.stdout.close()
-        cli_err = p.stderr.read()
-        p.stderr.close()
-
-        if retcode != 0:
+        if result.exit_code != 0:
             msg = (
-                "subprocess returned %s.\n"
-                " *** stdout: ***\n"
+                "cli return code: %r\n"
+                " *** output: ***\n"
                 "%s\n"
-                " *** stderr: ***\n"
+                " *** exception: ***\n"
                 "%s\n"
                 "****************\n"
-            ) % (retcode, cli_out, cli_err)
-            self.assertEqual(retcode, 0, msg=msg)
+            ) % (result.exit_code, result.output, result.exception)
+            self.assertEqual(result.exit_code, 0, msg=msg)
 
-        return cli_out, cli_err
+        return result
 
-    def assertInMultiline(self, members, container):
+    def assert_contains_members(self, members, container):
         for member in members:
             msg = "%r not found in:\n%s" % (member, container)
             # self.assertIn(member, container, msg) # Bad error message :(
             if not member in container:
                 self.fail(msg)
 
-    def assertNotInMultiline(self, members, container):
+    def assert_not_contains_members(self, members, container):
         for member in members:
             if member in container:
                 self.fail("%r found in:\n%s" % (member, container))
 
     def test_main_help(self):
-        cli_out, cli_err = self._get("--help")
-        self.assertInMultiline([
-            "cli.py [OPTIONS] COMMAND [ARGS]...",
+        result = self._invoke("--help")
+        self.assert_contains_members([
+            "cli [OPTIONS] COMMAND [ARGS]...",
             "Commands:",
             "benchmark  Run a 6809 Emulation benchmark",
-        ], cli_out)
+        ], result.output)
 
         errors = ["Error", "Traceback"]
-        self.assertNotInMultiline(errors, cli_out)
-        self.assertNotInMultiline(errors, cli_err)
+        self.assert_not_contains_members(errors, result.output)
+
+    def test_version(self):
+        result = self._invoke("--version")
+        self.assertIn(MC6809.__version__, result.output)
 
     def test_benchmark_help(self):
-        cli_out, cli_err = self._get("benchmark", "--help")
-        #        print(cli_out)
+        result = self._invoke("benchmark", "--help")
+        #        print(result.output)
         #        print(cli_err)
-        self.assertInMultiline([
-            "Usage: cli.py benchmark [OPTIONS]",
+        self.assert_contains_members([
+            "Usage: cli benchmark [OPTIONS]",
             "Run a 6809 Emulation benchmark",
-        ], cli_out)
+        ], result.output)
 
         errors = ["Error", "Traceback"]
-        self.assertNotInMultiline(errors, cli_out)
-        self.assertNotInMultiline(errors, cli_err)
+        self.assert_not_contains_members(errors, result.output)
 
     def test_run_benchmark(self):
-        cli_out, cli_err = self._get("benchmark", "--loops", "1", "--multiply", "1")
-        self.assertInMultiline([
+        result = self._invoke("benchmark", "--loops", "1", "--multiply", "1")
+        self.assert_contains_members([
             "CRC16 benchmark",
             "Start 1 CRC16 loops",
             "CRC32 benchmark",
             "Start 1 CRC32 loops",
-        ], cli_out)
+        ], result.output)
 
         errors = ["Error", "Traceback"]
-        self.assertNotInMultiline(errors, cli_out)
-        self.assertNotInMultiline(errors, cli_err)
-
-
+        self.assert_not_contains_members(errors, result.output)
