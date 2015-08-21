@@ -1,5 +1,5 @@
 
-__version__ = "0.4.4"
+__version__ = "0.4.5"
 
 # used in own setup.py and in DragonPy "starter GUI":
 DISTRIBUTION_NAME = "MC6809"
