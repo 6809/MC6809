@@ -51,6 +51,7 @@ unimplemented OPs:
 * 10.08.2015 - [[https://github.com/6809/MC6809/compare/v0.4.2...v0.4.3|v0.4.3]] - run unittests with nose
 * 27.05.2015 - [[https://github.com/6809/MC6809/compare/v0.4.1...v0.4.2|v0.4.2]] - Add MC6809/example6809.py
 * 26.05.2015 - [[https://github.com/6809/MC6809/compare/1a40593...v0.4.1|v0.4.0, 0.4.1]] - Split MC6809 from [[https://github.com/jedie/DragonPy|DragonPy]]
+* 22.09.2014 - Remove hacked CPU skeleton generator scripts with [[https://github.com/6809/MC6809/commit/ac903a8fb9f02e1db23172cb367af2581d4b29a1|commit ac903a8f]]
 * 14.09.2014 - Release v0.2.0 - Add a speedlimit, config dialog and IRQ: [[http://archive.worldofdragon.org/phpBB3/viewtopic.php?f=5&t=4308&p=11780#p11780|Forum post 11780]]
 * 05.09.2014 - Release v0.1.0 - Implement pause/resume, hard-/soft-reset 6809 in GUI and improve a little the GUI/Editor stuff: [[https://github.com/jedie/DragonPy/releases/tag/v0.1.0|v0.1.0]] see also: [[http://archive.worldofdragon.org/phpBB3/viewtopic.php?f=5&t=4308&p=11719#p11719|Forum post 11719]].
 * 27.08.2014 - Run CoCo with Extended Color Basic v1.1, bugfix transfer BASIC Listing with [[https://github.com/jedie/DragonPy/compare/8fe24e5...697d39e|8fe24e5...697d39e]] see: [[http://archive.worldofdragon.org/phpBB3/viewtopic.php?f=5&t=4308&start=90#p11696|Forum post 11696]].
