@@ -17,8 +17,7 @@ import sys
 import subprocess
 import shutil
 
-from MC6809 import __version__, ENTRY_POINT_NAME
-
+from MC6809 import __version__, DIST_GROUP, ENTRY_POINT, DISTRIBUTION_NAME
 
 PACKAGE_ROOT = os.path.dirname(os.path.abspath(__file__))
 
@@ -199,7 +198,7 @@ if "publish" in sys.argv:
 
 
 setup(
-    name="MC6809",
+    name=DISTRIBUTION_NAME,
     version=__version__,
     py_modules=["MC6809"],
     provides=["MC6809"],
@@ -211,7 +210,10 @@ setup(
         "nose", # https://pypi.python.org/pypi/nose
     ],
     entry_points={
-        "console_scripts": ["%s = MC6809.cli:cli" % ENTRY_POINT_NAME],
+        # Here we use constants, because of usage in DragonPy "starter GUI", too.
+        DIST_GROUP: ["%s = MC6809.cli:cli" % ENTRY_POINT],
+        # e.g.:
+        #   "console_scripts": ["MC6809 = MC6809.cli:cli"],
     },
     author="Jens Diemer",
     author_email="MC6809@jensdiemer.de",
