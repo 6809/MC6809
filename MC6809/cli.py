@@ -13,6 +13,7 @@ from __future__ import absolute_import, division, print_function
 
 
 import sys
+import MC6809
 
 try:
     import click
@@ -27,7 +28,17 @@ from MC6809.core.bechmark import run_benchmark
 
 
 @click.group()
+@click.version_option(MC6809.__version__)
 def cli():
+    """
+    MC6809 is a Open source (GPL v3 or later) emulator
+    for the legendary 6809 CPU, used in 30 years old homecomputer
+    Dragon 32 and Tandy TRS-80 Color Computer (CoCo)...
+
+    Created by Jens Diemer
+
+    Homepage: https://github.com/6809/MC6809
+    """
     pass
 
 
