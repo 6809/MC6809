@@ -17,6 +17,14 @@ from MC6809.components.cpu_utils.Instruction_generator import func_name_from_op_
 from MC6809.components.cpu_utils.instruction_call import PrepagedInstructions
 from MC6809.components.cpu6809_trace import InstructionTrace
 
+def opcode(*opcodes):
+    """A decorator for opcodes"""
+    def decorator(func):
+        setattr(func, "_is_opcode", True)
+        setattr(func, "_opcodes", opcodes)
+        return func
+    return decorator
+
 
 class OpCollection(object):
     def __init__(self, cpu):
@@ -89,3 +97,5 @@ if __name__ == "__main__":
         print("Op %s - cycles: %2i - func: %s" % (op_code, cycles, func.__name__))
 
     print(" --- END --- ")
+
+
