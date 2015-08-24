@@ -48,6 +48,9 @@ unimplemented OPs:
 
 (Some of the points are related to [[https://github.com/jedie/DragonPy|DragonPy Emulator]])
 
+* 24.08.2015 - [[https://github.com/6809/MC6809/compare/v0.4.5...v0.4.6|v0.4.6]]
+** Add a "max_delay", to fix the "freeze" after a speed limit change
+** rename some of the "speed limit" variables
 * 21.08.2015 - [[https://github.com/6809/MC6809/compare/v0.4.4...v0.4.5|v0.4.5]]
 ** deactivate 'cpu6809_html_debug.py' - TODO: update it!
 ** update cli unittests
