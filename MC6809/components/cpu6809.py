@@ -127,9 +127,7 @@ class CPU(object):
         self.running = True
         self.cycles = 0
         self.last_op_address = 0 # Store the current run opcode memory address
-        self.burst_op_count = self.STARTUP_BURST_COUNT
-        self.sync_op_count = 100
-        self.max_burst_count = 10000
+        self.outer_burst_op_count = self.STARTUP_BURST_COUNT
 
         if cpu_status_queue is not None:
             status_thread = CPUStatusThread(self, cpu_status_queue)
@@ -301,6 +299,7 @@ class CPU(object):
 
     ####
 
+    # TODO: Move to __init__
     quickest_sync_callback_cycles = None
     sync_callbacks_cyles = {}
     sync_callbacks = []
@@ -328,18 +327,22 @@ class CPU(object):
                 # Call the callback function
                 callback(current_cycles - last_call_cycles)
 
+    # TODO: Move to __init__
+    inner_burst_op_count = 100 # How many ops calls, before next sync call
     def burst_run(self):
         """ Run CPU as fast as Python can... """
         # https://wiki.python.org/moin/PythonSpeed/PerformanceTips#Avoiding_dots...
         get_and_call_next_op = self.get_and_call_next_op
 
-        for __ in range(self.burst_op_count):
-            for __ in range(self.sync_op_count):
+        for __ in range(self.outer_burst_op_count):
+            for __ in range(self.inner_burst_op_count):
                 get_and_call_next_op()
 
             self.call_sync_callbacks()
 
-    delay = 0
+    # TODO: Move to __init__
+    max_delay = 0.01 # maximum time.sleep() value per burst run
+    delay = 0 # the current time.sleep() value per burst run
     def delayed_burst_run(self, target_cycles_per_sec):
         """ Run CPU not faster than given speedlimit """
         old_cycles = self.cycles
@@ -358,14 +361,17 @@ class CPU(object):
             target_duration = should_burst_duration * is_duration
             delay = target_duration - is_duration
             if delay > 0:
-                if delay > 1:
-                    self.delay = 1
+                if delay > self.max_delay:
+                    self.delay = self.max_delay
                 else:
                     self.delay = delay
                 time.sleep(self.delay)
 
         self.call_sync_callbacks()
 
+    # TODO: Move to __init__
+    min_burst_count = 10 # minimum outer op count per burst
+    max_burst_count = 10000 # maximum outer op count per burst
     def calc_new_count(self, burst_count, current_value, target_value):
         """
         >>> calc_new_count(burst_count=100, current_value=30, target_value=30)
@@ -377,7 +383,7 @@ class CPU(object):
         """
         # log.critical(
         #     "%i op count current: %.4f target: %.4f",
-        #     self.burst_op_count, current_value, target_value
+        #     self.outer_burst_op_count, current_value, target_value
         # )
         try:
             new_burst_count = float(burst_count) / float(current_value) * target_value
@@ -388,7 +394,11 @@ class CPU(object):
         if new_burst_count > self.max_burst_count:
             return self.max_burst_count
 
-        return int((burst_count + new_burst_count) / 2)
+        burst_count = (burst_count + new_burst_count) / 2
+        if burst_count < self.min_burst_count:
+            return self.min_burst_count
+        else:
+            return int(burst_count)
 
     def run(self, max_run_time=0.1, target_cycles_per_sec=None):
         now = time.time
@@ -403,8 +413,8 @@ class CPU(object):
             self.delay = 0
             self.burst_run()
 
-        # Calculate the burst_count new, to hit max_run_time
-        self.burst_op_count = self.calc_new_count(self.burst_op_count,
+        # Calculate the outer_burst_count new, to hit max_run_time
+        self.outer_burst_op_count = self.calc_new_count(self.outer_burst_op_count,
             current_value=now() - start_time - self.delay,
             target_value=max_run_time,
         )
@@ -431,16 +441,16 @@ class CPU(object):
         self.program_counter.set(start)
 #        log.debug("-"*79)
 
-        _old_burst_count = self.burst_op_count
-        self.burst_op_count = count
+        _old_burst_count = self.outer_burst_op_count
+        self.outer_burst_op_count = count
 
-        _old_sync_count = self.sync_op_count
-        self.sync_op_count = 1
+        _old_sync_count = self.inner_burst_op_count
+        self.inner_burst_op_count = 1
 
         self.burst_run()
 
-        self.burst_op_count = _old_burst_count
-        self.sync_op_count = _old_sync_count
+        self.outer_burst_op_count = _old_burst_count
+        self.inner_burst_op_count = _old_sync_count
 
 
     ####
