@@ -253,47 +253,18 @@ def control_server_thread(cpu, cfg, control_server):
     else:
         log.critical("Quit control server thread, because CPU doesn't run.")
 
-def start_http_control_server(cpu, cfg):
-    log.critical("TODO: What's with CPU control server???")
-    return
-
-    if not cfg.cfg_dict["use_bus"]:
-        log.info("Don't init CPU control server, ok.")
-        return None
-
-    control_handler = ControlHandlerFactory(cpu)
-    server_address = (cfg.CPU_CONTROL_ADDR, cfg.CPU_CONTROL_PORT)
-    try:
-        control_server = http.server.HTTPServer(server_address, control_handler)
-    except:
-        cpu.running = False
-        raise
-    url = "http://%s:%s" % server_address
-    log.error("Start http control server on: %s", url)
-
-    control_server_thread(cpu, cfg, control_server)
 
 
-def test_run():
-    print("test run...")
-    import subprocess
-    cmd_args = [sys.executable,
-        os.path.join("..", "..", "DragonPy_CLI.py"),
-#         "--verbosity=5",
-#         "--verbosity=10", # DEBUG
-#         "--verbosity=20", # INFO
-#         "--verbosity=30", # WARNING
-#         "--verbosity=40", # ERROR
-        "--verbosity=50", # CRITICAL/FATAL
-#         "--machine=sbc09",
-        "--machine=Simple6809",
-#         "--machine=Dragon32",
-#         "--machine=Multicomp6809",
-#         "--max=100000",
-        "--display_cycle",
-    ]
-    print("Startup CLI with: %s" % " ".join(cmd_args[1:]))
-    subprocess.Popen(cmd_args).wait()
+class CPUControlServerMixin(object):
+    def __init__(self, *args, **kwargs):
+        control_handler = ControlHandlerFactory(self)
+        server_address = (self.cfg.CPU_CONTROL_ADDR, self.cfg.CPU_CONTROL_PORT)
+        try:
+            control_server = http.server.HTTPServer(server_address, control_handler)
+        except:
+            self.running = False
+            raise
+        url = "http://%s:%s" % server_address
+        log.error("Start http control server on: %s", url)
 
-if __name__ == "__main__":
-    test_run()
+        control_server_thread(self, self.cfg, control_server)

@@ -48,7 +48,7 @@ class CPUStatusThread(threading.Thread):
             raise
 
 
-class CPUThreadedStatus(object):
+class CPUThreadedStatusMixin(object):
     def __init__(self, *args, **kwargs):
         cpu_status_queue = kwargs.get("cpu_status_queue", None)
         if cpu_status_queue is not None:
@@ -57,7 +57,7 @@ class CPUThreadedStatus(object):
             status_thread.start()
 
 
-class CPUTypeAssert(object):
+class CPUTypeAssertMixin(object):
     """
     assert that all attributes of the CPU class will remain as the same.
 
@@ -71,7 +71,7 @@ class CPUTypeAssert(object):
     """
     __ATTR_DICT = {}
     def __init__(self, *args, **kwargs):
-        super(CPUTypeAssert, self).__init__(*args, **kwargs)
+        super(CPUTypeAssertMixin, self).__init__(*args, **kwargs)
         self.__set_attr_dict()
         warnings.warn(
             "CPU TypeAssert used! (Should be only activated for debugging!)"
