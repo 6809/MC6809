@@ -71,7 +71,10 @@ class OpCollection(object):
                 InstructionClass = PrepagedInstructions
 
             instrution_class = InstructionClass(self.cpu, instr_func)
-            func = getattr(instrution_class, func_name)
+            try:
+                func = getattr(instrution_class, func_name)
+            except AttributeError as err:
+                raise AttributeError("%s (op code: $%02x)" % (err, op_code))
 
             self.opcode_dict[op_code] = (op_code_data["cycles"], func)
 

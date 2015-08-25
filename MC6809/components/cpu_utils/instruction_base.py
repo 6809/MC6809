@@ -16,7 +16,6 @@ class InstructionBase(object):
     def __init__(self, cpu, instr_func):
         self.cpu = cpu
         self.instr_func = instr_func
-        self.memory = cpu.memory
 
     def special(self, opcode):
         # e.g: RESET and PAGE 1/2

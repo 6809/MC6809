@@ -1,10 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
     MC6809 - 6809 CPU emulator in Python
     =======================================
 
-    :copyleft: 2013-2014 by the MC6809 team, see AUTHORS for more details.
+    :copyleft: 2013-2015 by the MC6809 team, see AUTHORS for more details.
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
@@ -50,7 +50,7 @@ else:
 INIT_CODE = '''
 """
     This file was generated with: "%s"
-    Please doen't change it directly ;)
+    Please don't change it directly ;)
     %s
 """
 
@@ -58,13 +58,18 @@ INIT_CODE = '''
 from MC6809.components.cpu_utils.instruction_base import InstructionBase
 
 class PrepagedInstructions(InstructionBase):
+    def __init__(self, *args, **kwargs):
+        super(PrepagedInstructions, self).__init__(*args, **kwargs)
+
+        self.write_byte = self.cpu.memory.write_byte
+        self.write_word = self.cpu.memory.write_word
 
 ''' % (os.path.basename(__file__), DOC)
 
 
 
 def build_func_name(addr_mode, ea, register, read, write):
-#    print addr_mode, ea, register, read, write
+#    print(addr_mode, ea, register, read, write
 
     if addr_mode is None:
         return SPECIAL_FUNC_NAME
@@ -80,7 +85,7 @@ def build_func_name(addr_mode, ea, register, read, write):
     if write:
         func_name += "_write%s" % write
 
-#    print func_name
+#    print(func_name
     return func_name
 
 
@@ -95,6 +100,8 @@ def func_name_from_op_code(op_code):
 
 
 def generate_code(f):
+    addr_modes = set()
+    registers = set()
     variants = set()
     for instr_data in list(OP_DATA.values()):
         for mnemonic, mnemonic_data in list(instr_data["mnemonic"].items()):
@@ -104,60 +111,90 @@ def generate_code(f):
             register = mnemonic_data["register"]
             for op_code, op_data in list(mnemonic_data["ops"].items()):
                 addr_mode = op_data["addr_mode"]
-#                print hex(op_code),
-                variants.add(
-                    (addr_mode, needs_ea, register, read_from_memory, write_to_memory)
-                )
-#                if (addr_mode and  needs_ea and  register and  read_from_memory and  write_to_memory) is None:
-                if addr_mode is None:
-                    print(mnemonic, op_data)
+#                print(hex(op_code),
 
-#    for no, data in enumerate(sorted(variants)):
-#        print no, data
-#    print"+++++++++++++"
+                if addr_mode is None:
+                    # special function (RESET/ PAGE1,2) defined in InstructionBase
+                    print("address mode is None:", mnemonic, op_data)
+                    continue
+
+                addr_mode = addr_mode.lower()
+
+                variant = (addr_mode, needs_ea, register, read_from_memory, write_to_memory)
+                # print(variant)
+                variants.add(variant)
+
+                if needs_ea and read_from_memory:
+                    addr_modes.add("get_ea_m_%s" % addr_mode)
+                elif needs_ea:
+                    addr_modes.add("get_ea_%s" % addr_mode)
+                elif read_from_memory:
+                    addr_modes.add("get_m_%s" % addr_mode)
+
+                if register is not None:
+                    registers.add(register)
+
+#                if (addr_mode and  needs_ea and  register and  read_from_memory and  write_to_memory) is None:
+
+    variants = list(variants)
+    variants.sort(key=lambda x: "".join(["%s" % i for i in x]))
+
+    # for no, data in enumerate(variants):
+    #     print(no, data)
+    # print("+++++++++++++")
 
     for line in INIT_CODE.splitlines():
         f.write("%s\n" % line)
 
-    for addr_mode, ea, register, read, write in sorted(variants):
-        if not addr_mode:
-            # special function (RESET/ PAGE1,2) defined in InstructionBase
-            continue
+    for register in sorted([REGISTER_DICT[register] for register in registers]):
+        f.write(
+            "        self.%(r)s=self.cpu.%(r)s\n" % {
+                "r": register,
+            }
+        )
+    f.write("\n")
 
-        func_name = build_func_name(addr_mode, ea, register, read, write)
+    for addr_mode in sorted(addr_modes):
+        f.write(
+            "        self.%(a)s=self.cpu.%(a)s\n" % {"a": addr_mode}
+        )
+    f.write("\n")
+
+    for addr_mode, needs_ea, register, read_from_memory, write_to_memory in variants:
+        func_name = build_func_name(addr_mode, needs_ea, register, read_from_memory, write_to_memory)
 
         f.write("    def %s(self, opcode):\n" % func_name)
 
         code = []
 
-        if ea and read:
-            code.append("ea, m = self.cpu.get_ea_m_%s()" % addr_mode.lower())
+        if needs_ea and read_from_memory:
+            code.append("ea, m = self.cpu.get_ea_m_%s()" % addr_mode)
 
-        if write:
+        if write_to_memory:
             code.append("ea, value = self.instr_func(")
         else:
             code.append("self.instr_func(")
-        code.append("    opcode = opcode,")
+        code.append("    opcode=opcode,")
 
-        if ea and read:
-            code.append("    ea = ea,")
-            code.append("    m = m,")
-        elif ea:
-            code.append("    ea = self.cpu.get_ea_%s()," % addr_mode.lower())
-        elif read:
-            code.append("    m = self.cpu.get_m_%s()," % addr_mode.lower())
+        if needs_ea and read_from_memory:
+            code.append("    ea=ea,")
+            code.append("    m=m,")
+        elif needs_ea:
+            code.append("    ea=self.get_ea_%s()," % addr_mode)
+        elif read_from_memory:
+            code.append("    m=self.get_m_%s()," % addr_mode)
 
         if register:
             code.append(
-                "    register = self.cpu.%s," % REGISTER_DICT[register]
+                "    register=self.%s," % REGISTER_DICT[register]
             )
 
         code.append(")")
 
-        if write == BYTE:
-            code.append("self.memory.write_byte(ea, value)")
-        elif write == WORD:
-            code.append("self.memory.write_word(ea, value)")
+        if write_to_memory == BYTE:
+            code.append("self.write_byte(ea, value)")
+        elif write_to_memory == WORD:
+            code.append("self.write_word(ea, value)")
 
         for line in code:
             f.write("        %s\n" % line)
@@ -174,9 +211,9 @@ def generate(filename):
 
 
 if __name__ == "__main__":
-    print("LDA immediate:", func_name_from_op_code(0x96))
+    # print("LDA immediate:", func_name_from_op_code(0x96))
 
-    # generate("instruction_call.py")
+    generate("instruction_call.py")
 
 
 
