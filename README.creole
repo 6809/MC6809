@@ -4,7 +4,7 @@ MC6809 is a Open source (GPL v3 or later) emulator for the legendary **6809** CP
 
 Tested with Python 2.7, 3.4 and PyPy
 
-| {{https://travis-ci.org/6809/MC6809.svg|Build Status on travis-ci.org}} | [[https://travis-ci.org/6809/MC6809/|travis-ci.org/6809/MC6809]] |
+| {{https://travis-ci.org/6809/MC6809.svg?branch=master|Build Status on travis-ci.org}} | [[https://travis-ci.org/6809/MC6809/|travis-ci.org/6809/MC6809]] |
 | {{https://coveralls.io/repos/6809/MC6809/badge.svg|Coverage Status on coveralls.io}} | [[https://coveralls.io/r/6809/MC6809|coveralls.io/r/6809/MC6809]] |
 
 
@@ -24,11 +24,20 @@ There is a simple benchmark. Run e.g.:
 (**MC6809** is the cli installed by **setup.py**)
 
 
-Unittest use [[https://pypi.python.org/pypi/nose/|nose]], run them, e.g.:
+=== tests
+
+We use [[https://pypi.python.org/pypi/nose/|nose]] to run the tests, e.g.:
 {{{
 ~$ cd MC6809
 ~/MC6809 $ python2 setup.py nosetests
 ~/MC6809 $ python3 setup.py nosetests
+}}}
+
+=== profile
+
+To profile, e.g.:
+{{{
+~$ python -m cProfile -s cumulative MC6809 benchmark
 }}}
 
 
