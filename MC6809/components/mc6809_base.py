@@ -27,6 +27,7 @@ import inspect
 import sys
 import time
 import warnings
+from MC6809.components.mc6809_tools import calc_new_count
 
 if sys.version_info[0] == 3:
     # Python 3
@@ -75,6 +76,8 @@ class CPUBase(object):
     RESET_VECTOR = 0xfffe
 
     STARTUP_BURST_COUNT = 100
+    min_burst_count = 10 # minimum outer op count per burst
+    max_burst_count = 10000 # maximum outer op count per burst
 
     def __init__(self, memory, cfg):
         self.memory = memory
@@ -306,9 +309,12 @@ class CPUBase(object):
             self.burst_run()
 
         # Calculate the outer_burst_count new, to hit max_run_time
-        self.outer_burst_op_count = self.calc_new_count(self.outer_burst_op_count,
-            current_value=now() - start_time - self.delay,
-            target_value=max_run_time,
+        self.outer_burst_op_count = calc_new_count(
+            min_value=self.min_burst_count,
+            value=self.outer_burst_op_count,
+            max_value=self.max_burst_count,
+            trigger=now() - start_time - self.delay,
+            target=max_run_time
         )
 
     def test_run(self, start, end, max_ops=1000000):

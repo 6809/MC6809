@@ -91,3 +91,35 @@ class CPUTypeAssertMixin(object):
                     attr, obj, type(obj)
                 )
         return object.__setattr__(self, attr, value)
+
+
+def calc_new_count(min_value, value, max_value, trigger, target):
+    """
+    change 'value' between 'min_value' and 'max_value'
+    so that 'trigger' will be match 'target'
+    
+    >>> calc_new_count(min_value=0, value=100, max_value=200, trigger=30, target=30)
+    100
+
+    >>> calc_new_count(min_value=0, value=100, max_value=200, trigger=50, target=5)
+    55
+    >>> calc_new_count(min_value=60, value=100, max_value=200, trigger=50, target=5)
+    60
+
+    >>> calc_new_count(min_value=0, value=100, max_value=200, trigger=20, target=40)
+    150
+    >>> calc_new_count(min_value=0, value=100, max_value=125, trigger=20, target=40)
+    125
+    """
+    try:
+        new_value = float(value) / float(trigger) * target
+    except ZeroDivisionError:
+        return value * 2
+
+    if new_value > max_value:
+        return max_value
+
+    new_value = int((value + new_value) / 2)
+    if new_value < min_value:
+        return min_value
+    return new_value

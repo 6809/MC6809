@@ -55,13 +55,35 @@ HTML_TRACE = False
 
 class CPU(CPUBase, MC6809Addressing, MC6809Stack, MC6809Interrupt, MC6809OpsLoadStore, MC6809OpsBranches,
     MC6809OpsTest, MC6809OpsLogical, CPUThreadedStatusMixin):
-    pass
+
+    def to_speed_limit(self):
+        return change_cpu(self, CPUSpeedLimit)
+
 
 class CPUSpeedLimit(CPU, CPUSpeedLimitMixin):
-    pass
+
+    def to_normal(self):
+        return change_cpu(self, CPU)
+
 
 class CPUTypeAssert(CPU, CPUTypeAssertMixin):
     pass
 
+
 class CPUControlServer(CPU, CPUControlServerMixin):
     pass
+
+
+def change_cpu(old_cpu, NewCPU):
+    old_cpu.running = False
+    cpu_state = old_cpu.get_state()
+
+    new_cpu = NewCPU(memory=old_cpu.memory, cfg=old_cpu.cfg)
+    new_cpu.set_state(cpu_state)
+
+    log.critical("Change CPU from %r to %r",
+        old_cpu.__class__.__name__,
+        new_cpu.__class__.__name__
+    )
+
+    return new_cpu
