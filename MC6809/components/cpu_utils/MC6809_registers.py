@@ -47,11 +47,19 @@ class UndefinedRegister(ValueStorage):
     WIDTH = 16  # 16 Bit
     BASE = 0
     name = "undefined!"
-    value = 0xffff
+    _value = 0xffff
     def __init__(self):
         pass
     def set(self, v):
         log.warning("Set value to 'undefined' register!")
+        pass
+
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, v):
         pass
 
 
@@ -75,10 +83,10 @@ class ConditionCodeRegister(object):
     """ CC - 8 bit condition code register bits """
 
     WIDTH = 8  # 8 Bit
+    BASE = 255
 
     def __init__(self, *cmd_args, **kwargs):
         self.name = "CC"
-        self._register = {}
         self.E = 0  # E - 0x80 - bit 7 - Entire register state stacked
         self.F = 0  # F - 0x40 - bit 6 - FIRQ interrupt masked
         self.H = 0  # H - 0x20 - bit 5 - Half-Carry
@@ -100,6 +108,11 @@ class ConditionCodeRegister(object):
             self.H << 5 | \
             self.F << 6 | \
             self.E << 7
+
+    @value.setter
+    def value(self, status):
+        self.E, self.F, self.H, self.I, self.N, self.Z, self.V, self.C = \
+            [0 if status & x == 0 else 1 for x in (128, 64, 32, 16, 8, 4, 2, 1)]
 
     def set(self, status):
         self.E, self.F, self.H, self.I, self.N, self.Z, self.V, self.C = \
@@ -336,6 +349,7 @@ class ConcatenatedAccumulator(object):
     6809 has register D - 16 bit concatenated reg. (A + B)
     """
     WIDTH = 16  # 16 Bit
+    BASE = 65535
 
     def __init__(self, name, a, b):
         self.name = name
@@ -347,11 +361,16 @@ class ConcatenatedAccumulator(object):
         self._b.set(value & 0xff)
 
     def __str__(self):
-        return "%s=%04x" % (self.name, self.get())
+        return "%s=%04x" % (self.name, self.value)
 
     @property
     def value(self):
         return (self._a.value << 8) | self._b.value
+
+    @value.setter
+    def value(self, value):
+        self._a.value = (value >> 8) & self._a.BASE
+        self._b.value = (value & 0xff) & self._b.BASE
 
 
 if __name__ == "__main__":
