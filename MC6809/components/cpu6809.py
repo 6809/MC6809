@@ -193,19 +193,19 @@ class CPU(object):
         used in unittests
         """
         return {
-            REG_X: self.index_x.get(),
-            REG_Y: self.index_y.get(),
+            REG_X: self.index_x.value,
+            REG_Y: self.index_y.value,
 
-            REG_U: self.user_stack_pointer.get(),
-            REG_S: self.system_stack_pointer.get(),
+            REG_U: self.user_stack_pointer.value,
+            REG_S: self.system_stack_pointer.value,
 
-            REG_PC: self.program_counter.get(),
+            REG_PC: self.program_counter.value,
 
-            REG_A: self.accu_a.get(),
-            REG_B: self.accu_b.get(),
+            REG_A: self.accu_a.value,
+            REG_B: self.accu_b.value,
 
-            REG_DP: self.direct_page.get(),
-            REG_CC: self.cc.get(),
+            REG_DP: self.direct_page.value,
+            REG_CC: self.cc.value,
 
             "cycles": self.cycles,
             "RAM": tuple(self.memory._mem) # copy of array.array() values,
@@ -235,7 +235,7 @@ class CPU(object):
     ####
 
     def reset(self):
-        log.info("%04x| CPU reset:", self.program_counter.get())
+        log.info("%04x| CPU reset:", self.program_counter.value)
 
         self.last_op_address = 0
 
@@ -426,10 +426,10 @@ class CPU(object):
 
         # https://wiki.python.org/moin/PythonSpeed/PerformanceTips#Avoiding_dots...
         get_and_call_next_op = self.get_and_call_next_op
-        program_counter = self.program_counter.get
+        program_counter = self.program_counter
 
         for __ in range(max_ops):
-            if program_counter() == end:
+            if program_counter.value == end:
                 return
             get_and_call_next_op()
         log.critical("Max ops %i arrived!", max_ops)
@@ -459,11 +459,11 @@ class CPU(object):
     @property
     def get_info(self):
         return "cc=%02x a=%02x b=%02x dp=%02x x=%04x y=%04x u=%04x s=%04x" % (
-            self.cc.get(),
-            self.accu_a.get(), self.accu_b.get(),
-            self.direct_page.get(),
-            self.index_x.get(), self.index_y.get(),
-            self.user_stack_pointer.get(), self.system_stack_pointer.get()
+            self.cc.value,
+            self.accu_a.value, self.accu_b.value,
+            self.direct_page.value,
+            self.index_x.value, self.index_y.value,
+            self.user_stack_pointer.value, self.system_stack_pointer.value
         )
 
     ####
@@ -472,7 +472,7 @@ class CPU(object):
         """ pushed a byte onto stack """
         # FIXME: self.system_stack_pointer -= 1
         stack_pointer.decrement(1)
-        addr = stack_pointer.get()
+        addr = stack_pointer.value
 
 #        log.info(
 #         log.error(
@@ -484,7 +484,7 @@ class CPU(object):
 
     def pull_byte(self, stack_pointer):
         """ pulled a byte from stack """
-        addr = stack_pointer.get()
+        addr = stack_pointer.value
         byte = self.memory.read_byte(addr)
 #        log.info(
 #         log.error(
@@ -502,7 +502,7 @@ class CPU(object):
         # FIXME: self.system_stack_pointer -= 2
         stack_pointer.decrement(2)
 
-        addr = stack_pointer.get()
+        addr = stack_pointer.value
 #        log.info(
 #         log.error(
 #            "%x|\tpush word $%x to %s stack at $%x\t|%s",
@@ -517,7 +517,7 @@ class CPU(object):
 #         self.push_byte(lo)
 
     def pull_word(self, stack_pointer):
-        addr = stack_pointer.get()
+        addr = stack_pointer.value
         word = self.memory.read_word(addr)
 #        log.info(
 #         log.error(
@@ -532,14 +532,14 @@ class CPU(object):
     ####
 
     def read_pc_byte(self):
-        op_addr = self.program_counter.get()
+        op_addr = self.program_counter.value
         m = self.memory.read_byte(op_addr)
         self.program_counter.increment(1)
 #        log.log(5, "read pc byte: $%02x from $%04x", m, op_addr)
         return op_addr, m
 
     def read_pc_word(self):
-        op_addr = self.program_counter.get()
+        op_addr = self.program_counter.value
         m = self.memory.read_word(op_addr)
         self.program_counter.increment(2)
 #        log.log(5, "\tread pc word: $%04x from $%04x", m, op_addr)
@@ -559,7 +559,7 @@ class CPU(object):
 
     def get_ea_direct(self):
         op_addr, m = self.read_pc_byte()
-        dp = self.direct_page.get()
+        dp = self.direct_page.value
         ea = dp << 8 | m
 #        log.debug("\tget_ea_direct(): ea = dp << 8 | m  =>  $%x=$%x<<8|$%x", ea, dp, m)
         return ea
@@ -604,7 +604,7 @@ class CPU(object):
             raise RuntimeError("Register $%x doesn't exists! (postbyte: $%x)" % (rr, postbyte))
 
         register_obj = self.register_str2object[register_str]
-        register_value = register_obj.get()
+        register_value = register_obj.value
 #        log.debug("\t%02x == register %s: value $%x",
 #             rr, register_obj.name, register_value
 #         )
@@ -644,10 +644,10 @@ class CPU(object):
             ea = register_value
         elif addr_mode == 0x5:
 #             log.debug("\t0101 0x5 | B, R | B register offset")
-            offset = signed8(self.accu_b.get())
+            offset = signed8(self.accu_b.value)
         elif addr_mode == 0x6:
 #             log.debug("\t0110 0x6 | A, R | A register offset")
-            offset = signed8(self.accu_a.get())
+            offset = signed8(self.accu_a.value)
         elif addr_mode == 0x8:
 #             log.debug("\t1000 0x8 | n, R | 8 bit offset")
             offset = signed8(self.read_pc_byte()[1])
@@ -661,13 +661,13 @@ class CPU(object):
         elif addr_mode == 0xb:
 #             log.debug("\t1011 0xb | D, R | D register offset")
             # D - 16 bit concatenated reg. (A + B)
-            offset = signed16(self.accu_d.get()) # FIXME: signed16() ok?
+            offset = signed16(self.accu_d.value) # FIXME: signed16() ok?
             self.cycles += 1
         elif addr_mode == 0xc:
 #             log.debug("\t1100 0xc | n, PCR | 8 bit offset from program counter")
             __, value = self.read_pc_byte()
             value_signed = signed8(value)
-            ea = self.program_counter.get() + value_signed
+            ea = self.program_counter.value + value_signed
 #             log.debug("\tea = pc($%x) + $%x = $%x (dez.: %i + %i = %i)",
 #                 self.program_counter, value_signed, ea,
 #                 self.program_counter, value_signed, ea,
@@ -676,7 +676,7 @@ class CPU(object):
 #             log.debug("\t1101 0xd | n, PCR | 16 bit offset from program counter")
             __, value = self.read_pc_word()
             value_signed = signed16(value)
-            ea = self.program_counter.get() + value_signed
+            ea = self.program_counter.value + value_signed
             self.cycles += 1
 #             log.debug("\tea = pc($%x) + $%x = $%x (dez.: %i + %i = %i)",
 #                 self.program_counter, value_signed, ea,
@@ -755,7 +755,7 @@ class CPU(object):
     def get_ea_relative(self):
         addr, x = self.read_pc_byte()
         x = signed8(x)
-        ea = self.program_counter.get() + x
+        ea = self.program_counter.value + x
 #        log.debug("\tget_ea_relative(): ea = $%x + %i = $%x \t| %s",
 #            self.program_counter, x, ea,
 #            self.cfg.mem_info.get_shortest(ea)
@@ -764,7 +764,7 @@ class CPU(object):
 
     def get_ea_relative_word(self):
         addr, x = self.read_pc_word()
-        ea = self.program_counter.get() + x
+        ea = self.program_counter.value + x
 #        log.debug("\tget_ea_relative_word(): ea = $%x + %i = $%x \t| %s",
 #            self.program_counter, x, ea,
 #            self.cfg.mem_info.get_shortest(ea)
@@ -797,8 +797,8 @@ class CPU(object):
 
         CC bits "HNZVC": -----
         """
-        old = self.index_x.get()
-        b = self.accu_b.get()
+        old = self.index_x.value
+        b = self.accu_b.value
         new = self.index_x.increment(b)
 #        log.debug("%x %02x ABX: X($%x) += B($%x) = $%x" % (
 #            self.program_counter, opcode,
@@ -818,7 +818,7 @@ class CPU(object):
 
         CC bits "HNZVC": aaaaa
         """
-        a = register.get()
+        a = register.value
         r = a + m + self.cc.C
         register.set(r)
 #        log.debug("$%x %02x ADC %s: %i + %i + %i = %i (=$%x)" % (
@@ -840,7 +840,7 @@ class CPU(object):
         CC bits "HNZVC": -aaaa
         """
         assert register.WIDTH == 16
-        old = register.get()
+        old = register.value
         r = old + m
         register.set(r)
 #        log.debug("$%x %02x %02x ADD16 %s: $%02x + $%02x = $%02x" % (
@@ -864,7 +864,7 @@ class CPU(object):
         CC bits "HNZVC": aaaaa
         """
         assert register.WIDTH == 8
-        old = register.get()
+        old = register.value
         r = old + m
         register.set(r)
 #         log.debug("$%x %02x %02x ADD8 %s: $%02x + $%02x = $%02x" % (
@@ -928,7 +928,7 @@ class CPU(object):
         Replaces the contents of accumulator A or B with its logical complement.
         source code forms: COMA; COMB
         """
-        register.set(self.COM(value=register.get()))
+        register.set(self.COM(value=register.value))
 #        log.debug("$%x COM %s" % (
 #            self.program_counter, register.name,
 #        ))
@@ -973,7 +973,7 @@ class CPU(object):
         V    -    Undefined.
         C    -    Set if a carry is generated or if the carry bit was set before the operation; cleared otherwise.
         """
-        a = self.accu_a.get()
+        a = self.accu_a.value
 
         correction_factor = 0
         a_hi = a & 0xf0 # MSN - Most Significant Nibble
@@ -1027,7 +1027,7 @@ class CPU(object):
     @opcode(0x4a, 0x5a) # DECA / DECB (inherent)
     def instruction_DEC_register(self, opcode, register):
         """ Decrement accumulator """
-        a = register.get()
+        a = register.value
         r = self.DEC(a)
 #        log.debug("$%x DEC %s value $%x -1 = $%x" % (
 #            self.program_counter,
@@ -1059,7 +1059,7 @@ class CPU(object):
 
         CC bits "HNZVC": -aaa-
         """
-        a = register.get()
+        a = register.value
         r = self.INC(a)
         r = register.set(r)
 
@@ -1155,7 +1155,7 @@ class CPU(object):
 
         CC bits "HNZVC": --a-a
         """
-        r = self.accu_a.get() * self.accu_b.get()
+        r = self.accu_a.value * self.accu_b.value
         self.accu_d.set(r)
         self.cc.Z = 1 if r == 0 else 0
         self.cc.C = 1 if r & 0x80 else 0
@@ -1176,7 +1176,7 @@ class CPU(object):
 
         CC bits "HNZVC": uaaaa
         """
-        x = register.get()
+        x = register.value
         r = x * -1 # same as: r = ~x + 1
         register.set(r)
 #        log.debug("$%04x NEG %s $%02x to $%02x" % (
@@ -1239,7 +1239,7 @@ class CPU(object):
 
         def push(register_str, stack_pointer):
             register_obj = self.register_str2object[register_str]
-            data = register_obj.get()
+            data = register_obj.value
 
 #             log.debug("\tpush %s with data $%x", register_obj.name, data)
 
@@ -1320,7 +1320,7 @@ class CPU(object):
 
         CC bits "HNZVC": uaaaa
         """
-        a = register.get()
+        a = register.value
         r = a - m - self.cc.C
         register.set(r)
 #        log.debug("$%x %02x SBC %s: %i - %i - %i = %i (=$%x)" % (
@@ -1352,11 +1352,11 @@ class CPU(object):
         #define SIGNED(b) ((Word)(b&0x80?b|0xff00:b))
         case 0x1D: /* SEX */ tw=SIGNED(ibreg); SETNZ16(tw) SETDREG(tw) break;
         """
-        b = self.accu_b.get()
+        b = self.accu_b.value
         if b & 0x80 == 0:
             self.accu_a.set(0x00)
 
-        d = self.accu_d.get()
+        d = self.accu_d.value
 
 #        log.debug("SEX: b=$%x ; $%x&0x80=$%x ; d=$%x", b, b, (b & 0x80), d)
 
@@ -1380,7 +1380,7 @@ class CPU(object):
 
         CC bits "HNZVC": uaaaa
         """
-        r = register.get()
+        r = register.value
         r_new = r - m
         register.set(r_new)
 #        log.debug("$%x SUB8 %s: $%x - $%x = $%x (dez.: %i - %i = %i)" % (
@@ -1428,7 +1428,7 @@ class CPU(object):
 
     def _get_register_and_value(self, addr):
         reg = self._get_register_obj(addr)
-        reg_value = reg.get()
+        reg_value = reg.value
         return reg, reg_value
 
     def _convert_differend_width(self, src_reg, src_value, dst_reg):
@@ -1549,7 +1549,7 @@ class CPU(object):
 
         CC bits "HNZVC": -aa0-
         """
-        value = register.get()
+        value = register.value
 #        log.debug("$%x ST16 store value $%x from %s at $%x \t| %s" % (
 #             self.program_counter,
 #             value, register.name, ea,
@@ -1571,7 +1571,7 @@ class CPU(object):
 
         CC bits "HNZVC": -aa0-
         """
-        value = register.get()
+        value = register.value
 #        log.debug("$%x ST8 store value $%x from %s at $%x \t| %s" % (
 #             self.program_counter,
 #             value, register.name, ea,
@@ -1599,7 +1599,7 @@ class CPU(object):
 
         CC bits "HNZVC": -aa0-
         """
-        a = register.get()
+        a = register.value
         r = a & m
         register.set(r)
         self.cc.clear_NZV()
@@ -1621,7 +1621,7 @@ class CPU(object):
 
         CC bits "HNZVC": -aa0-
         """
-        a = register.get()
+        a = register.value
         r = a ^ m
         register.set(r)
         self.cc.clear_NZV()
@@ -1644,7 +1644,7 @@ class CPU(object):
 
         CC bits "HNZVC": -aa0-
         """
-        a = register.get()
+        a = register.value
         r = a | m
         register.set(r)
         self.cc.clear_NZV()
@@ -1672,7 +1672,7 @@ class CPU(object):
         """
         assert register == self.cc
 
-        old_cc = self.cc.get()
+        old_cc = self.cc.value
         new_cc = old_cc & m
         self.cc.set(new_cc)
 #        log.debug("\tANDCC: $%x AND $%x = $%x | set CC to %s",
@@ -1695,7 +1695,7 @@ class CPU(object):
         """
         assert register == self.cc
 
-        old_cc = self.cc.get()
+        old_cc = self.cc.value
         new_cc = old_cc | m
         self.cc.set(new_cc)
 #        log.debug("\tORCC: $%x OR $%x = $%x | set CC to %s",
@@ -1725,7 +1725,7 @@ class CPU(object):
 
         CC bits "HNZVC": -aaaa
         """
-        r = register.get()
+        r = register.value
         r_new = r - m
 #        log.warning("$%x CMP16 %s $%x - $%x = $%x" % (
 #             self.program_counter,
@@ -1751,7 +1751,7 @@ class CPU(object):
 
         CC bits "HNZVC": uaaaa
         """
-        r = register.get()
+        r = register.value
         r_new = r - m
 #         log.warning("$%x CMP8 %s $%x - $%x = $%x" % (
 #             self.program_counter,
@@ -1777,7 +1777,7 @@ class CPU(object):
 
         CC bits "HNZVC": -aa0-
         """
-        x = register.get()
+        x = register.value
         r = m & x
 #        log.debug("$%x BIT update CC with $%x (m:%i & %s:%i)" % (
 #            self.program_counter,
@@ -1805,7 +1805,7 @@ class CPU(object):
 
         CC bits "HNZVC": -aa0-
         """
-        x = register.get()
+        x = register.value
         self.cc.clear_NZV()
         self.cc.update_NZ_8(x)
 
@@ -1881,7 +1881,7 @@ class CPU(object):
 #            self.last_op_address,
 #            ea, self.cfg.mem_info.get_shortest(ea)
 #        ))
-        self.push_word(self.system_stack_pointer, self.program_counter.get())
+        self.push_word(self.system_stack_pointer, self.program_counter.value)
         self.program_counter.set(ea)
 
 
@@ -2325,7 +2325,7 @@ class CPU(object):
         """
         Logical shift left accumulator / Arithmetic shift of accumulator
         """
-        a = register.get()
+        a = register.value
         r = self.LSL(a)
 #        log.debug("$%x LSL %s value $%x << 1 = $%x" % (
 #            self.program_counter,
@@ -2362,7 +2362,7 @@ class CPU(object):
     @opcode(0x44, 0x54) # LSRA / LSRB (inherent)
     def instruction_LSR_register(self, opcode, register):
         """ Logical shift right accumulator """
-        a = register.get()
+        a = register.value
         r = self.LSR(a)
 #        log.debug("$%x LSR %s value $%x >> 1 = $%x" % (
 #            self.program_counter,
@@ -2401,7 +2401,7 @@ class CPU(object):
     @opcode(0x47, 0x57) # ASRA/ASRB (inherent)
     def instruction_ASR_register(self, opcode, register):
         """ Arithmetic shift accumulator right """
-        a = register.get()
+        a = register.value
         r = self.ASR(a)
 #        log.debug("$%x ASR %s value $%x >> 1 | Carry = $%x" % (
 #            self.program_counter,
@@ -2441,7 +2441,7 @@ class CPU(object):
     @opcode(0x49, 0x59) # ROLA / ROLB (inherent)
     def instruction_ROL_register(self, opcode, register):
         """ Rotate accumulator left """
-        a = register.get()
+        a = register.value
         r = self.ROL(a)
 #        log.debug("$%x ROL %s value $%x << 1 | Carry = $%x" % (
 #            self.program_counter,
@@ -2481,7 +2481,7 @@ class CPU(object):
     @opcode(0x46, 0x56) # RORA/RORB (inherent)
     def instruction_ROR_register(self, opcode, register):
         """ Rotate accumulator right """
-        a = register.get()
+        a = register.value
         r = self.ROR(a)
 #        log.debug("$%x ROR %s value $%x >> 1 | Carry = $%x" % (
 #            self.program_counter,
@@ -2541,7 +2541,7 @@ class CPU(object):
     def irq(self):
         if not self.irq_enabled or self.cc.I == 1:
             # log.critical("$%04x *** IRQ, ignore!\t%s" % (
-            #     self.program_counter.get(), self.cc.get_info
+            #     self.program_counter.value, self.cc.get_info
             # ))
             return
 
@@ -2552,7 +2552,7 @@ class CPU(object):
 
         ea = self.memory.read_word(self.IRQ_VECTOR)
         # log.critical("$%04x *** IRQ, set PC to $%04x\t%s" % (
-        #     self.program_counter.get(), ea, self.cc.get_info
+        #     self.program_counter.value, ea, self.cc.get_info
         # ))
         self.program_counter.set(ea)
 
@@ -2561,14 +2561,14 @@ class CPU(object):
         push PC, U, Y, X, DP, B, A, CC on System stack pointer
         """
         self.cycles += 1
-        self.push_word(self.system_stack_pointer, self.program_counter.get()) # PC
-        self.push_word(self.system_stack_pointer, self.user_stack_pointer.get()) # U
-        self.push_word(self.system_stack_pointer, self.index_y.get()) # Y
-        self.push_word(self.system_stack_pointer, self.index_x.get()) # X
-        self.push_byte(self.system_stack_pointer, self.direct_page.get()) # DP
-        self.push_byte(self.system_stack_pointer, self.accu_b.get()) # B
-        self.push_byte(self.system_stack_pointer, self.accu_a.get()) # A
-        self.push_byte(self.system_stack_pointer, self.cc.get()) # CC
+        self.push_word(self.system_stack_pointer, self.program_counter.value) # PC
+        self.push_word(self.system_stack_pointer, self.user_stack_pointer.value) # U
+        self.push_word(self.system_stack_pointer, self.index_y.value) # Y
+        self.push_word(self.system_stack_pointer, self.index_x.value) # X
+        self.push_byte(self.system_stack_pointer, self.direct_page.value) # DP
+        self.push_byte(self.system_stack_pointer, self.accu_b.value) # B
+        self.push_byte(self.system_stack_pointer, self.accu_a.value) # A
+        self.push_byte(self.system_stack_pointer, self.cc.value) # CC
 
     def push_firq_registers(self):
         """
@@ -2576,8 +2576,8 @@ class CPU(object):
         push PC and CC on System stack pointer
         """
         self.cycles += 1
-        self.push_word(self.system_stack_pointer, self.program_counter.get()) # PC
-        self.push_byte(self.system_stack_pointer, self.cc.get()) # CC
+        self.push_word(self.system_stack_pointer, self.program_counter.value) # PC
+        self.push_byte(self.system_stack_pointer, self.cc.value) # CC
 
     @opcode(# Return from interrupt
         0x3b, # RTI (inherent)
@@ -2618,7 +2618,7 @@ class CPU(object):
         self.program_counter.set(
             self.pull_word(self.system_stack_pointer) # PC
         )
-#         log.critical("RTI to $%04x", self.program_counter.get())
+#         log.critical("RTI to $%04x", self.program_counter.value)
 
 
     @opcode(# Software interrupt (absolute indirect)

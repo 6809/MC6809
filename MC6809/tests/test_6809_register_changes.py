@@ -30,8 +30,8 @@ class Test6809_TFR(BaseCPUTestCase):
         self.cpu_test_run(start=0x2000, end=None, mem=[
             0x1F, 0x89, # TFR A,B
         ])
-        self.assertEqualHexByte(self.cpu.accu_a.get(), 0x12)
-        self.assertEqualHexByte(self.cpu.accu_b.get(), 0x12)
+        self.assertEqualHexByte(self.cpu.accu_a.value, 0x12)
+        self.assertEqualHexByte(self.cpu.accu_b.value, 0x12)
 
     def test_TFR_B_A(self):
         self.cpu.accu_a.set(0x12)
@@ -39,8 +39,8 @@ class Test6809_TFR(BaseCPUTestCase):
         self.cpu_test_run(start=0x2000, end=None, mem=[
             0x1F, 0x98, # TFR B,A
         ])
-        self.assertEqualHexByte(self.cpu.accu_a.get(), 0x34)
-        self.assertEqualHexByte(self.cpu.accu_b.get(), 0x34)
+        self.assertEqualHexByte(self.cpu.accu_a.value, 0x34)
+        self.assertEqualHexByte(self.cpu.accu_b.value, 0x34)
 
     def test_TFR_X_U(self):
         """
@@ -55,8 +55,8 @@ class Test6809_TFR(BaseCPUTestCase):
         self.cpu_test_run(start=0x2000, end=None, mem=[
             0x1F, 0x13, # TFR X,U
         ])
-        self.assertEqualHexWord(self.cpu.index_x.get(), 0x1234)
-        self.assertEqualHexWord(self.cpu.user_stack_pointer.get(), 0x1234)
+        self.assertEqualHexWord(self.cpu.index_x.value, 0x1234)
+        self.assertEqualHexWord(self.cpu.user_stack_pointer.value, 0x1234)
 
     def test_TFR_CC_X(self):
         """
@@ -67,8 +67,8 @@ class Test6809_TFR(BaseCPUTestCase):
         self.cpu_test_run(start=0x4000, end=None, mem=[
             0x1F, 0xA1, # TFR CC,X
         ])
-        self.assertEqualHexByte(self.cpu.cc.get(), 0x34)
-        self.assertEqualHexWord(self.cpu.index_x.get(), 0xff34)
+        self.assertEqualHexByte(self.cpu.cc.value, 0x34)
+        self.assertEqualHexWord(self.cpu.index_x.value, 0xff34)
 
     def test_TFR_CC_A(self):
         """
@@ -80,8 +80,8 @@ class Test6809_TFR(BaseCPUTestCase):
         self.cpu_test_run(start=0x4000, end=None, mem=[
             0x1F, 0xA8, # TFR CC,A
         ])
-        self.assertEqualHexByte(self.cpu.cc.get(), 0x89)
-        self.assertEqualHexByte(self.cpu.accu_a.get(), 0x89)
+        self.assertEqualHexByte(self.cpu.cc.value, 0x89)
+        self.assertEqualHexByte(self.cpu.accu_a.value, 0x89)
 
     def test_TFR_Y_B(self):
         """
@@ -93,8 +93,8 @@ class Test6809_TFR(BaseCPUTestCase):
         self.cpu_test_run(start=0x4000, end=None, mem=[
             0x1F, 0x29, # TFR Y,B
         ])
-        self.assertEqualHexWord(self.cpu.index_y.get(), 0x1234)
-        self.assertEqualHexByte(self.cpu.accu_b.get(), 0x34)
+        self.assertEqualHexWord(self.cpu.index_y.value, 0x1234)
+        self.assertEqualHexByte(self.cpu.accu_b.value, 0x34)
 
     def test_TFR_undefined_A(self):
         """
@@ -105,7 +105,7 @@ class Test6809_TFR(BaseCPUTestCase):
         self.cpu_test_run(start=0x4000, end=None, mem=[
             0x1F, 0x68, # TFR undefined,A
         ])
-        self.assertEqualHexByte(self.cpu.accu_a.get(), 0xff)
+        self.assertEqualHexByte(self.cpu.accu_a.value, 0xff)
 
 
 class Test6809_EXG(BaseCPUTestCase):
@@ -115,8 +115,8 @@ class Test6809_EXG(BaseCPUTestCase):
         self.cpu_test_run(start=0x2000, end=None, mem=[
             0x1E, 0x89, # EXG A,B
         ])
-        self.assertEqualHexByte(self.cpu.accu_a.get(), 0x12)
-        self.assertEqualHexByte(self.cpu.accu_b.get(), 0xab)
+        self.assertEqualHexByte(self.cpu.accu_a.value, 0x12)
+        self.assertEqualHexByte(self.cpu.accu_b.value, 0xab)
 
     def test_EXG_X_Y(self):
         self.cpu_test_run(start=0x2000, end=None, mem=[
@@ -139,8 +139,8 @@ class Test6809_EXG(BaseCPUTestCase):
             0x8E, 0x12, 0x34, #       LDX   #$1234
             0x1E, 0x81, #             EXG   A,X
         ])
-        self.assertEqualHexByte(self.cpu.accu_a.get(), 0x34)
-        self.assertEqualHexWord(self.cpu.index_x.get(), 0xff56)
+        self.assertEqualHexByte(self.cpu.accu_a.value, 0x34)
+        self.assertEqualHexWord(self.cpu.index_x.value, 0xff56)
 
     def test_EXG_A_CC(self):
         """
@@ -151,8 +151,8 @@ class Test6809_EXG(BaseCPUTestCase):
         self.cpu_test_run(start=0x2000, end=None, mem=[
             0x1E, 0x8A, # EXG A,CC
         ])
-        self.assertEqualHexByte(self.cpu.accu_a.get(), 0xe2)
-        self.assertEqualHexByte(self.cpu.cc.get(), 0x1f)
+        self.assertEqualHexByte(self.cpu.accu_a.value, 0xe2)
+        self.assertEqualHexByte(self.cpu.cc.value, 0x1f)
 
     def test_EXG_X_CC(self):
         """
@@ -163,8 +163,8 @@ class Test6809_EXG(BaseCPUTestCase):
         self.cpu_test_run(start=0x2000, end=None, mem=[
             0x1E, 0x1A, # EXG X,CC
         ])
-        self.assertEqualHexWord(self.cpu.index_x.get(), 0xff56)
-        self.assertEqualHexByte(self.cpu.cc.get(), 0x34)
+        self.assertEqualHexWord(self.cpu.index_x.value, 0xff56)
+        self.assertEqualHexByte(self.cpu.cc.value, 0x34)
 
     def test_EXG_undefined_to_X(self):
         """
@@ -174,7 +174,7 @@ class Test6809_EXG(BaseCPUTestCase):
         self.cpu_test_run(start=0x2000, end=None, mem=[
             0x1E, 0xd1, # EXG undefined,X
         ])
-        self.assertEqualHexWord(self.cpu.index_x.get(), 0xffff)
+        self.assertEqualHexWord(self.cpu.index_x.value, 0xffff)
 
 
 

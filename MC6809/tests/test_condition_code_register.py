@@ -26,7 +26,7 @@ class CCTestCase(BaseCPUTestCase):
     def test_set_get(self):
         for i in range(256):
             self.cpu.cc.set(i)
-            status_byte = self.cpu.cc.get()
+            status_byte = self.cpu.cc.value
             self.assertEqual(status_byte, i)
 
     def test_HNZVC_8(self):
@@ -71,7 +71,7 @@ class CCTestCase(BaseCPUTestCase):
             r = i + 1 # e.g. ADDA 1 loop
             self.cpu.cc.update_HNZVC_8(a=i, b=1, r=r)
             # print "+++", r, self.cpu.cc.get_info
-            self.assertEqualHex(self.cpu.cc.get(), 0xff)
+            self.assertEqualHex(self.cpu.cc.value, 0xff)
 
 
     def test_update_NZ_8_A(self):

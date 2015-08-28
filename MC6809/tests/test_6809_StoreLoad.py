@@ -52,12 +52,12 @@ class Test6809_Load(BaseStackTestCase):
     def test_LDD_immediate(self):
         self.cpu.accu_d.set(0)
         self.cpu_test_run(start=0x4000, end=None, mem=[0xCC, 0xfe, 0x12]) # LDD $fe12 (Immediate)
-        self.assertEqualHex(self.cpu.accu_d.get(), 0xfe12)
+        self.assertEqualHex(self.cpu.accu_d.value, 0xfe12)
 
     def test_LDD_extended(self):
         self.cpu.memory.write_word(0x5020, 0x1234)
         self.cpu_test_run(start=0x4000, end=None, mem=[0xFC, 0x50, 0x20]) # LDD $5020 (Extended)
-        self.assertEqualHex(self.cpu.accu_d.get(), 0x1234)
+        self.assertEqualHex(self.cpu.accu_d.value, 0x1234)
 
 
 if __name__ == '__main__':

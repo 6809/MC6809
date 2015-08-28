@@ -29,8 +29,6 @@ class ValueStorage(object):
     def set(self, v):
         self.value = v & self.BASE
         return self.value
-    def get(self):
-        return self.value
 
     def decrement(self, value=1):
         self.value = (self.value - value) & self.BASE
@@ -55,9 +53,6 @@ class UndefinedRegister(ValueStorage):
     def set(self, v):
         log.warning("Set value to 'undefined' register!")
         pass
-
-    def get(self):
-        return 0xffff
 
 
 class ValueStorage8Bit(ValueStorage):
@@ -110,16 +105,6 @@ class ConditionCodeRegister(object):
         self.E, self.F, self.H, self.I, self.N, self.Z, self.V, self.C = \
             [0 if status & x == 0 else 1 for x in (128, 64, 32, 16, 8, 4, 2, 1)]
 
-    def get(self):
-        return self.C | \
-            self.V << 1 | \
-            self.Z << 2 | \
-            self.N << 3 | \
-            self.I << 4 | \
-            self.H << 5 | \
-            self.F << 6 | \
-            self.E << 7
-
     @property
     def get_info(self):
         """
@@ -128,7 +113,7 @@ class ConditionCodeRegister(object):
         >>> cc.get_info
         'E.H....C'
         """
-        return cc_value2txt(self.get())
+        return cc_value2txt(self.value)
 
     def __str__(self):
         return "%s=%s" % (self.name, self.get_info)
@@ -360,9 +345,6 @@ class ConcatenatedAccumulator(object):
     def set(self, value):
         self._a.set(value >> 8)
         self._b.set(value & 0xff)
-
-    def get(self):
-        return (self._a.value << 8) | self._b.value
 
     def __str__(self):
         return "%s=%04x" % (self.name, self.get())

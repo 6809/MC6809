@@ -69,7 +69,7 @@ class Test6809_Program(BaseStackTestCase):
             0x30, 0x1F, #                             LEAX  -1,x       ; byte loop
             0x26, 0xEA, #                             BNE   bl
         ])
-        crc16 = self.cpu.accu_d.get()
+        crc16 = self.cpu.accu_d.value
         return crc16
 
     def test_crc16_01(self):
@@ -139,8 +139,8 @@ class Test6809_Program(BaseStackTestCase):
             0xDD, 0x82, #                  0143|           STD   crc+2      ; CRC low word
             0x9F, 0x80, #                  0145|           STX   crc        ; CRC high word
         ])
-        d = self.cpu.accu_d.get()
-        x = self.cpu.index_x.get()
+        d = self.cpu.accu_d.value
+        x = self.cpu.index_x.value
         crc32 = x * 0x10000 + d
         return crc32 ^ 0xFFFFFFFF
 
@@ -223,8 +223,8 @@ class Test6809_Program(BaseStackTestCase):
             0xAE, 0xC4, #                  0138|           LDX   ,u         ; quotient
             0xEC, 0x42, #                  013A|           LDD   2,u        ; remainder
         ])
-        quotient = self.cpu.index_x.get()
-        remainder = self.cpu.accu_d.get()
+        quotient = self.cpu.index_x.value
+        remainder = self.cpu.accu_d.value
         return quotient, remainder
 
     def test_division(self):
@@ -329,8 +329,8 @@ class Test6809_Program_Division2(BaseStackTestCase):
             0x37, 0x80, #       004A|          PULU  pc      ; eFORTH NEXT
             #                   0051|    EXIT:
         ])
-        quotient = self.cpu.index_x.get()
-        remainder = self.cpu.accu_d.get()
+        quotient = self.cpu.index_x.value
+        remainder = self.cpu.accu_d.value
         return quotient, remainder
 
     def test_division(self):
