@@ -14,11 +14,12 @@ os:
 
 install:
     - pip install --upgrade pip
-    - pip install -e git+https://github.com/jedie/DragonPy.git#egg=dragonpy
     - pip install .
+    - pip install -e git+https://github.com/jedie/DragonPy.git#egg=dragonpy -v
     - pip install coveralls
 
 script:
+    - python -c "import sys;print('\n'.join(sys.path))"
     - coverage run --source=MC6809 ./setup.py nosetests
     - coverage run --source=MC6809 DragonPy nosetests
 
