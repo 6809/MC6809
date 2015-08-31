@@ -19,9 +19,11 @@ install:
 
 script:
     - coverage run --source=MC6809 ./setup.py nosetests
+    - coverage report -m
     - export DRAGONPY_PATH=$(python -c "import os,dragonpy;print(os.path.abspath(os.path.dirname(dragonpy.__file__)))")
     - echo ${DRAGONPY_PATH}
     - coverage run --append --source=MC6809 -m "nose" --where=${DRAGONPY_PATH} --verbose
+    - coverage report -m
 
 after_success:
     - coveralls
