@@ -203,13 +203,12 @@ setup(
     py_modules=["MC6809"],
     provides=["MC6809"],
     install_requires=[
-        "nose", # https://pypi.python.org/pypi/nose
         "click",
         "six",
     ],
     tests_require=[
         "nose", # https://pypi.python.org/pypi/nose
-        "DragonPy", # run DragonPy tests, to. e.g. with BASIC Interpreter
+        "DragonPyEmulator", # run DragonPy tests, to. e.g. with BASIC Interpreter
     ],
     entry_points={
         # Here we use constants, because of usage in DragonPy "starter GUI", too.
