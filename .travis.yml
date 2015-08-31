@@ -25,7 +25,8 @@ script:
 #    - coverage run --source=MC6809 DragonPy nosetests
     - export DRAGONPY_PATH=$(python -c "import os,dragonpy;print(os.path.abspath(os.path.dirname(dragonpy.__file__)))")
     - echo ${DRAGONPY_PATH}
-    - coverage run --source=MC6809 nosetests --where=${DRAGONPY_PATH}
+    - cd
+    - coverage run --source=MC6809 -m "nose" --where=${DRAGONPY_PATH}
 
 after_success:
     - coveralls
