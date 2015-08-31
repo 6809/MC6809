@@ -54,7 +54,7 @@ loop:
             self.cpu_test_run(start=0x1000, end=None, mem=[
                 0x44, # LSRA/ASRA Inherent
             ])
-            r = self.cpu.accu_a.get()
+            r = self.cpu.accu_a.value
 #             print "%02x %s > ASRA > %02x %s -> %s" % (
 #                 i, '{0:08b}'.format(i),
 #                 r, '{0:08b}'.format(r),
@@ -92,7 +92,7 @@ loop:
             self.cpu_test_run(start=0x1000, end=None, mem=[
                 0x48, # LSLA/ASLA Inherent
             ])
-            r = self.cpu.accu_a.get()
+            r = self.cpu.accu_a.value
 #             print "%02x %s > LSLA > %02x %s -> %s" % (
 #                 i, '{0:08b}'.format(i),
 #                 r, '{0:08b}'.format(r),
@@ -139,7 +139,7 @@ loop:
             self.cpu_test_run(start=0x1000, end=None, mem=[
                 0x57, # ASRB/LSRB Inherent
             ])
-            dst = self.cpu.accu_b.get()
+            dst = self.cpu.accu_b.value
 
             src_bit_str = '{0:08b}'.format(src)
             dst_bit_str = '{0:08b}'.format(dst)
@@ -235,7 +235,7 @@ class Test6809_Rotate(BaseCPUTestCase):
             self.cpu_test_run(start=0x0000, end=None, mem=[
                 0x49, # ROLA
             ])
-            r = self.cpu.accu_a.get()
+            r = self.cpu.accu_a.value
             self.assertROL(a, r, source_carry=0)
 
             # test half carry is uneffected!
@@ -248,7 +248,7 @@ class Test6809_Rotate(BaseCPUTestCase):
             self.cpu_test_run(start=0x0000, end=None, mem=[
                 0x49, # ROLA
             ])
-            r = self.cpu.accu_a.get()
+            r = self.cpu.accu_a.value
             self.assertROL(a, r, source_carry=1)
 
             # test half carry is uneffected!
@@ -319,7 +319,7 @@ class Test6809_Rotate(BaseCPUTestCase):
             self.cpu_test_run(start=0x0000, end=None, mem=[
                 0x46, # RORA
             ])
-            r = self.cpu.accu_a.get()
+            r = self.cpu.accu_a.value
             self.assertROR(a, r, source_carry=0)
 
             # test half carry and overflow, they are uneffected!
@@ -333,7 +333,7 @@ class Test6809_Rotate(BaseCPUTestCase):
             self.cpu_test_run(start=0x0000, end=None, mem=[
                 0x46, # RORA
             ])
-            r = self.cpu.accu_a.get()
+            r = self.cpu.accu_a.value
             self.assertROR(a, r, source_carry=1)
 
             # test half carry and overflow, they are uneffected!

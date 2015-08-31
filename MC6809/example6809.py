@@ -121,8 +121,8 @@ class MC6809Example(object):
             0xDD, 0x82, #                  0143|           STD   crc+2      ; CRC low word
             0x9F, 0x80, #                  0145|           STX   crc        ; CRC high word
         ]))
-        d = self.cpu.accu_d.get()
-        x = self.cpu.index_x.get()
+        d = self.cpu.accu_d.value
+        x = self.cpu.index_x.value
         crc32 = x * 0x10000 + d
         return crc32 ^ 0xFFFFFFFF
 

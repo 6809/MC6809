@@ -32,8 +32,8 @@ class Test6809_Arithmetic(BaseCPUTestCase):
             0x12, 0x34 # word to add on accu A
         ])
         self.assertEqual(self.cpu.cc.Z, 1)
-        self.assertEqual(self.cpu.cc.get(), 0x04)
-        self.assertEqual(self.cpu.accu_a.get(), 0x00)
+        self.assertEqual(self.cpu.cc.value, 0x04)
+        self.assertEqual(self.cpu.accu_a.value, 0x00)
 
     def test_ADDA_immediate(self):
         # expected values are: 1 up to 255 then wrap around to 0 and up to 4
@@ -46,7 +46,7 @@ class Test6809_Arithmetic(BaseCPUTestCase):
             self.cpu_test_run(start=0x1000, end=None, mem=[
                 0x8B, 0x01, # ADDA #$1 Immediate
             ])
-            a = self.cpu.accu_a.get()
+            a = self.cpu.accu_a.value
             excpected_value = excpected_values[i]
 #             print i, a, excpected_value, self.cpu.cc.get_info
 
@@ -88,7 +88,7 @@ class Test6809_Arithmetic(BaseCPUTestCase):
             self.cpu_test_run(start=0x1000, end=None, mem=[
                 0x8B, 0x01, # ADDA   #$01
             ])
-            r = self.cpu.accu_a.get()
+            r = self.cpu.accu_a.value
 #             print "$%02x > ADD 1 > $%02x | CC:%s" % (
 #                 i, r, self.cpu.cc.get_info
 #             )
@@ -124,7 +124,7 @@ class Test6809_Arithmetic(BaseCPUTestCase):
             self.cpu_test_run(start=0x1000, end=None, mem=[
                 0xc3, 0x00, 0x01, # ADDD   #$01
             ])
-            r = self.cpu.accu_d.get()
+            r = self.cpu.accu_d.value
 #             print "%5s $%04x > ADDD 1 > $%04x | CC:%s" % (
 #                 i, i, r, self.cpu.cc.get_info
 #             )
@@ -183,7 +183,7 @@ loop:
                 0x86, a, # LDA   #$i
                 0x40, # NEGA (inherent)
             ])
-            r = self.cpu.accu_a.get()
+            r = self.cpu.accu_a.value
 #            print "%03s - a=%02x r=%02x -> %s" % (
 #                a, a, r, self.cpu.cc.get_info
 #            )
@@ -325,7 +325,7 @@ loop:
             self.cpu_test_run(start=0x1000, end=None, mem=[
                 0x5c, # INCB
             ])
-            r = self.cpu.accu_b.get()
+            r = self.cpu.accu_b.value
             excpected_value = excpected_values[i]
 #             print "%5s $%02x > INC > $%02x | CC:%s" % (
 #                 i, i, r, self.cpu.cc.get_info
@@ -396,7 +396,7 @@ loop:
             self.cpu_test_run(start=0x1000, end=None, mem=[
                 0x80, 0x01, # SUBA #$01
             ])
-            a = self.cpu.accu_a.get()
+            a = self.cpu.accu_a.value
             excpected_value = excpected_values[i]
 #             print i, a, excpected_value, self.cpu.cc.get_info
 
@@ -438,14 +438,14 @@ loop:
         self.cpu_test_run(start=0x1000, end=None, mem=[
             0xa0, 0xe0, # SUBA ,S+
         ])
-        self.assertEqualHexByte(self.cpu.accu_a.get(), 0xed) # $ff - $12 = $ed
-        self.assertEqualHexWord(self.cpu.system_stack_pointer.get(), 0x1235)
+        self.assertEqualHexByte(self.cpu.accu_a.value, 0xed) # $ff - $12 = $ed
+        self.assertEqualHexWord(self.cpu.system_stack_pointer.value, 0x1235)
 
         self.cpu_test_run(start=0x1000, end=None, mem=[
             0xa0, 0xe0, # SUBA ,S+
         ])
-        self.assertEqualHexByte(self.cpu.accu_a.get(), 0xed - 0xff & 0xff) # $ee
-        self.assertEqualHexWord(self.cpu.system_stack_pointer.get(), 0x1236)
+        self.assertEqualHexByte(self.cpu.accu_a.value, 0xed - 0xff & 0xff) # $ee
+        self.assertEqualHexWord(self.cpu.system_stack_pointer.value, 0x1236)
 
     def test_DEC_extended(self):
         # expected values are: 254 down to 0 than wrap around to 255 and down to 252
@@ -497,7 +497,7 @@ loop:
             self.cpu_test_run(start=0x1000, end=None, mem=[
                 0x4a, # DECA
             ])
-            r = self.cpu.accu_a.get()
+            r = self.cpu.accu_a.value
 #            print "%03s - %02x > DEC > %02x | CC:%s" % (
 #                a, a, r, self.cpu.cc.get_info
 #            )
@@ -537,7 +537,7 @@ loop:
         self.cpu_test_run(start=0x1000, end=None, mem=[
             0x82, 0x40, # SBC
         ])
-        r = self.cpu.accu_a.get()
+        r = self.cpu.accu_a.value
 #        print "%02x > SBC > %02x | CC:%s" % (
 #            a, r, self.cpu.cc.get_info
 #        )
@@ -551,7 +551,7 @@ loop:
         self.cpu_test_run(start=0x1000, end=None, mem=[
             0x82, 0x20, # SBC
         ])
-        r = self.cpu.accu_a.get()
+        r = self.cpu.accu_a.value
 #        print "%02x > SBC > %02x | CC:%s" % (
 #            a, r, self.cpu.cc.get_info
 #        )
@@ -574,7 +574,7 @@ loop:
                 self.cpu_test_run(start=0x1000, end=None, mem=[
                     0x1a, b # ORCC $a
                 ])
-                r = self.cpu.cc.get()
+                r = self.cpu.cc.value
                 expected_value = a | b
 #                print "%02x OR %02x = %02x | CC:%s" % (
 #                    a, b, r, self.cpu.cc.get_info
@@ -596,7 +596,7 @@ loop:
                 self.cpu_test_run(start=0x1000, end=None, mem=[
                     0x1c, b # ANDCC $a
                 ])
-                r = self.cpu.cc.get()
+                r = self.cpu.cc.value
                 expected_value = a & b
 #                print "%02x AND %02x = %02x | CC:%s" % (
 #                    a, b, r, self.cpu.cc.get_info
@@ -622,7 +622,7 @@ loop:
                 self.cpu_test_run(start=0x1000, end=None, mem=[
                     0x3a, # ABX (inherent)
                 ])
-                r = self.cpu.index_x.get()
+                r = self.cpu.index_x.value
                 expected_value = x + b & 0xffff
 #                print "%04x + %02x = %04x | CC:%s" % (
 #                    x, b, r, self.cpu.cc.get_info
@@ -630,7 +630,7 @@ loop:
                 self.assertEqualHex(r, expected_value)
 
                 # CC complet uneffected:
-                self.assertEqualHex(self.cpu.cc.get(), 0xff)
+                self.assertEqualHex(self.cpu.cc.value, 0xff)
 
     def test_XOR(self):
         print("TODO!!!")
@@ -648,7 +648,7 @@ loop:
             0x8b, 0x75, #  ADDA  #$75     ; A=$67+$75 = $DC
             0x19, #        DAA   19       ; A=67+75=142 -> $42
         ])
-        self.assertEqualHexByte(self.cpu.accu_a.get(), 0x42)
+        self.assertEqualHexByte(self.cpu.accu_a.value, 0x42)
         self.assertEqual(self.cpu.cc.C, 1)
 
     def test_DAA2(self):
@@ -659,7 +659,7 @@ loop:
                 0x8b, add, #  ADDA  #$1
                 0x19, #       DAA
             ])
-            r = self.cpu.accu_a.get()
+            r = self.cpu.accu_a.value
 #            print "$01 + $%02x = $%02x > DAA > $%02x | CC:%s" % (
 #                add, (1 + add), r, self.cpu.cc.get_info
 #            )
