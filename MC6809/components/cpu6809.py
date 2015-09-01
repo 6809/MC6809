@@ -44,7 +44,8 @@ import warnings
 from MC6809.core.cpu_control_server import start_http_control_server
 from MC6809.components.cpu_utils.MC6809_registers import (
     ValueStorage8Bit, ConcatenatedAccumulator,
-    ValueStorage16Bit, ConditionCodeRegister, UndefinedRegister
+    ValueStorage16Bit, ConditionCodeRegister, UndefinedRegister,
+    convert_differend_width
 )
 from MC6809.components.cpu_utils.instruction_caller import OpCollection
 from MC6809.utils.bits import is_bit_set, get_bit
@@ -1431,23 +1432,6 @@ class CPU(object):
         reg_value = reg.get()
         return reg, reg_value
 
-    def _convert_differend_width(self, src_reg, src_value, dst_reg):
-        """
-        e.g.:
-         8bit   $cd TFR into 16bit, results in: $ffcd
-        16bit $1234 TFR into  8bit, results in:   $34
-
-        TODO: verify this behaviour on real hardware
-        see: http://archive.worldofdragon.org/phpBB3/viewtopic.php?f=8&t=4886
-        """
-        if src_reg.WIDTH == 8 and dst_reg.WIDTH == 16:
-            # e.g.: $cd -> $ffcd
-            src_value += 0xff00
-        elif src_reg.WIDTH == 16 and dst_reg.WIDTH == 8:
-            # e.g.: $1234 -> $34
-            src_value = src_value & 0xff
-        return src_value
-
     @opcode(0x1f) # TFR (immediate)
     def instruction_TFR(self, opcode, m):
         """
@@ -1455,9 +1439,9 @@ class CPU(object):
         CC bits "HNZVC": ccccc
         """
         high, low = divmod(m, 16)
-        src_reg, src_value = self._get_register_and_value(high)
         dst_reg = self._get_register_obj(low)
-        src_value = self._convert_differend_width(src_reg, src_value, dst_reg)
+        src_reg = self._get_register_obj(high)
+        src_value = convert_differend_width(src_reg, dst_reg)
         dst_reg.set(src_value)
 #         log.debug("\tTFR: Set %s to $%x from %s",
 #             dst_reg, src_value, src_reg.name
@@ -1472,11 +1456,11 @@ class CPU(object):
         CC bits "HNZVC": ccccc
         """
         high, low = divmod(m, 0x10)
-        reg1, reg1_value = self._get_register_and_value(high)
-        reg2, reg2_value = self._get_register_and_value(low)
+        reg1 = self._get_register_obj(high)
+        reg2 = self._get_register_obj(low)
 
-        new_reg1_value = self._convert_differend_width(reg2, reg2_value, reg1)
-        new_reg2_value = self._convert_differend_width(reg1, reg1_value, reg2)
+        new_reg1_value = convert_differend_width(reg2, reg1)
+        new_reg2_value = convert_differend_width(reg1, reg2)
 
         reg1.set(new_reg1_value)
         reg2.set(new_reg2_value)

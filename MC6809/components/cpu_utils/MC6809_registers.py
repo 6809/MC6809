@@ -370,6 +370,37 @@ class ConcatenatedAccumulator(object):
         return "%s=%04x" % (self.name, self.get())
 
 
+def convert_differend_width(src_reg, dst_reg):
+    """
+    e.g.:
+     8bit   $cd TFR into 16bit, results in: $ffcd
+    16bit $1234 TFR into  8bit, results in:   $34
+
+    >>> reg8 = ValueStorage8Bit(name="bar", initial_value=0xcd)
+    >>> reg16 = ValueStorage16Bit(name="foo", initial_value=0x0000)
+    >>> hex(convert_differend_width(src_reg=reg8, dst_reg=reg16))
+    '0xffcd'
+
+    >>> reg16 = ValueStorage16Bit(name="foo", initial_value=0x1234)
+    >>> reg8 = ValueStorage8Bit(name="bar", initial_value=0xcd)
+    >>> hex(convert_differend_width(src_reg=reg16, dst_reg=reg8))
+    '0x34'
+
+    TODO: verify this behaviour on real hardware
+    see: http://archive.worldofdragon.org/phpBB3/viewtopic.php?f=8&t=4886
+    """
+    src_value = src_reg.get()
+    if src_reg.WIDTH == 8 and dst_reg.WIDTH == 16:
+        # e.g.: $cd -> $ffcd
+        src_value += 0xff00
+    elif src_reg.WIDTH == 16 and dst_reg.WIDTH == 8:
+        # This not not really needed, because all 8Bit register will
+        # limit the value, too.
+        # e.g.: $1234 -> $34
+        src_value = src_value & 0xff
+    return src_value
+
+
 if __name__ == "__main__":
     import doctest
     print(doctest.testmod())
