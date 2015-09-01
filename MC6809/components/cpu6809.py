@@ -1434,7 +1434,7 @@ class CPU(object):
     def _convert_differend_width(self, src_reg, src_value, dst_reg):
         """
         e.g.:
-         8bit   $cd TFR into 16bit, results in: $cd00
+         8bit   $cd TFR into 16bit, results in: $ffcd
         16bit $1234 TFR into  8bit, results in:   $34
 
         TODO: verify this behaviour on real hardware
@@ -1445,7 +1445,7 @@ class CPU(object):
             src_value += 0xff00
         elif src_reg.WIDTH == 16 and dst_reg.WIDTH == 8:
             # e.g.: $1234 -> $34
-            src_value = src_value | 0xff00
+            src_value = src_value & 0xff
         return src_value
 
     @opcode(0x1f) # TFR (immediate)
