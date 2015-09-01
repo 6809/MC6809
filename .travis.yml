@@ -28,5 +28,11 @@ script:
 after_success:
     - coveralls
 
+# OSX builds do not yet support Python :(
+# see: https://github.com/travis-ci/travis-ci/issues/2312
+matrix:
+  allow_failures:
+    - os: osx
+
 notifications:
     irc: "irc.freenode.org#pylucid"
