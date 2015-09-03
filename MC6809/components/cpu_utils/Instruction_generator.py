@@ -36,7 +36,7 @@ REGISTER_DICT = {
     REG_D:"accu_d",
 
     REG_DP:"direct_page",
-    REG_CC:"cc",
+    REG_CC:"cc_register",
 
     #undefined_reg.name:"undefined_reg", # for TFR", EXG
 }

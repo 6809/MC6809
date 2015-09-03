@@ -40,7 +40,7 @@ from MC6809.components.cpu_utils.instruction_caller import opcode
 
 from MC6809.components.cpu_utils.MC6809_registers import (
     ValueStorage8Bit, ConcatenatedAccumulator,
-    ValueStorage16Bit, ConditionCodeRegister, UndefinedRegister,
+    ValueStorage16Bit, UndefinedRegister,
     convert_differend_width)
 from MC6809.components.cpu_utils.instruction_caller import OpCollection
 from MC6809.utils.bits import is_bit_set, get_bit
@@ -111,8 +111,7 @@ class CPUBase(object):
         # DP - 8 bit direct page register
         self.direct_page = ValueStorage8Bit(REG_DP, 0)
 
-        # 8 bit condition code register bits: E F H I N Z V C
-        self.cc = ConditionCodeRegister()
+        super(CPUBase, self).__init__()
 
         self.register_str2object = {
             REG_X: self.index_x,
@@ -128,7 +127,7 @@ class CPUBase(object):
             REG_D: self.accu_d,
 
             REG_DP: self.direct_page,
-            REG_CC: self.cc,
+            REG_CC: self.cc_register,
 
             undefined_reg.name: undefined_reg, # for TFR, EXG
         }
@@ -140,6 +139,7 @@ class CPUBase(object):
         # add illegal instruction
 #         for opcode in ILLEGAL_OPS:
 #             self.opcode_dict[opcode] = IllegalInstruction(self, opcode)
+
 
     def get_state(self):
         """
@@ -158,7 +158,7 @@ class CPUBase(object):
             REG_B: self.accu_b.value,
 
             REG_DP: self.direct_page.value,
-            REG_CC: self.cc.value,
+            REG_CC: self.get_cc_value(),
 
             "cycles": self.cycles,
             "RAM": tuple(self.memory._mem) # copy of array.array() values,
@@ -180,7 +180,7 @@ class CPUBase(object):
         self.accu_b.set(state[REG_B])
 
         self.direct_page.set(state[REG_DP])
-        self.cc.set(state[REG_CC])
+        self.set_cc(state[REG_CC])
 
         self.cycles = state["cycles"]
         self.memory.load(address=0x0000, data=state["RAM"])
@@ -196,18 +196,18 @@ class CPUBase(object):
             # first op is:
             # E400: 1AFF  reset  orcc #$FF  ;Disable interrupts.
 #             log.debug("\tset CC register to 0xff")
-#             self.cc.set(0xff)
+#             self.set_cc(0xff)
             log.info("\tset CC register to 0x00")
-            self.cc.set(0x00)
+            self.set_cc(0x00)
         else:
 #             log.info("\tset cc.F=1: FIRQ interrupt masked")
-#             self.cc.F = 1
+#             self.F = 1
 #
 #             log.info("\tset cc.I=1: IRQ interrupt masked")
-#             self.cc.I = 1
+#             self.I = 1
 
             log.info("\tset E - 0x80 - bit 7 - Entire register state stacked")
-            self.cc.E = 1
+            self.E = 1
 
 #         log.debug("\tset PC to $%x" % self.cfg.RESET_VECTOR)
 #         self.program_counter = self.cfg.RESET_VECTOR
@@ -355,7 +355,7 @@ class CPUBase(object):
     @property
     def get_info(self):
         return "cc=%02x a=%02x b=%02x dp=%02x x=%04x y=%04x u=%04x s=%04x" % (
-            self.cc.value,
+            self.get_cc_value(),
             self.accu_a.value, self.accu_b.value,
             self.direct_page.value,
             self.index_x.value, self.index_y.value,
@@ -422,14 +422,14 @@ class CPUBase(object):
         CC bits "HNZVC": aaaaa
         """
         a = register.value
-        r = a + m + self.cc.C
+        r = a + m + self.C
         register.set(r)
 #        log.debug("$%x %02x ADC %s: %i + %i + %i = %i (=$%x)" % (
 #            self.program_counter, opcode, register.name,
-#            a, m, self.cc.C, r, r
+#            a, m, self.C, r, r
 #        ))
-        self.cc.clear_HNZVC()
-        self.cc.update_HNZVC_8(a, m, r)
+        self.clear_HNZVC()
+        self.update_HNZVC_8(a, m, r)
 
     @opcode(# Add memory to D accumulator
         0xc3, 0xd3, 0xe3, 0xf3, # ADDD (immediate, direct, indexed, extended)
@@ -451,8 +451,8 @@ class CPUBase(object):
 #            register.name,
 #            old, m, r
 #        ))
-        self.cc.clear_NZVC()
-        self.cc.update_NZVC_16(old, m, r)
+        self.clear_NZVC()
+        self.update_NZVC_16(old, m, r)
 
     @opcode(# Add memory to accumulator
         0x8b, 0x9b, 0xab, 0xbb, # ADDA (immediate, direct, indexed, extended)
@@ -475,8 +475,8 @@ class CPUBase(object):
 #             register.name,
 #             old, m, r
 #         ))
-        self.cc.clear_HNZVC()
-        self.cc.update_HNZVC_8(old, m, r)
+        self.clear_HNZVC()
+        self.update_HNZVC_8(old, m, r)
 
     @opcode(0xf, 0x6f, 0x7f) # CLR (direct, indexed, extended)
     def instruction_CLR_memory(self, opcode, ea):
@@ -485,7 +485,7 @@ class CPUBase(object):
         source code forms: CLR
         CC bits "HNZVC": -0100
         """
-        self.cc.update_0100()
+        self.update_0100()
         return ea, 0x00
 
     @opcode(0x4f, 0x5f) # CLRA / CLRB (inherent)
@@ -497,15 +497,15 @@ class CPUBase(object):
         CC bits "HNZVC": -0100
         """
         register.set(0x00)
-        self.cc.update_0100()
+        self.update_0100()
 
     def COM(self, value):
         """
         CC bits "HNZVC": -aa01
         """
         value = ~value # the bits of m inverted
-        self.cc.clear_NZ()
-        self.cc.update_NZ01_8(value)
+        self.clear_NZ()
+        self.update_NZ01_8(value)
         return value
 
     @opcode(# Complement memory location
@@ -582,20 +582,20 @@ class CPUBase(object):
         a_hi = a & 0xf0 # MSN - Most Significant Nibble
         a_lo = a & 0x0f # LSN - Least Significant Nibble
 
-        if a_lo > 0x09 or self.cc.H: # cc & 0x20:
+        if a_lo > 0x09 or self.H: # cc & 0x20:
             correction_factor |= 0x06
 
         if a_hi > 0x80 and a_lo > 0x09:
             correction_factor |= 0x60
 
-        if a_hi > 0x90 or self.cc.C: # cc & 0x01:
+        if a_hi > 0x90 or self.C: # cc & 0x01:
             correction_factor |= 0x60
 
         new_value = correction_factor + a
         self.accu_a.set(new_value)
 
-        self.cc.clear_NZ() # V is undefined
-        self.cc.update_NZC_8(new_value)
+        self.clear_NZ() # V is undefined
+        self.update_NZC_8(new_value)
 
     def DEC(self, a):
         """
@@ -610,10 +610,10 @@ class CPUBase(object):
         CC bits "HNZVC": -aaa-
         """
         r = a - 1
-        self.cc.clear_NZV()
-        self.cc.update_NZ_8(r)
+        self.clear_NZV()
+        self.update_NZ_8(r)
         if r == 0x7f:
-            self.cc.V = 1
+            self.V = 1
         return r
 
     @opcode(0xa, 0x6a, 0x7a) # DEC (direct, indexed, extended)
@@ -640,10 +640,10 @@ class CPUBase(object):
 
     def INC(self, a):
         r = a + 1
-        self.cc.clear_NZV()
-        self.cc.update_NZ_8(r)
+        self.clear_NZV()
+        self.update_NZ_8(r)
         if r == 0x80:
-            self.cc.V = 1
+            self.V = 1
         return r
 
     @opcode(# Increment accumulator
@@ -739,8 +739,8 @@ class CPUBase(object):
 #             self.cfg.mem_info.get_shortest(ea)
 #         ))
         register.set(ea)
-        self.cc.Z = 0
-        self.cc.set_Z16(ea)
+        self.Z = 0
+        self.set_Z16(ea)
 
     @opcode(# Unsigned multiply (A * B ? D)
         0x3d, # MUL (inherent)
@@ -760,8 +760,8 @@ class CPUBase(object):
         """
         r = self.accu_a.value * self.accu_b.value
         self.accu_d.set(r)
-        self.cc.Z = 1 if r == 0 else 0
-        self.cc.C = 1 if r & 0x80 else 0
+        self.Z = 1 if r == 0 else 0
+        self.C = 1 if r & 0x80 else 0
 
     @opcode(# Negate accumulator
         0x40, # NEGA (inherent)
@@ -785,8 +785,8 @@ class CPUBase(object):
 #        log.debug("$%04x NEG %s $%02x to $%02x" % (
 #            self.program_counter, register.name, x, r,
 #        ))
-        self.cc.clear_NZVC()
-        self.cc.update_NZVC_8(0, x, r)
+        self.clear_NZVC()
+        self.update_NZVC_8(0, x, r)
 
     _wrong_NEG = 0
     @opcode(0x0, 0x60, 0x70) # NEG (direct, indexed, extended)
@@ -804,8 +804,8 @@ class CPUBase(object):
 #        log.debug("$%04x NEG $%02x from %04x to $%02x" % (
 #             self.program_counter, m, ea, r,
 #         ))
-        self.cc.clear_NZVC()
-        self.cc.update_NZVC_8(0, m, r)
+        self.clear_NZVC()
+        self.update_NZVC_8(0, m, r)
         return ea, r & 0xff
 
     @opcode(0x12) # NOP (inherent)
@@ -836,14 +836,14 @@ class CPUBase(object):
         CC bits "HNZVC": uaaaa
         """
         a = register.value
-        r = a - m - self.cc.C
+        r = a - m - self.C
         register.set(r)
 #        log.debug("$%x %02x SBC %s: %i - %i - %i = %i (=$%x)" % (
 #            self.program_counter, opcode, register.name,
-#            a, m, self.cc.C, r, r
+#            a, m, self.C, r, r
 #        ))
-        self.cc.clear_NZVC()
-        self.cc.update_NZVC_8(a, m, r)
+        self.clear_NZVC()
+        self.update_NZVC_8(a, m, r)
 
     @opcode(# Sign Extend B accumulator into A accumulator
         0x1d, # SEX (inherent)
@@ -875,8 +875,8 @@ class CPUBase(object):
 
 #        log.debug("SEX: b=$%x ; $%x&0x80=$%x ; d=$%x", b, b, (b & 0x80), d)
 
-        self.cc.clear_NZ()
-        self.cc.update_NZ_16(d)
+        self.clear_NZ()
+        self.update_NZ_16(d)
 
 
 
@@ -903,12 +903,12 @@ class CPUBase(object):
 #            r, m, r_new,
 #            r, m, r_new,
 #        ))
-        self.cc.clear_NZVC()
+        self.clear_NZVC()
         if register.WIDTH == 8:
-            self.cc.update_NZVC_8(r, m, r_new)
+            self.update_NZVC_8(r, m, r_new)
         else:
             assert register.WIDTH == 16
-            self.cc.update_NZVC_16(r, m, r_new)
+            self.update_NZVC_16(r, m, r_new)
 
 
     # ---- Register Changes - FIXME: Better name for this section?!? ----

@@ -58,8 +58,8 @@ class OpsTestMixin(object):
 #             register.name,
 #             r, m, r_new,
 #         ))
-        self.cc.clear_NZVC()
-        self.cc.update_NZVC_16(r, m, r_new)
+        self.clear_NZVC()
+        self.update_NZVC_16(r, m, r_new)
 
     @opcode(# Compare memory from accumulator
         0x81, 0x91, 0xa1, 0xb1, # CMPA (immediate, direct, indexed, extended)
@@ -84,8 +84,8 @@ class OpsTestMixin(object):
 #             register.name,
 #             r, m, r_new,
 #         ))
-        self.cc.clear_NZVC()
-        self.cc.update_NZVC_8(r, m, r_new)
+        self.clear_NZVC()
+        self.update_NZVC_8(r, m, r_new)
 
 
     @opcode(# Bit test memory with accumulator
@@ -109,8 +109,8 @@ class OpsTestMixin(object):
 #            self.program_counter,
 #            r, m, register.name, x
 #        ))
-        self.cc.clear_NZV()
-        self.cc.update_NZ_8(r)
+        self.clear_NZV()
+        self.update_NZ_8(r)
 
     @opcode(# Test accumulator
         0x4d, # TSTA (inherent)
@@ -132,8 +132,8 @@ class OpsTestMixin(object):
         CC bits "HNZVC": -aa0-
         """
         x = register.value
-        self.cc.clear_NZV()
-        self.cc.update_NZ_8(x)
+        self.clear_NZV()
+        self.update_NZ_8(x)
 
     @opcode(0xd, 0x6d, 0x7d) # TST (direct, indexed, extended)
     def instruction_TST_memory(self, opcode, m):
@@ -141,6 +141,6 @@ class OpsTestMixin(object):
 #         log.debug("$%x TST m=$%02x" % (
 #             self.program_counter, m
 #         ))
-        self.cc.clear_NZV()
-        self.cc.update_NZ_8(m)
+        self.clear_NZV()
+        self.update_NZ_8(m)
 

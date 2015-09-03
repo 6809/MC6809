@@ -22,7 +22,7 @@ class PrepagedInstructions(InstructionBase):
         self.accu_a=self.cpu.accu_a
         self.accu_b=self.cpu.accu_b
         self.accu_d=self.cpu.accu_d
-        self.cc=self.cpu.cc
+        self.cc_register=self.cpu.cc_register
         self.index_x=self.cpu.index_x
         self.index_y=self.cpu.index_y
         self.system_stack_pointer=self.cpu.system_stack_pointer
@@ -329,7 +329,7 @@ class PrepagedInstructions(InstructionBase):
         self.instr_func(
             opcode=opcode,
             m=self.get_m_immediate(),
-            register=self.cc,
+            register=self.cc_register,
         )
 
     def immediate_read8(self, opcode):

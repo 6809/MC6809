@@ -77,6 +77,6 @@ from MC6809.components.cpu_utils.instruction_call import PrepagedInstructions
 #         HTML_OUT.write("<td>%s</td>" % self.data["mnemonic"])
 #         HTML_OUT.write("<td>%s</td>" % hex_repr(self.op_kwargs))
 #         HTML_OUT.write("<td>%s</td>" % self.cpu.get_info)
-#         HTML_OUT.write("<td>%s</td>" % self.cpu.cc.get_info)
+#         HTML_OUT.write("<td>%s</td>" % self.cpu.get_cc_info())
 #         HTML_OUT.write("<td>%s</td>" % self.cpu.cfg.mem_info.get_shortest(self.cpu.last_op_address))
 #         HTML_OUT.write("</tr>")

@@ -28,7 +28,7 @@ class CC_AccumulatorTestCase(BaseCPUTestCase):
     def test_B_01(self):
         self.cpu.accu_b.set(0x5a)
         self.assertEqualHex(self.cpu.accu_b.value, 0x5a)
-        self.assertEqual(self.cpu.cc.V, 0)
+        self.assertEqual(self.cpu.V, 0)
 
     def test_B_02(self):
         self.cpu.accu_b.set(0xff + 10)

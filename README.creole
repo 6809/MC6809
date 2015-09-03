@@ -61,6 +61,7 @@ unimplemented OPs:
 ** Split CPU with mixin inheritance
 ** Optimizing:
 *** remove {{{.get()}}} function calls from registers
+*** move Condition Code Register (CC) into CPU via mixin class
 ** Bugfix TFR and EXG by //convert_differend_width()//
 ** Run DragonPy unittests on travis CI, too.
 * 24.08.2015 - [[https://github.com/6809/MC6809/compare/v0.4.5...v0.4.6|v0.4.6]]

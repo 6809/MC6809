@@ -92,75 +92,75 @@ class Test6809_Register(BaseCPUTestCase):
 
 class Test6809_ZeroFlag(BaseCPUTestCase):
     def test_DECA(self):
-        self.assertEqual(self.cpu.cc.Z, 0)
+        self.assertEqual(self.cpu.Z, 0)
         self.cpu_test_run(start=0x4000, end=None, mem=[
             0x86, 0x1, # LDA $01
             0x4A, #      DECA
         ])
-        self.assertEqual(self.cpu.cc.Z, 1)
+        self.assertEqual(self.cpu.Z, 1)
 
     def test_DECB(self):
-        self.assertEqual(self.cpu.cc.Z, 0)
+        self.assertEqual(self.cpu.Z, 0)
         self.cpu_test_run(start=0x4000, end=None, mem=[
             0xC6, 0x1, # LDB $01
             0x5A, #      DECB
         ])
-        self.assertEqual(self.cpu.cc.Z, 1)
+        self.assertEqual(self.cpu.Z, 1)
 
     def test_ADDA(self):
-        self.assertEqual(self.cpu.cc.Z, 0)
+        self.assertEqual(self.cpu.Z, 0)
         self.cpu_test_run(start=0x4000, end=None, mem=[
             0x86, 0xff, # LDA $FF
             0x8B, 0x01, # ADDA #1
         ])
-        self.assertEqual(self.cpu.cc.Z, 1)
+        self.assertEqual(self.cpu.Z, 1)
 
     def test_CMPA(self):
-        self.assertEqual(self.cpu.cc.Z, 0)
+        self.assertEqual(self.cpu.Z, 0)
         self.cpu_test_run(start=0x4000, end=None, mem=[
             0x86, 0x00, # LDA $00
             0x81, 0x00, # CMPA %00
         ])
-        self.assertEqual(self.cpu.cc.Z, 1)
+        self.assertEqual(self.cpu.Z, 1)
 
     def test_COMA(self):
-        self.assertEqual(self.cpu.cc.Z, 0)
+        self.assertEqual(self.cpu.Z, 0)
         self.cpu_test_run(start=0x4000, end=None, mem=[
             0x86, 0xFF, # LDA $FF
             0x43, #       COMA
         ])
-        self.assertEqual(self.cpu.cc.Z, 1)
+        self.assertEqual(self.cpu.Z, 1)
 
     def test_NEGA(self):
-        self.assertEqual(self.cpu.cc.Z, 0)
+        self.assertEqual(self.cpu.Z, 0)
         self.cpu_test_run(start=0x4000, end=None, mem=[
             0x86, 0xFF, # LDA $FF
             0x40, #       NEGA
         ])
-        self.assertEqual(self.cpu.cc.Z, 0)
+        self.assertEqual(self.cpu.Z, 0)
 
     def test_ANDA(self):
-        self.assertEqual(self.cpu.cc.Z, 0)
+        self.assertEqual(self.cpu.Z, 0)
         self.cpu_test_run(start=0x4000, end=None, mem=[
             0x86, 0xF0, # LDA $F0
             0x84, 0x0F, # ANDA $0F
         ])
-        self.assertEqual(self.cpu.cc.Z, 1)
+        self.assertEqual(self.cpu.Z, 1)
 
     def test_TFR(self):
-        self.assertEqual(self.cpu.cc.Z, 0)
+        self.assertEqual(self.cpu.Z, 0)
         self.cpu_test_run(start=0x4000, end=None, mem=[
             0x86, 0x04, # LDA $04
             0x1F, 0x8a, # TFR A,CCR
         ])
-        self.assertEqual(self.cpu.cc.Z, 1)
+        self.assertEqual(self.cpu.Z, 1)
 
     def test_CLRA(self):
-        self.assertEqual(self.cpu.cc.Z, 0)
+        self.assertEqual(self.cpu.Z, 0)
         self.cpu_test_run(start=0x4000, end=None, mem=[
             0x4F, # CLRA
         ])
-        self.assertEqual(self.cpu.cc.Z, 1)
+        self.assertEqual(self.cpu.Z, 1)
 
 
 
@@ -170,13 +170,13 @@ class Test6809_CC(BaseCPUTestCase):
     condition code register tests
     """
     def test_defaults(self):
-        status_byte = self.cpu.cc.value
+        status_byte = self.cpu.get_cc_value()
         self.assertEqual(status_byte, 0)
 
     def test_from_to(self):
         for i in range(256):
-            self.cpu.cc.set(i)
-            status_byte = self.cpu.cc.value
+            self.cpu.set_cc(i)
+            status_byte = self.cpu.get_cc_value()
             self.assertEqual(status_byte, i)
 
     def test_AND(self):
@@ -186,22 +186,22 @@ class Test6809_CC(BaseCPUTestCase):
 
         for i in range(260):
             self.cpu.accu_a.set(i)
-            self.cpu.cc.set(0x0e) # Set affected flags: ....NZV.
+            self.cpu.set_cc(0x0e) # Set affected flags: ....NZV.
             self.cpu_test_run(start=0x1000, end=None, mem=[
                 0x84, 0x7f, # ANDA #$7F
             ])
             r = self.cpu.accu_a.value
             excpected_value = excpected_values[i]
-#             print i, r, excpected_value, self.cpu.cc.get_info, self.cpu.cc.value
+#             print i, r, excpected_value, self.cpu.get_info, self.cpu.get_cc_value()
 
             # test AND result
             self.assertEqual(r, excpected_value)
 
             # test all CC flags
             if r == 0:
-                self.assertEqual(self.cpu.cc.value, 4)
+                self.assertEqual(self.cpu.get_cc_value(), 4)
             else:
-                self.assertEqual(self.cpu.cc.value, 0)
+                self.assertEqual(self.cpu.get_cc_value(), 0)
 
 
 class Test6809_Ops(BaseCPUTestCase):
@@ -217,13 +217,13 @@ class Test6809_Ops(BaseCPUTestCase):
 
     def test_TFR02(self):
         self.cpu.accu_b.set(0x55) # source
-        self.assertEqual(self.cpu.cc.value, 0) # destination
+        self.assertEqual(self.cpu.get_cc_value(), 0) # destination
 
         self.cpu_test_run(start=0x1000, end=0x1002, mem=[
             0x1f, # TFR
             0x9a, # from accumulator B (0x9) to condition code register CC (0xa)
         ])
-        self.assertEqual(self.cpu.cc.value, 0x55) # destination
+        self.assertEqual(self.cpu.get_cc_value(), 0x55) # destination
 
     def test_TFR03(self):
         self.cpu_test_run(start=0x4000, end=None, mem=[
@@ -249,29 +249,29 @@ class Test6809_Ops(BaseCPUTestCase):
             80 - 82 = -2 -> ....N..C
             """
 #             print "%02x - %02x = %02x -> %s" % (
-#                 u, m, r, self.cpu.cc.get_info
+#                 u, m, r, self.cpu.get_info
 #             )
 
             # test negative: 0x01 <= a <= 0x80
             if r < 0:
-                self.assertEqual(self.cpu.cc.N, 1)
+                self.assertEqual(self.cpu.N, 1)
             else:
-                self.assertEqual(self.cpu.cc.N, 0)
+                self.assertEqual(self.cpu.N, 0)
 
             # test zero
             if r == 0:
-                self.assertEqual(self.cpu.cc.Z, 1)
+                self.assertEqual(self.cpu.Z, 1)
             else:
-                self.assertEqual(self.cpu.cc.Z, 0)
+                self.assertEqual(self.cpu.Z, 0)
 
             # test overflow
-            self.assertEqual(self.cpu.cc.V, 0)
+            self.assertEqual(self.cpu.V, 0)
 
             # test carry is set if r=1-255 (hex: r=$01 - $ff)
             if r < 0:
-                self.assertEqual(self.cpu.cc.C, 1)
+                self.assertEqual(self.cpu.C, 1)
             else:
-                self.assertEqual(self.cpu.cc.C, 0)
+                self.assertEqual(self.cpu.C, 0)
 
     def test_CMPA_immediate_byte(self):
         a = 0x80
@@ -289,32 +289,32 @@ class Test6809_Ops(BaseCPUTestCase):
             80 - 82 = -2 -> ....N..C
             """
 #             print "%02x - %02x = %02x -> %s" % (
-#                 a, m, r, self.cpu.cc.get_info
+#                 a, m, r, self.cpu.get_info
 #             )
 
             # test negative: 0x01 <= a <= 0x80
             if r < 0:
-                self.assertEqual(self.cpu.cc.N, 1)
+                self.assertEqual(self.cpu.N, 1)
             else:
-                self.assertEqual(self.cpu.cc.N, 0)
+                self.assertEqual(self.cpu.N, 0)
 
             # test zero
             if r == 0:
-                self.assertEqual(self.cpu.cc.Z, 1)
+                self.assertEqual(self.cpu.Z, 1)
             else:
-                self.assertEqual(self.cpu.cc.Z, 0)
+                self.assertEqual(self.cpu.Z, 0)
 
             # test overflow
             if r > 0:
-                self.assertEqual(self.cpu.cc.V, 1)
+                self.assertEqual(self.cpu.V, 1)
             else:
-                self.assertEqual(self.cpu.cc.V, 0)
+                self.assertEqual(self.cpu.V, 0)
 
             # test carry is set if r=1-255 (hex: r=$01 - $ff)
             if r < 0:
-                self.assertEqual(self.cpu.cc.C, 1)
+                self.assertEqual(self.cpu.C, 1)
             else:
-                self.assertEqual(self.cpu.cc.C, 0)
+                self.assertEqual(self.cpu.C, 0)
 
     def test_CMPX_immediate_word(self):
         x = 0x80
@@ -332,74 +332,74 @@ class Test6809_Ops(BaseCPUTestCase):
             80 - 82 = -2 -> ....N..C
             """
 #             print "%02x - %02x = %02x -> %s" % (
-#                 x, m, r, self.cpu.cc.get_info
+#                 x, m, r, self.cpu.get_info
 #             )
 
             # test negative: 0x01 <= a <= 0x80
             if r < 0:
-                self.assertEqual(self.cpu.cc.N, 1)
+                self.assertEqual(self.cpu.N, 1)
             else:
-                self.assertEqual(self.cpu.cc.N, 0)
+                self.assertEqual(self.cpu.N, 0)
 
             # test zero
             if r == 0:
-                self.assertEqual(self.cpu.cc.Z, 1)
+                self.assertEqual(self.cpu.Z, 1)
             else:
-                self.assertEqual(self.cpu.cc.Z, 0)
+                self.assertEqual(self.cpu.Z, 0)
 
             # test overflow
-            self.assertEqual(self.cpu.cc.V, 0)
+            self.assertEqual(self.cpu.V, 0)
 
             # test carry is set if r=1-255 (hex: r=$01 - $ff)
             if r < 0:
-                self.assertEqual(self.cpu.cc.C, 1)
+                self.assertEqual(self.cpu.C, 1)
             else:
-                self.assertEqual(self.cpu.cc.C, 0)
+                self.assertEqual(self.cpu.C, 0)
 
     def test_ABX_01(self):
-        self.cpu.cc.set(0xff)
+        self.cpu.set_cc(0xff)
         self.cpu.accu_b.set(0x0f)
         self.cpu.index_x.set(0x00f0)
         self.cpu_test_run(start=0x1000, end=None, mem=[
             0x3A, # ABX
         ])
         self.assertEqualHex(self.cpu.index_x.value, 0x00ff)
-        self.assertEqualHex(self.cpu.cc.value, 0xff)
+        self.assertEqualHex(self.cpu.get_cc_value(), 0xff)
 
-        self.cpu.cc.set(0x00)
+        self.cpu.set_cc(0x00)
         self.cpu_test_run(start=0x1000, end=None, mem=[
             0x3A, # ABX
         ])
         self.assertEqualHex(self.cpu.index_x.value, 0x010E)
-        self.assertEqualHex(self.cpu.cc.value, 0x00)
+        self.assertEqualHex(self.cpu.get_cc_value(), 0x00)
 
 
 class Test6809_TestInstructions(BaseCPUTestCase):
     def assertTST(self, i):
         if 128 <= i <= 255: # test negative
-            self.assertEqual(self.cpu.cc.N, 1)
+            self.assertEqual(self.cpu.N, 1)
         else:
-            self.assertEqual(self.cpu.cc.N, 0)
+            self.assertEqual(self.cpu.N, 0)
 
         if i == 0: # test zero
-            self.assertEqual(self.cpu.cc.Z, 1)
+            self.assertEqual(self.cpu.Z, 1)
         else:
-            self.assertEqual(self.cpu.cc.Z, 0)
+            self.assertEqual(self.cpu.Z, 0)
 
         # test overflow
-        self.assertEqual(self.cpu.cc.V, 0)
+        self.assertEqual(self.cpu.V, 0)
 
         # test not affected flags:
-        self.assertEqual(self.cpu.cc.E, 1)
-        self.assertEqual(self.cpu.cc.F, 1)
-        self.assertEqual(self.cpu.cc.H, 1)
-        self.assertEqual(self.cpu.cc.I, 1)
-        self.assertEqual(self.cpu.cc.C, 1)
+        self.assertEqual(self.cpu.E, 1)
+        self.assertEqual(self.cpu.F, 1)
+        self.assertEqual(self.cpu.H, 1)
+        self.assertEqual(self.cpu.I, 1)
+        self.assertEqual(self.cpu.C, 1)
 
     def test_TST_direct(self):
         for i in range(255):
             self.cpu.accu_a.set(i)
-            self.cpu.cc.set(0xff) # Set all CC flags
+            self.cpu.set_cc(0xff) # Set all CC flags
 
             self.cpu.memory.write_byte(address=0x00, value=i)
 
@@ -411,7 +411,7 @@ class Test6809_TestInstructions(BaseCPUTestCase):
     def test_TST_extended(self):
         for i in range(255):
             self.cpu.accu_a.set(i)
-            self.cpu.cc.set(0xff) # Set all CC flags
+            self.cpu.set_cc(0xff) # Set all CC flags
 
             self.cpu.memory.write_byte(address=0x1234, value=i)
 
@@ -423,7 +423,7 @@ class Test6809_TestInstructions(BaseCPUTestCase):
     def test_TSTA(self):
         for i in range(255):
             self.cpu.accu_a.set(i)
-            self.cpu.cc.set(0xff) # Set all CC flags
+            self.cpu.set_cc(0xff) # Set all CC flags
             self.cpu_test_run(start=0x1000, end=None, mem=[
                 0x4D # TSTA
             ])
@@ -432,7 +432,7 @@ class Test6809_TestInstructions(BaseCPUTestCase):
     def test_TSTB(self):
         for i in range(255):
             self.cpu.accu_b.set(i)
-            self.cpu.cc.set(0xff) # Set all CC flags
+            self.cpu.set_cc(0xff) # Set all CC flags
             self.cpu_test_run(start=0x1000, end=None, mem=[
                 0x5D # TSTB
             ])
@@ -613,7 +613,7 @@ class Test6809_Code(BaseCPUTestCase):
             0x86, 0x55, #                   2009|       LDA $55
             0xA7, 0xb4, #                   200B|       STA ,[Y]
         ])
-        self.assertEqualHex(self.cpu.cc.value, 0x00)
+        self.assertEqualHex(self.cpu.get_cc_value(), 0x00)
         self.assertMemory(
             start=0x1000,
             mem=[0x55]
@@ -642,22 +642,22 @@ class Test6809_Code(BaseCPUTestCase):
         self.assertEqualHex(self.cpu.user_stack_pointer.value, 0x1234)
 
     def test_code_ORA_01(self):
-        self.cpu.cc.set(0xff)
+        self.cpu.set_cc(0xff)
         self.cpu.accu_a.set(0x12)
         self.cpu_test_run(start=0x0000, end=None, mem=[
             0x8A, 0x21, #                             ORA   $21
         ])
         self.assertEqualHex(self.cpu.accu_a.value, 0x33)
-        self.assertEqual(self.cpu.cc.N, 0)
-        self.assertEqual(self.cpu.cc.Z, 0)
-        self.assertEqual(self.cpu.cc.V, 0)
+        self.assertEqual(self.cpu.N, 0)
+        self.assertEqual(self.cpu.Z, 0)
+        self.assertEqual(self.cpu.V, 0)
 
     def test_code_ORCC_01(self):
-        self.cpu.cc.set(0x12)
+        self.cpu.set_cc(0x12)
         self.cpu_test_run(start=0x0000, end=None, mem=[
             0x1A, 0x21, #                             ORCC   $21
         ])
-        self.assertEqualHex(self.cpu.cc.value, 0x33)
+        self.assertEqualHex(self.cpu.get_cc_value(), 0x33)
 
 
 

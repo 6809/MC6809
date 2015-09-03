@@ -23,7 +23,7 @@ try:
 except ImportError:
     from BaseHTTPServer import BaseHTTPRequestHandler # Python 2
     range = xrange
-    
+
 
 import json
 import logging
@@ -177,7 +177,7 @@ class ControlHandler(BaseHTTPRequestHandler):
     def get_status(self, m):
         data = {
             "cpu": self.cpu.get_info,
-            "cc": self.cpu.cc.get_info,
+            "cc": self.cpu.get_cc_info(),
             "pc": self.cpu.program_counter.get(),
             "cycle_count": self.cpu.cycles,
         }

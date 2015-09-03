@@ -24,6 +24,7 @@
 from __future__ import absolute_import, division, print_function
 
 import sys
+from MC6809.components.mc6809_cc_register import CPUConditionCodeRegisterMixin
 from MC6809.components.mc6809_speedlimited import CPUSpeedLimitMixin
 
 if sys.version_info[0] == 3:
@@ -54,7 +55,7 @@ HTML_TRACE = False
 
 
 class CPU(CPUBase, AddressingMixin, StackMixin, InterruptMixin, OpsLoadStoreMixin, OpsBranchesMixin,
-    OpsTestMixin, OpsLogicalMixin, CPUThreadedStatusMixin):
+    OpsTestMixin, OpsLogicalMixin, CPUConditionCodeRegisterMixin, CPUThreadedStatusMixin):
 
     def to_speed_limit(self):
         return change_cpu(self, CPUSpeedLimit)
