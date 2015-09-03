@@ -28,8 +28,6 @@ class ValueStorage(object):
     def set(self, v):
         self.value = v
         return self.value # e.g.: r = operand.set(a + 1)
-    def get(self):
-        return self.value
 
     # FIXME:
     def decrement(self, value=1):
@@ -94,41 +92,26 @@ class ValueStorage16Bit(ValueStorage):
 
 
 
-def _register_bit(key):
-    def set_flag(self, value):
-        assert value in (0, 1)
-        self._register[key] = value
-    def get_flag(self):
-        return self._register[key]
-    return property(get_flag, set_flag)
-
-
 class ConditionCodeRegister(object):
     """ CC - 8 bit condition code register bits """
 
-    WIDTH = 8 # 8 Bit
+    WIDTH = 8  # 8 Bit
 
     def __init__(self, *cmd_args, **kwargs):
         self.name = "CC"
-        self._register = {}
-        self.set(0x0) # create all keys in dict with value 0
-
-    E = _register_bit("E") # E - 0x80 - bit 7 - Entire register state stacked
-    F = _register_bit("F") # F - 0x40 - bit 6 - FIRQ interrupt masked
-    H = _register_bit("H") # H - 0x20 - bit 5 - Half-Carry
-    I = _register_bit("I") # I - 0x10 - bit 4 - IRQ interrupt masked
-    N = _register_bit("N") # N - 0x08 - bit 3 - Negative result (twos complement)
-    Z = _register_bit("Z") # Z - 0x04 - bit 2 - Zero result
-    V = _register_bit("V") # V - 0x02 - bit 1 - Overflow
-    C = _register_bit("C") # C - 0x01 - bit 0 - Carry (or borrow)
+        self.E = 0  # E - 0x80 - bit 7 - Entire register state stacked
+        self.F = 0  # F - 0x40 - bit 6 - FIRQ interrupt masked
+        self.H = 0  # H - 0x20 - bit 5 - Half-Carry
+        self.I = 0  # I - 0x10 - bit 4 - IRQ interrupt masked
+        self.N = 0  # N - 0x08 - bit 3 - Negative result (twos complement)
+        self.Z = 0  # Z - 0x04 - bit 2 - Zero result
+        self.V = 0  # V - 0x02 - bit 1 - Overflow
+        self.C = 0  # C - 0x01 - bit 0 - Carry (or borrow)
 
     ####
 
-    def set(self, status):
-        self.E, self.F, self.H, self.I, self.N, self.Z, self.V, self.C = \
-            [0 if status & x == 0 else 1 for x in (128, 64, 32, 16, 8, 4, 2, 1)]
-
-    def get(self):
+    @property
+    def value(self):
         return self.C | \
             self.V << 1 | \
             self.Z << 2 | \
@@ -138,6 +121,15 @@ class ConditionCodeRegister(object):
             self.F << 6 | \
             self.E << 7
 
+    @value.setter
+    def value(self, status):
+        self.E, self.F, self.H, self.I, self.N, self.Z, self.V, self.C = \
+            [0 if status & x == 0 else 1 for x in (128, 64, 32, 16, 8, 4, 2, 1)]
+
+    def set(self, status):
+        self.E, self.F, self.H, self.I, self.N, self.Z, self.V, self.C = \
+            [0 if status & x == 0 else 1 for x in (128, 64, 32, 16, 8, 4, 2, 1)]
+
     @property
     def get_info(self):
         """
@@ -146,28 +138,16 @@ class ConditionCodeRegister(object):
         >>> cc.get_info
         'E.H....C'
         """
-        return cc_value2txt(self.get())
+        return cc_value2txt(self.value)
 
     def __str__(self):
         return "%s=%s" % (self.name, self.get_info)
 
     ####
 
-    """
-    #define SET_Z(r)          ( REG_CC |= ((r) ? 0 : CC_Z) )
-    #define SET_N8(r)         ( REG_CC |= (r&0x80)>>4 )
-    #define SET_N16(r)        ( REG_CC |= (r&0x8000)>>12 )
-    #define SET_H(a,b,r)      ( REG_CC |= ((a^b^r)&0x10)<<1 )
-    #define SET_C8(r)         ( REG_CC |= (r&0x100)>>8 )
-    #define SET_C16(r)        ( REG_CC |= (r&0x10000)>>16 )
-    #define SET_V8(a,b,r)     ( REG_CC |= ((a^b^r^(r>>1))&0x80)>>6 )
-    #define SET_V16(a,b,r)    ( REG_CC |= ((a^b^r^(r>>1))&0x8000)>>14 )
-    """
-
     def set_H(self, a, b, r):
-        if self.H == 0:
-            r2 = (a ^ b ^ r) & 0x10
-            self.H = 0 if r2 == 0 else 1
+        if not self.H and (a ^ b ^ r) & 0x10:
+            self.H = 1
 #            log.debug("\tset_H(): set half-carry flag to %i: ($%02x ^ $%02x ^ $%02x) & 0x10 = $%02x",
 #                self.H, a, b, r, r2
 #            )
@@ -185,9 +165,8 @@ class ConditionCodeRegister(object):
 #            log.debug("\tset_Z8(): leave old value 1")
 
     def set_Z16(self, r):
-        if self.Z == 0:
-            r2 = r & 0xffff
-            self.Z = 1 if r2 == 0 else 0
+        if not self.Z and not r & 0xffff:
+            self.Z = 1
 #            log.debug("\tset_Z16(): set zero flag to %i: $%04x & 0xffff = $%04x",
 #                self.Z, r, r2
 #            )
@@ -195,9 +174,8 @@ class ConditionCodeRegister(object):
 #            log.debug("\tset_Z16(): leave old value 1")
 
     def set_N8(self, r):
-        if self.N == 0:
-            r2 = r & 0x80
-            self.N = 0 if r2 == 0 else 1
+        if not self.N and r & 0x80:
+            self.N = 1
 #            log.debug("\tset_N8(): set negative flag to %i: ($%02x & 0x80) = $%02x",
 #                self.N, r, r2
 #            )
@@ -205,9 +183,8 @@ class ConditionCodeRegister(object):
 #            log.debug("\tset_N8(): leave old value 1")
 
     def set_N16(self, r):
-        if self.N == 0:
-            r2 = r & 0x8000
-            self.N = 0 if r2 == 0 else 1
+        if not self.N and r & 0x8000:
+            self.N = 1
 #            log.debug("\tset_N16(): set negative flag to %i: ($%04x & 0x8000) = $%04x",
 #                self.N, r, r2
 #            )
@@ -215,9 +192,8 @@ class ConditionCodeRegister(object):
 #            log.debug("\tset_N16(): leave old value 1")
 
     def set_C8(self, r):
-        if self.C == 0:
-            r2 = r & 0x100
-            self.C = 0 if r2 == 0 else 1
+        if not self.C and r & 0x100:
+            self.C = 1
 #            log.debug("\tset_C8(): carry flag to %i: ($%02x & 0x100) = $%02x",
 #                self.C, r, r2
 #            )
@@ -225,9 +201,8 @@ class ConditionCodeRegister(object):
 #            log.debug("\tset_C8(): leave old value 1")
 
     def set_C16(self, r):
-        if self.C == 0:
-            r2 = r & 0x10000
-            self.C = 0 if r2 == 0 else 1
+        if not self.C and r & 0x10000:
+            self.C = 1
 #            log.debug("\tset_C16(): carry flag to %i: ($%04x & 0x10000) = $%04x",
 #                self.C, r, r2
 #            )
@@ -235,9 +210,8 @@ class ConditionCodeRegister(object):
 #            log.debug("\tset_C16(): leave old value 1")
 
     def set_V8(self, a, b, r):
-        if self.V == 0:
-            r2 = (a ^ b ^ r ^ (r >> 1)) & 0x80
-            self.V = 0 if r2 == 0 else 1
+        if not self.V and (a ^ b ^ r ^ (r >> 1)) & 0x80:
+            self.V = 1
 #            log.debug("\tset_V8(): overflow flag to %i: (($%02x ^ $%02x ^ $%02x ^ ($%02x >> 1)) & 0x80) = $%02x",
 #                self.V, a, b, r, r, r2
 #            )
@@ -245,9 +219,8 @@ class ConditionCodeRegister(object):
 #            log.debug("\tset_V8(): leave old value 1")
 
     def set_V16(self, a, b, r):
-        if self.V == 0:
-            r2 = (a ^ b ^ r ^ (r >> 1)) & 0x8000
-            self.V = 0 if r2 == 0 else 1
+        if not self.V and (a ^ b ^ r ^ (r >> 1)) & 0x8000:
+            self.V = 1
 #            log.debug("\tset_V16(): overflow flag to %i: (($%04x ^ $%04x ^ $%04x ^ ($%04x >> 1)) & 0x8000) = $%04x",
 #                self.V, a, b, r, r, r2
 #            )
@@ -361,13 +334,12 @@ class ConcatenatedAccumulator(object):
         self._a.set(value >> 8)
         self._b.set(value & 0xff)
 
-    def get(self):
-        a = self._a.get()
-        b = self._b.get()
-        return a * 256 + b
+    @property
+    def value(self):
+        return self._a.value * 256 + self._b.value
 
     def __str__(self):
-        return "%s=%04x" % (self.name, self.get())
+        return "%s=%04x" % (self.name, self.value)
 
 
 def convert_differend_width(src_reg, dst_reg):
@@ -389,7 +361,7 @@ def convert_differend_width(src_reg, dst_reg):
     TODO: verify this behaviour on real hardware
     see: http://archive.worldofdragon.org/phpBB3/viewtopic.php?f=8&t=4886
     """
-    src_value = src_reg.get()
+    src_value = src_reg.value
     if src_reg.WIDTH == 8 and dst_reg.WIDTH == 16:
         # e.g.: $cd -> $ffcd
         src_value += 0xff00

@@ -38,7 +38,7 @@ class MC6809Stack(object):
         """ pushed a byte onto stack """
         # FIXME: self.system_stack_pointer -= 1
         stack_pointer.decrement(1)
-        addr = stack_pointer.get()
+        addr = stack_pointer.value
 
 #        log.info(
 #         log.error(
@@ -50,7 +50,7 @@ class MC6809Stack(object):
 
     def pull_byte(self, stack_pointer):
         """ pulled a byte from stack """
-        addr = stack_pointer.get()
+        addr = stack_pointer.value
         byte = self.memory.read_byte(addr)
 #        log.info(
 #         log.error(
@@ -68,7 +68,7 @@ class MC6809Stack(object):
         # FIXME: self.system_stack_pointer -= 2
         stack_pointer.decrement(2)
 
-        addr = stack_pointer.get()
+        addr = stack_pointer.value
 #        log.info(
 #         log.error(
 #            "%x|\tpush word $%x to %s stack at $%x\t|%s",
@@ -83,7 +83,7 @@ class MC6809Stack(object):
 #         self.push_byte(lo)
 
     def pull_word(self, stack_pointer):
-        addr = stack_pointer.get()
+        addr = stack_pointer.value
         word = self.memory.read_word(addr)
 #        log.info(
 #         log.error(
@@ -119,7 +119,7 @@ class MC6809Stack(object):
 
         def push(register_str, stack_pointer):
             register_obj = self.register_str2object[register_str]
-            data = register_obj.get()
+            data = register_obj.value
 
 #             log.debug("\tpush %s with data $%x", register_obj.name, data)
 

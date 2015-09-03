@@ -146,19 +146,19 @@ class CPUBase(object):
         used in unittests
         """
         return {
-            REG_X: self.index_x.get(),
-            REG_Y: self.index_y.get(),
+            REG_X: self.index_x.value,
+            REG_Y: self.index_y.value,
 
-            REG_U: self.user_stack_pointer.get(),
-            REG_S: self.system_stack_pointer.get(),
+            REG_U: self.user_stack_pointer.value,
+            REG_S: self.system_stack_pointer.value,
 
-            REG_PC: self.program_counter.get(),
+            REG_PC: self.program_counter.value,
 
-            REG_A: self.accu_a.get(),
-            REG_B: self.accu_b.get(),
+            REG_A: self.accu_a.value,
+            REG_B: self.accu_b.value,
 
-            REG_DP: self.direct_page.get(),
-            REG_CC: self.cc.get(),
+            REG_DP: self.direct_page.value,
+            REG_CC: self.cc.value,
 
             "cycles": self.cycles,
             "RAM": tuple(self.memory._mem) # copy of array.array() values,
@@ -188,7 +188,7 @@ class CPUBase(object):
     ####
 
     def reset(self):
-        log.info("%04x| CPU reset:", self.program_counter.get())
+        log.info("%04x| CPU reset:", self.program_counter.value)
 
         self.last_op_address = 0
 
@@ -322,10 +322,10 @@ class CPUBase(object):
 
         # https://wiki.python.org/moin/PythonSpeed/PerformanceTips#Avoiding_dots...
         get_and_call_next_op = self.get_and_call_next_op
-        program_counter = self.program_counter.get
+        program_counter = self.program_counter
 
         for __ in range(max_ops):
-            if program_counter() == end:
+            if program_counter.value == end:
                 return
             get_and_call_next_op()
         log.critical("Max ops %i arrived!", max_ops)
@@ -355,25 +355,25 @@ class CPUBase(object):
     @property
     def get_info(self):
         return "cc=%02x a=%02x b=%02x dp=%02x x=%04x y=%04x u=%04x s=%04x" % (
-            self.cc.get(),
-            self.accu_a.get(), self.accu_b.get(),
-            self.direct_page.get(),
-            self.index_x.get(), self.index_y.get(),
-            self.user_stack_pointer.get(), self.system_stack_pointer.get()
+            self.cc.value,
+            self.accu_a.value, self.accu_b.value,
+            self.direct_page.value,
+            self.index_x.value, self.index_y.value,
+            self.user_stack_pointer.value, self.system_stack_pointer.value
         )
 
     ####
 
 
     def read_pc_byte(self):
-        op_addr = self.program_counter.get()
+        op_addr = self.program_counter.value
         m = self.memory.read_byte(op_addr)
         self.program_counter.increment(1)
 #        log.log(5, "read pc byte: $%02x from $%04x", m, op_addr)
         return op_addr, m
 
     def read_pc_word(self):
-        op_addr = self.program_counter.get()
+        op_addr = self.program_counter.value
         m = self.memory.read_word(op_addr)
         self.program_counter.increment(2)
 #        log.log(5, "\tread pc word: $%04x from $%04x", m, op_addr)
@@ -406,8 +406,8 @@ class CPUBase(object):
 
         CC bits "HNZVC": -----
         """
-        old = self.index_x.get()
-        b = self.accu_b.get()
+        old = self.index_x.value
+        b = self.accu_b.value
         new = self.index_x.increment(b)
 #        log.debug("%x %02x ABX: X($%x) += B($%x) = $%x" % (
 #            self.program_counter, opcode,
@@ -427,7 +427,7 @@ class CPUBase(object):
 
         CC bits "HNZVC": aaaaa
         """
-        a = register.get()
+        a = register.value
         r = a + m + self.cc.C
         register.set(r)
 #        log.debug("$%x %02x ADC %s: %i + %i + %i = %i (=$%x)" % (
@@ -449,7 +449,7 @@ class CPUBase(object):
         CC bits "HNZVC": -aaaa
         """
         assert register.WIDTH == 16
-        old = register.get()
+        old = register.value
         r = old + m
         register.set(r)
 #        log.debug("$%x %02x %02x ADD16 %s: $%02x + $%02x = $%02x" % (
@@ -473,7 +473,7 @@ class CPUBase(object):
         CC bits "HNZVC": aaaaa
         """
         assert register.WIDTH == 8
-        old = register.get()
+        old = register.value
         r = old + m
         register.set(r)
 #         log.debug("$%x %02x %02x ADD8 %s: $%02x + $%02x = $%02x" % (
@@ -537,7 +537,7 @@ class CPUBase(object):
         Replaces the contents of accumulator A or B with its logical complement.
         source code forms: COMA; COMB
         """
-        register.set(self.COM(value=register.get()))
+        register.set(self.COM(value=register.value))
 #        log.debug("$%x COM %s" % (
 #            self.program_counter, register.name,
 #        ))
@@ -582,7 +582,7 @@ class CPUBase(object):
         V    -    Undefined.
         C    -    Set if a carry is generated or if the carry bit was set before the operation; cleared otherwise.
         """
-        a = self.accu_a.get()
+        a = self.accu_a.value
 
         correction_factor = 0
         a_hi = a & 0xf0 # MSN - Most Significant Nibble
@@ -636,7 +636,7 @@ class CPUBase(object):
     @opcode(0x4a, 0x5a) # DECA / DECB (inherent)
     def instruction_DEC_register(self, opcode, register):
         """ Decrement accumulator """
-        a = register.get()
+        a = register.value
         r = self.DEC(a)
 #        log.debug("$%x DEC %s value $%x -1 = $%x" % (
 #            self.program_counter,
@@ -668,7 +668,7 @@ class CPUBase(object):
 
         CC bits "HNZVC": -aaa-
         """
-        a = register.get()
+        a = register.value
         r = self.INC(a)
         r = register.set(r)
 
@@ -764,7 +764,7 @@ class CPUBase(object):
 
         CC bits "HNZVC": --a-a
         """
-        r = self.accu_a.get() * self.accu_b.get()
+        r = self.accu_a.value * self.accu_b.value
         self.accu_d.set(r)
         self.cc.Z = 1 if r == 0 else 0
         self.cc.C = 1 if r & 0x80 else 0
@@ -785,7 +785,7 @@ class CPUBase(object):
 
         CC bits "HNZVC": uaaaa
         """
-        x = register.get()
+        x = register.value
         r = x * -1 # same as: r = ~x + 1
         register.set(r)
 #        log.debug("$%04x NEG %s $%02x to $%02x" % (
@@ -841,7 +841,7 @@ class CPUBase(object):
 
         CC bits "HNZVC": uaaaa
         """
-        a = register.get()
+        a = register.value
         r = a - m - self.cc.C
         register.set(r)
 #        log.debug("$%x %02x SBC %s: %i - %i - %i = %i (=$%x)" % (
@@ -873,11 +873,11 @@ class CPUBase(object):
         #define SIGNED(b) ((Word)(b&0x80?b|0xff00:b))
         case 0x1D: /* SEX */ tw=SIGNED(ibreg); SETNZ16(tw) SETDREG(tw) break;
         """
-        b = self.accu_b.get()
+        b = self.accu_b.value
         if b & 0x80 == 0:
             self.accu_a.set(0x00)
 
-        d = self.accu_d.get()
+        d = self.accu_d.value
 
 #        log.debug("SEX: b=$%x ; $%x&0x80=$%x ; d=$%x", b, b, (b & 0x80), d)
 
@@ -901,7 +901,7 @@ class CPUBase(object):
 
         CC bits "HNZVC": uaaaa
         """
-        r = register.get()
+        r = register.value
         r_new = r - m
         register.set(r_new)
 #        log.debug("$%x SUB8 %s: $%x - $%x = $%x (dez.: %i - %i = %i)" % (
@@ -949,7 +949,7 @@ class CPUBase(object):
 
     def _get_register_and_value(self, addr):
         reg = self._get_register_obj(addr)
-        reg_value = reg.get()
+        reg_value = reg.value
         return reg, reg_value
 
     @opcode(0x1f) # TFR (immediate)

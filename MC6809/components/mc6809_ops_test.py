@@ -51,7 +51,7 @@ class MC6809OpsTest(object):
 
         CC bits "HNZVC": -aaaa
         """
-        r = register.get()
+        r = register.value
         r_new = r - m
 #        log.warning("$%x CMP16 %s $%x - $%x = $%x" % (
 #             self.program_counter,
@@ -77,7 +77,7 @@ class MC6809OpsTest(object):
 
         CC bits "HNZVC": uaaaa
         """
-        r = register.get()
+        r = register.value
         r_new = r - m
 #         log.warning("$%x CMP8 %s $%x - $%x = $%x" % (
 #             self.program_counter,
@@ -103,7 +103,7 @@ class MC6809OpsTest(object):
 
         CC bits "HNZVC": -aa0-
         """
-        x = register.get()
+        x = register.value
         r = m & x
 #        log.debug("$%x BIT update CC with $%x (m:%i & %s:%i)" % (
 #            self.program_counter,
@@ -131,7 +131,7 @@ class MC6809OpsTest(object):
 
         CC bits "HNZVC": -aa0-
         """
-        x = register.get()
+        x = register.value
         self.cc.clear_NZV()
         self.cc.update_NZ_8(x)
 

@@ -91,7 +91,7 @@ class MC6809OpsBranches(object):
 #            self.last_op_address,
 #            ea, self.cfg.mem_info.get_shortest(ea)
 #        ))
-        self.push_word(self.system_stack_pointer, self.program_counter.get())
+        self.push_word(self.system_stack_pointer, self.program_counter.value)
         self.program_counter.set(ea)
 
 

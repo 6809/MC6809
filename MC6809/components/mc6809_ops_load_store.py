@@ -92,7 +92,7 @@ class MC6809OpsLoadStore(object):
 
         CC bits "HNZVC": -aa0-
         """
-        value = register.get()
+        value = register.value
 #        log.debug("$%x ST16 store value $%x from %s at $%x \t| %s" % (
 #             self.program_counter,
 #             value, register.name, ea,
@@ -114,7 +114,7 @@ class MC6809OpsLoadStore(object):
 
         CC bits "HNZVC": -aa0-
         """
-        value = register.get()
+        value = register.value
 #        log.debug("$%x ST8 store value $%x from %s at $%x \t| %s" % (
 #             self.program_counter,
 #             value, register.name, ea,

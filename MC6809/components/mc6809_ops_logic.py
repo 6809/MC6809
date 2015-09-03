@@ -46,7 +46,7 @@ class MC6809OpsLogical(object):
 
         CC bits "HNZVC": -aa0-
         """
-        a = register.get()
+        a = register.value
         r = a & m
         register.set(r)
         self.cc.clear_NZV()
@@ -68,7 +68,7 @@ class MC6809OpsLogical(object):
 
         CC bits "HNZVC": -aa0-
         """
-        a = register.get()
+        a = register.value
         r = a ^ m
         register.set(r)
         self.cc.clear_NZV()
@@ -91,7 +91,7 @@ class MC6809OpsLogical(object):
 
         CC bits "HNZVC": -aa0-
         """
-        a = register.get()
+        a = register.value
         r = a | m
         register.set(r)
         self.cc.clear_NZV()
@@ -118,7 +118,7 @@ class MC6809OpsLogical(object):
         """
         assert register == self.cc
 
-        old_cc = self.cc.get()
+        old_cc = self.cc.value
         new_cc = old_cc & m
         self.cc.set(new_cc)
 #        log.debug("\tANDCC: $%x AND $%x = $%x | set CC to %s",
@@ -141,7 +141,7 @@ class MC6809OpsLogical(object):
         """
         assert register == self.cc
 
-        old_cc = self.cc.get()
+        old_cc = self.cc.value
         new_cc = old_cc | m
         self.cc.set(new_cc)
 #        log.debug("\tORCC: $%x OR $%x = $%x | set CC to %s",
@@ -186,7 +186,7 @@ class MC6809OpsLogical(object):
         """
         Logical shift left accumulator / Arithmetic shift of accumulator
         """
-        a = register.get()
+        a = register.value
         r = self.LSL(a)
 #        log.debug("$%x LSL %s value $%x << 1 = $%x" % (
 #            self.program_counter,
@@ -223,7 +223,7 @@ class MC6809OpsLogical(object):
     @opcode(0x44, 0x54) # LSRA / LSRB (inherent)
     def instruction_LSR_register(self, opcode, register):
         """ Logical shift right accumulator """
-        a = register.get()
+        a = register.value
         r = self.LSR(a)
 #        log.debug("$%x LSR %s value $%x >> 1 = $%x" % (
 #            self.program_counter,
@@ -262,7 +262,7 @@ class MC6809OpsLogical(object):
     @opcode(0x47, 0x57) # ASRA/ASRB (inherent)
     def instruction_ASR_register(self, opcode, register):
         """ Arithmetic shift accumulator right """
-        a = register.get()
+        a = register.value
         r = self.ASR(a)
 #        log.debug("$%x ASR %s value $%x >> 1 | Carry = $%x" % (
 #            self.program_counter,
@@ -302,7 +302,7 @@ class MC6809OpsLogical(object):
     @opcode(0x49, 0x59) # ROLA / ROLB (inherent)
     def instruction_ROL_register(self, opcode, register):
         """ Rotate accumulator left """
-        a = register.get()
+        a = register.value
         r = self.ROL(a)
 #        log.debug("$%x ROL %s value $%x << 1 | Carry = $%x" % (
 #            self.program_counter,
@@ -342,7 +342,7 @@ class MC6809OpsLogical(object):
     @opcode(0x46, 0x56) # RORA/RORB (inherent)
     def instruction_ROR_register(self, opcode, register):
         """ Rotate accumulator right """
-        a = register.get()
+        a = register.value
         r = self.ROR(a)
 #        log.debug("$%x ROR %s value $%x >> 1 | Carry = $%x" % (
 #            self.program_counter,

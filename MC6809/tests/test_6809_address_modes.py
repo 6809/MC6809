@@ -139,7 +139,7 @@ class Test6809_AddressModes_Indexed(BaseCPUTestCase):
         self.cpu_test_run(start=0x2000, end=None, mem=[
             0xAF, 0xA8, offset, #       STX   $30,Y      ; store X at Y -80 = $50
         ])
-        self.assertEqualHexWord(self.cpu.index_y.get(), y)
+        self.assertEqualHexWord(self.cpu.index_y.value, y)
         self.assertEqualHexWord(self.cpu.memory.read_word(0x50), x) # $d0 + $-80 = $50
 
     def test_16bit_offset(self):
@@ -158,7 +158,7 @@ class Test6809_AddressModes_Indexed(BaseCPUTestCase):
         self.cpu_test_run(start=0x2000, end=None, mem=[
             0xAF, 0xA9, offset_hi, offset_lo, # STX $8001,Y   ; store X at Y + $-7fff
         ])
-        self.assertEqualHexWord(self.cpu.index_y.get(), y)
+        self.assertEqualHexWord(self.cpu.index_y.value, y)
         self.assertEqualHexWord(self.cpu.memory.read_word(0x50), x) # $804f + $-7fff = $50
 
     def test_D_offset(self):
@@ -178,7 +178,7 @@ class Test6809_AddressModes_Indexed(BaseCPUTestCase):
         self.cpu_test_run(start=0x2000, end=None, mem=[
             0xAF, 0xAB, # STX D,Y  ; store X at Y + D
         ])
-        self.assertEqualHexWord(self.cpu.index_x.get(), x)
+        self.assertEqualHexWord(self.cpu.index_x.value, x)
         # $804f + $-7fff = $50
         self.assertEqualHexWord(self.cpu.memory.read_word(0x50), x) # $804f + $-7fff = $50
 
@@ -188,7 +188,7 @@ class Test6809_AddressModes_Indexed(BaseCPUTestCase):
         self.cpu_test_run(start=0x2000, end=None, mem=[
             0xAF, 0x8C, 0x12, # STX 12,PC
         ])
-        self.assertEqualHexWord(self.cpu.index_x.get(), x)
+        self.assertEqualHexWord(self.cpu.index_x.value, x)
         # ea = pc($2003) + $12 = $2015
         self.assertEqualHexWord(self.cpu.memory.read_word(0x2015), x)
 
@@ -198,7 +198,7 @@ class Test6809_AddressModes_Indexed(BaseCPUTestCase):
         self.cpu_test_run(start=0x1000, end=None, mem=[
             0xA7, 0x8C, 0x80, # STA 12,PC
         ])
-        self.assertEqualHexByte(self.cpu.accu_a.get(), a)
+        self.assertEqualHexByte(self.cpu.accu_a.value, a)
         # ea = pc($1003) + $-80 = $f83
         self.assertEqualHexByte(self.cpu.memory.read_byte(0x0f83), a)
 
@@ -208,7 +208,7 @@ class Test6809_AddressModes_Indexed(BaseCPUTestCase):
         self.cpu_test_run(start=0x2000, end=None, mem=[
             0xAF, 0x8D, 0x0a, 0xb0, # STX 1234,PC
         ])
-        self.assertEqualHexWord(self.cpu.index_x.get(), x)
+        self.assertEqualHexWord(self.cpu.index_x.value, x)
         # ea = pc($2004) + $ab0 = $2ab4
         self.assertEqualHexWord(self.cpu.memory.read_word(0x2ab4), x)
 
@@ -218,7 +218,7 @@ class Test6809_AddressModes_Indexed(BaseCPUTestCase):
         self.cpu_test_run(start=0x1000, end=None, mem=[
             0xA7, 0x8D, 0xf0, 0x10, # STA 12,PC
         ])
-        self.assertEqualHexByte(self.cpu.accu_a.get(), a)
+        self.assertEqualHexByte(self.cpu.accu_a.value, a)
         # ea = pc($1004) + $-ff0 = $14
         self.assertEqualHexByte(self.cpu.memory.read_byte(0x0014), a)
 

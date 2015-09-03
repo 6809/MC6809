@@ -44,7 +44,7 @@ class MC6809Addressing(object):
 
     def get_ea_direct(self):
         op_addr, m = self.read_pc_byte()
-        dp = self.direct_page.get()
+        dp = self.direct_page.value
         ea = dp << 8 | m
 #        log.debug("\tget_ea_direct(): ea = dp << 8 | m  =>  $%x=$%x<<8|$%x", ea, dp, m)
         return ea
@@ -89,7 +89,7 @@ class MC6809Addressing(object):
             raise RuntimeError("Register $%x doesn't exists! (postbyte: $%x)" % (rr, postbyte))
 
         register_obj = self.register_str2object[register_str]
-        register_value = register_obj.get()
+        register_value = register_obj.value
 #        log.debug("\t%02x == register %s: value $%x",
 #             rr, register_obj.name, register_value
 #         )
@@ -129,10 +129,10 @@ class MC6809Addressing(object):
             ea = register_value
         elif addr_mode == 0x5:
 #             log.debug("\t0101 0x5 | B, R | B register offset")
-            offset = signed8(self.accu_b.get())
+            offset = signed8(self.accu_b.value)
         elif addr_mode == 0x6:
 #             log.debug("\t0110 0x6 | A, R | A register offset")
-            offset = signed8(self.accu_a.get())
+            offset = signed8(self.accu_a.value)
         elif addr_mode == 0x8:
 #             log.debug("\t1000 0x8 | n, R | 8 bit offset")
             offset = signed8(self.read_pc_byte()[1])
@@ -146,13 +146,13 @@ class MC6809Addressing(object):
         elif addr_mode == 0xb:
 #             log.debug("\t1011 0xb | D, R | D register offset")
             # D - 16 bit concatenated reg. (A + B)
-            offset = signed16(self.accu_d.get()) # FIXME: signed16() ok?
+            offset = signed16(self.accu_d.value) # FIXME: signed16() ok?
             self.cycles += 1
         elif addr_mode == 0xc:
 #             log.debug("\t1100 0xc | n, PCR | 8 bit offset from program counter")
             __, value = self.read_pc_byte()
             value_signed = signed8(value)
-            ea = self.program_counter.get() + value_signed
+            ea = self.program_counter.value + value_signed
 #             log.debug("\tea = pc($%x) + $%x = $%x (dez.: %i + %i = %i)",
 #                 self.program_counter, value_signed, ea,
 #                 self.program_counter, value_signed, ea,
@@ -161,7 +161,7 @@ class MC6809Addressing(object):
 #             log.debug("\t1101 0xd | n, PCR | 16 bit offset from program counter")
             __, value = self.read_pc_word()
             value_signed = signed16(value)
-            ea = self.program_counter.get() + value_signed
+            ea = self.program_counter.value + value_signed
             self.cycles += 1
 #             log.debug("\tea = pc($%x) + $%x = $%x (dez.: %i + %i = %i)",
 #                 self.program_counter, value_signed, ea,
@@ -240,7 +240,7 @@ class MC6809Addressing(object):
     def get_ea_relative(self):
         addr, x = self.read_pc_byte()
         x = signed8(x)
-        ea = self.program_counter.get() + x
+        ea = self.program_counter.value + x
 #        log.debug("\tget_ea_relative(): ea = $%x + %i = $%x \t| %s",
 #            self.program_counter, x, ea,
 #            self.cfg.mem_info.get_shortest(ea)
@@ -249,7 +249,7 @@ class MC6809Addressing(object):
 
     def get_ea_relative_word(self):
         addr, x = self.read_pc_word()
-        ea = self.program_counter.get() + x
+        ea = self.program_counter.value + x
 #        log.debug("\tget_ea_relative_word(): ea = $%x + %i = $%x \t| %s",
 #            self.program_counter, x, ea,
 #            self.cfg.mem_info.get_shortest(ea)
