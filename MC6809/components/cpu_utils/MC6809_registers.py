@@ -7,7 +7,7 @@
     some code is borrowed from:
     XRoar emulator by Ciaran Anscomb (GPL license) more info, see README
 
-    :copyleft: 2013-2014 by the MC6809 team, see AUTHORS for more details.
+    :copyleft: 2013-2015 by the MC6809 team, see AUTHORS for more details.
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
@@ -30,6 +30,7 @@ class ValueStorageBase(object):
 
     def decrement(self, value=1):
         self.set(self.value - value)
+        
     def increment(self, value=1):
         self.set(self.value + value)
 
@@ -43,11 +44,12 @@ class UndefinedRegister(ValueStorageBase):
     WIDTH = 16 # 16 Bit
     name = "undefined!"
     value = 0xffff
+
     def __init__(self):
         pass
+
     def set(self, v):
         log.warning("Set value to 'undefined' register!")
-        pass
 
     def get(self):
         return 0xffff
