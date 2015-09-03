@@ -406,13 +406,7 @@ class CPUBase(object):
 
         CC bits "HNZVC": -----
         """
-        old = self.index_x.value
-        b = self.accu_b.value
-        new = self.index_x.increment(b)
-#        log.debug("%x %02x ABX: X($%x) += B($%x) = $%x" % (
-#            self.program_counter, opcode,
-#            old, b, new
-#        ))
+        self.index_x.increment(self.accu_b.value)
 
     @opcode(# Add memory to accumulator with carry
         0x89, 0x99, 0xa9, 0xb9, # ADCA (immediate, direct, indexed, extended)

@@ -27,13 +27,11 @@ class ValueStorage(object):
 
     def set(self, v):
         self.value = v
-        return self.value # e.g.: r = operand.set(a + 1)
 
-    # FIXME:
     def decrement(self, value=1):
-        return self.set(self.value - value)
+        self.set(self.value - value)
     def increment(self, value=1):
-        return self.set(self.value + value)
+        self.set(self.value + value)
 
     def __str__(self):
         return "<%s:$%x>" % (self.name, self.value)
@@ -68,7 +66,7 @@ class ValueStorage8Bit(ValueStorage):
             v = 0x100 + v
 #            log.info(" **** Value %s (8-bit) wrap around to $%x", self.name, v)
         self.value = v
-        return self.value # e.g.: r = operand.set(a + 1)
+
     def __str__(self):
         return "%s=%02x" % (self.name, self.value)
 
@@ -86,7 +84,7 @@ class ValueStorage16Bit(ValueStorage):
             v = 0x10000 + v
 #            log.info(" **** Value %s (16-bit) wrap around to $%x", self.name, v)
         self.value = v
-        return self.value # e.g.: r = operand.set(a + 1)
+
     def __str__(self):
         return "%s=%04x" % (self.name, self.value)
 

@@ -82,12 +82,12 @@ class Test6809_Register(BaseCPUTestCase):
 
     def test_register_16bit_negative2(self):
         self.cpu.index_x.set(0)
-        x = self.cpu.index_x.decrement()
-        self.assertEqualHex(x, 0x10000 - 1)
+        self.cpu.index_x.decrement()
+        self.assertEqualHex(self.cpu.index_x.value, 0x10000 - 1)
 
         self.cpu.index_x.set(0)
-        x = self.cpu.index_x.decrement(2)
-        self.assertEqualHex(x, 0x10000 - 2)
+        self.cpu.index_x.decrement(2)
+        self.assertEqualHex(self.cpu.index_x.value, 0x10000 - 2)
 
 
 class Test6809_ZeroFlag(BaseCPUTestCase):

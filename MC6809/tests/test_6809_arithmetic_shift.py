@@ -190,48 +190,49 @@ class Test6809_Rotate(BaseCPUTestCase):
     """
 
     def assertROL(self, src, dst, source_carry):
-            src_bit_str = '{0:08b}'.format(src)
-            dst_bit_str = '{0:08b}'.format(dst)
-#             print "%02x %s > ROLA > %02x %s -> %s" % (
-#                 src, src_bit_str,
-#                 dst, dst_bit_str,
-#                 self.cpu.cc.get_info
-#             )
+        src_bit_str = '{0:08b}'.format(src)
+        dst_bit_str = '{0:08b}'.format(dst)
+        print("%02x %s > ROLA > %02x %s -> %s" % (
+            src, src_bit_str,
+            dst, dst_bit_str,
+            self.cpu.cc.get_info
+        ))
 
-            # Carry was cleared and moved into bit 0
-            excpeted_bits = "%s%s" % (src_bit_str[1:], source_carry)
-            self.assertEqual(dst_bit_str, excpeted_bits)
+        # Carry was cleared and moved into bit 0
+        excpeted_bits = "%s%s" % (src_bit_str[1:], source_carry)
+        self.assertEqual(dst_bit_str, excpeted_bits)
 
-            # test negative
-            if dst >= 0x80:
-                self.assertEqual(self.cpu.cc.N, 1)
-            else:
-                self.assertEqual(self.cpu.cc.N, 0)
+        # test negative
+        if dst >= 0x80:
+            self.assertEqual(self.cpu.cc.N, 1)
+        else:
+            self.assertEqual(self.cpu.cc.N, 0)
 
-            # test zero
-            if dst == 0:
-                self.assertEqual(self.cpu.cc.Z, 1)
-            else:
-                self.assertEqual(self.cpu.cc.Z, 0)
+        # test zero
+        if dst == 0:
+            self.assertEqual(self.cpu.cc.Z, 1)
+        else:
+            self.assertEqual(self.cpu.cc.Z, 0)
 
-            # test overflow
-            source_bit6 = is_bit_set(src, bit=6)
-            source_bit7 = is_bit_set(src, bit=7)
-            if source_bit6 == source_bit7: # V = bit 6 XOR bit 7
-                self.assertEqual(self.cpu.cc.V, 0)
-            else:
-                self.assertEqual(self.cpu.cc.V, 1)
+        # test overflow
+        source_bit6 = is_bit_set(src, bit=6)
+        source_bit7 = is_bit_set(src, bit=7)
+        if source_bit6 == source_bit7: # V = bit 6 XOR bit 7
+            self.assertEqual(self.cpu.cc.V, 0)
+        else:
+            self.assertEqual(self.cpu.cc.V, 1)
 
-            # test carry
-            if 0x80 <= src <= 0xff: # if bit 7 was set
-                self.assertEqual(self.cpu.cc.C, 1)
-            else:
-                self.assertEqual(self.cpu.cc.C, 0)
+        # test carry
+        if 0x80 <= src <= 0xff: # if bit 7 was set
+            self.assertEqual(self.cpu.cc.C, 1)
+        else:
+            self.assertEqual(self.cpu.cc.C, 0)
 
     def test_ROLA_with_clear_carry(self):
         for a in range(0x100):
             self.cpu.cc.set(0x00) # clear all CC flags
-            a = self.cpu.accu_a.set(a)
+            self.cpu.accu_a.set(a)
+            a = self.cpu.accu_a.value
             self.cpu_test_run(start=0x0000, end=None, mem=[
                 0x49, # ROLA
             ])
@@ -244,7 +245,8 @@ class Test6809_Rotate(BaseCPUTestCase):
     def test_ROLA_with_set_carry(self):
         for a in range(0x100):
             self.cpu.cc.set(0xff) # set all CC flags
-            a = self.cpu.accu_a.set(a)
+            self.cpu.accu_a.set(a)
+            a = self.cpu.accu_a.value
             self.cpu_test_run(start=0x0000, end=None, mem=[
                 0x49, # ROLA
             ])
@@ -315,7 +317,8 @@ class Test6809_Rotate(BaseCPUTestCase):
     def test_RORA_with_clear_carry(self):
         for a in range(0x100):
             self.cpu.cc.set(0x00) # clear all CC flags
-            a = self.cpu.accu_a.set(a)
+            self.cpu.accu_a.set(a)
+            a = self.cpu.accu_a.value
             self.cpu_test_run(start=0x0000, end=None, mem=[
                 0x46, # RORA
             ])
@@ -329,7 +332,8 @@ class Test6809_Rotate(BaseCPUTestCase):
     def test_RORA_with_set_carry(self):
         for a in range(0x100):
             self.cpu.cc.set(0xff) # set all CC flags
-            a = self.cpu.accu_a.set(a)
+            self.cpu.accu_a.set(a)
+            a = self.cpu.accu_a.value
             self.cpu_test_run(start=0x0000, end=None, mem=[
                 0x46, # RORA
             ])

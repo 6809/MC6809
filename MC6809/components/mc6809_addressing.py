@@ -119,10 +119,12 @@ class MC6809Addressing(object):
             self.cycles += 1
         elif addr_mode == 0x2:
 #             log.debug("\t0010 0x2 | ,R- | decrement by 1")
-            ea = register_obj.decrement(1)
+            register_obj.decrement(1)
+            ea = register_obj.value
         elif addr_mode == 0x3:
 #             log.debug("\t0011 0x3 | ,R-- | decrement by 2")
-            ea = register_obj.decrement(2)
+            register_obj.decrement(2)
+            ea = register_obj.value
             self.cycles += 1
         elif addr_mode == 0x4:
 #             log.debug("\t0100 0x4 | ,R | No offset")
