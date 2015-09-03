@@ -12,7 +12,7 @@
         http://www.burgins.com/m6809.html
         http://koti.mbnet.fi/~atjs/mc6809/
 
-    :copyleft: 2013-2014 by the MC6809 team, see AUTHORS for more details.
+    :copyleft: 2013-2015 by the MC6809 team, see AUTHORS for more details.
     :license: GNU GPL v3 or above, see LICENSE for more details.
 
     Based on:
@@ -22,11 +22,9 @@
 """
 
 from __future__ import absolute_import, division, print_function
-import inspect
 
 import sys
 import time
-import warnings
 from MC6809.components.mc6809_tools import calc_new_count
 
 if sys.version_info[0] == 3:

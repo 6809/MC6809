@@ -1,11 +1,31 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+"""
+    MC6809 - 6809 CPU emulator in Python
+    =======================================
+
+    6809 is Big-Endian
+
+    Links:
+        http://dragondata.worldofdragon.org/Publications/inside-dragon.htm
+        http://www.burgins.com/m6809.html
+        http://koti.mbnet.fi/~atjs/mc6809/
+
+    :copyleft: 2013-2015 by the MC6809 team, see AUTHORS for more details.
+    :license: GNU GPL v3 or above, see LICENSE for more details.
+
+    Based on:
+        * ApplyPy by James Tauber (MIT license)
+        * XRoar emulator by Ciaran Anscomb (GPL license)
+    more info, see README
+"""
+
+from __future__ import absolute_import, division, print_function
+
 
 from MC6809.components.cpu_utils.instruction_caller import opcode
 
-from MC6809.utils.bits import is_bit_set
-from MC6809.utils.byte_word_values import signed8, signed16, signed5
-from MC6809.components.MC6809data.MC6809_op_data import (
-    REG_S, REG_U, REG_X, REG_Y
-)
 
 class MC6809Interrupt(object):
 

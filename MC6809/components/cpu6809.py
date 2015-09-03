@@ -12,7 +12,7 @@
         http://www.burgins.com/m6809.html
         http://koti.mbnet.fi/~atjs/mc6809/
 
-    :copyleft: 2013-2014 by the MC6809 team, see AUTHORS for more details.
+    :copyleft: 2013-2015 by the MC6809 team, see AUTHORS for more details.
     :license: GNU GPL v3 or above, see LICENSE for more details.
 
     Based on:
@@ -60,17 +60,17 @@ class CPU(CPUBase, MC6809Addressing, MC6809Stack, MC6809Interrupt, MC6809OpsLoad
         return change_cpu(self, CPUSpeedLimit)
 
 
-class CPUSpeedLimit(CPU, CPUSpeedLimitMixin):
+class CPUSpeedLimit(CPUSpeedLimitMixin, CPU):
 
     def to_normal(self):
         return change_cpu(self, CPU)
 
 
-class CPUTypeAssert(CPU, CPUTypeAssertMixin):
+class CPUTypeAssert(CPUTypeAssertMixin, CPU):
     pass
 
 
-class CPUControlServer(CPU, CPUControlServerMixin):
+class CPUControlServer(CPUControlServerMixin, CPU):
     pass
 
 
