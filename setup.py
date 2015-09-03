@@ -208,6 +208,7 @@ setup(
     ],
     tests_require=[
         "nose", # https://pypi.python.org/pypi/nose
+        "DragonPyEmulator", # run DragonPy tests, to. e.g. with BASIC Interpreter
     ],
     entry_points={
         # Here we use constants, because of usage in DragonPy "starter GUI", too.
