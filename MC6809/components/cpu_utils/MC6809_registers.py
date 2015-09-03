@@ -20,7 +20,7 @@ import logging
 log=logging.getLogger("MC6809")
 
 
-class ValueStorage(object):
+class ValueStorageBase(object):
     def __init__(self, name, initial_value):
         self.name = name
         self.value = initial_value
@@ -38,7 +38,7 @@ class ValueStorage(object):
     __repr__ = __str__
 
 
-class UndefinedRegister(ValueStorage):
+class UndefinedRegister(ValueStorageBase):
     # used in TFR and EXG
     WIDTH = 16 # 16 Bit
     name = "undefined!"
@@ -53,7 +53,7 @@ class UndefinedRegister(ValueStorage):
         return 0xffff
 
 
-class ValueStorage8Bit(ValueStorage):
+class ValueStorage8Bit(ValueStorageBase):
     WIDTH = 8 # 8 Bit
 
     def set(self, v):
@@ -71,7 +71,7 @@ class ValueStorage8Bit(ValueStorage):
         return "%s=%02x" % (self.name, self.value)
 
 
-class ValueStorage16Bit(ValueStorage):
+class ValueStorage16Bit(ValueStorageBase):
     WIDTH = 16 # 16 Bit
 
     def set(self, v):
