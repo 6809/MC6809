@@ -28,7 +28,7 @@ from MC6809.components.cpu_utils.instruction_caller import opcode
 from MC6809.utils.bits import get_bit
 
 
-class MC6809OpsLogical(object):
+class OpsLogicalMixin(object):
     # ---- Logical Operations ----
 
 

@@ -30,7 +30,7 @@ from MC6809.components.MC6809data.MC6809_op_data import (
     REG_S, REG_U, REG_X, REG_Y
 )
 
-class MC6809Addressing(object):
+class AddressingMixin(object):
 
     def get_m_immediate(self):
         ea, m = self.read_pc_byte()

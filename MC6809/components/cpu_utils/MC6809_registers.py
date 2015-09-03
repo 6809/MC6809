@@ -30,7 +30,7 @@ class ValueStorageBase(object):
 
     def decrement(self, value=1):
         self.set(self.value - value)
-        
+
     def increment(self, value=1):
         self.set(self.value + value)
 

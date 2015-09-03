@@ -27,7 +27,7 @@ from __future__ import absolute_import, division, print_function
 from MC6809.components.cpu_utils.instruction_caller import opcode
 
 
-class MC6809OpsBranches(object):
+class OpsBranchesMixin(object):
 
     # ---- Programm Flow Instructions ----
 

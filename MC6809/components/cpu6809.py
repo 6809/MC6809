@@ -36,13 +36,13 @@ else:
 import logging
 
 from MC6809.core.cpu_control_server import CPUControlServerMixin
-from MC6809.components.mc6809_interrupt import MC6809Interrupt
-from MC6809.components.mc6809_addressing import MC6809Addressing
-from MC6809.components.mc6809_stack import MC6809Stack
-from MC6809.components.mc6809_ops_load_store import MC6809OpsLoadStore
-from MC6809.components.mc6809_ops_branches import MC6809OpsBranches
-from MC6809.components.mc6809_ops_logic import MC6809OpsLogical
-from MC6809.components.mc6809_ops_test import MC6809OpsTest
+from MC6809.components.mc6809_interrupt import InterruptMixin
+from MC6809.components.mc6809_addressing import AddressingMixin
+from MC6809.components.mc6809_stack import StackMixin
+from MC6809.components.mc6809_ops_load_store import OpsLoadStoreMixin
+from MC6809.components.mc6809_ops_branches import OpsBranchesMixin
+from MC6809.components.mc6809_ops_logic import OpsLogicalMixin
+from MC6809.components.mc6809_ops_test import OpsTestMixin
 from MC6809.components.mc6809_base import CPUBase
 from MC6809.components.mc6809_tools import CPUThreadedStatusMixin, CPUTypeAssertMixin
 
@@ -53,8 +53,8 @@ log = logging.getLogger("MC6809")
 HTML_TRACE = False
 
 
-class CPU(CPUBase, MC6809Addressing, MC6809Stack, MC6809Interrupt, MC6809OpsLoadStore, MC6809OpsBranches,
-    MC6809OpsTest, MC6809OpsLogical, CPUThreadedStatusMixin):
+class CPU(CPUBase, AddressingMixin, StackMixin, InterruptMixin, OpsLoadStoreMixin, OpsBranchesMixin,
+    OpsTestMixin, OpsLogicalMixin, CPUThreadedStatusMixin):
 
     def to_speed_limit(self):
         return change_cpu(self, CPUSpeedLimit)

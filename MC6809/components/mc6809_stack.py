@@ -32,7 +32,7 @@ from MC6809.components.MC6809data.MC6809_op_data import (
 )
 
 
-class MC6809Stack(object):
+class StackMixin(object):
 
     def push_byte(self, stack_pointer, byte):
         """ pushed a byte onto stack """
