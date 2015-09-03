@@ -368,14 +368,14 @@ class CPUBase(object):
     def read_pc_byte(self):
         op_addr = self.program_counter.value
         m = self.memory.read_byte(op_addr)
-        self.program_counter.increment(1)
+        self.program_counter.value += 1
 #        log.log(5, "read pc byte: $%02x from $%04x", m, op_addr)
         return op_addr, m
 
     def read_pc_word(self):
         op_addr = self.program_counter.value
         m = self.memory.read_word(op_addr)
-        self.program_counter.increment(2)
+        self.program_counter.value += 2
 #        log.log(5, "\tread pc word: $%04x from $%04x", m, op_addr)
         return op_addr, m
 
