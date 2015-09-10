@@ -12,6 +12,11 @@ os:
     - osx
     - linux
 
+before_install:
+    - if test ${TRAVIS_OS_NAME} = osx; then brew update; fi
+    - if test ${TRAVIS_OS_NAME} = osx; then brew install python; fi
+    - if test ${TRAVIS_OS_NAME} = osx; then brew linkapps python; fi
+
 install:
     - pip install --upgrade pip
     - pip install .
