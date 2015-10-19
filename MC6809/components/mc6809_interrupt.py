@@ -78,20 +78,20 @@ class InterruptMixin(object):
 
     irq_enabled = False
     def irq(self):
-        if not self.irq_enabled or self.cc.I == 1:
+        if not self.irq_enabled or self.I == 1:
             # log.critical("$%04x *** IRQ, ignore!\t%s" % (
-            #     self.program_counter.value, self.cc.get_info
+            #     self.program_counter.value, self.get_cc_info()
             # ))
             return
 
-        if self.cc.E:
+        if self.E:
             self.push_irq_registers()
         else:
             self.push_firq_registers()
 
         ea = self.memory.read_word(self.IRQ_VECTOR)
         # log.critical("$%04x *** IRQ, set PC to $%04x\t%s" % (
-        #     self.program_counter.value, ea, self.cc.get_info
+        #     self.program_counter.value, ea, self.get_cc_info()
         # ))
         self.program_counter.set(ea)
 
@@ -108,7 +108,7 @@ class InterruptMixin(object):
         self.push_byte(self.system_stack_pointer, self.direct_page.value) # DP
         self.push_byte(self.system_stack_pointer, self.accu_b.value) # B
         self.push_byte(self.system_stack_pointer, self.accu_a.value) # A
-        self.push_byte(self.system_stack_pointer, self.cc.value) # CC
+        self.push_byte(self.system_stack_pointer, self.get_cc_value()) # CC
 
     def push_firq_registers(self):
         """
@@ -117,7 +117,7 @@ class InterruptMixin(object):
         """
         self.cycles += 1
         self.push_word(self.system_stack_pointer, self.program_counter.value) # PC
-        self.push_byte(self.system_stack_pointer, self.cc.value) # CC
+        self.push_byte(self.system_stack_pointer, self.get_cc_value()) # CC
 
 
     @opcode(# Return from interrupt
@@ -135,8 +135,8 @@ class InterruptMixin(object):
         CC bits "HNZVC": -----
         """
         cc = self.pull_byte(self.system_stack_pointer) # CC
-        self.cc.set(cc)
-        if self.cc.E:
+        self.set_cc(cc)
+        if self.E:
             self.accu_a.set(
                 self.pull_byte(self.system_stack_pointer) # A
             )

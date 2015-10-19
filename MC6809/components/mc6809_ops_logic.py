@@ -49,8 +49,8 @@ class OpsLogicalMixin(object):
         a = register.value
         r = a & m
         register.set(r)
-        self.cc.clear_NZV()
-        self.cc.update_NZ_8(r)
+        self.clear_NZV()
+        self.update_NZ_8(r)
 #        log.debug("\tAND %s: %i & %i = %i",
 #            register.name, a, m, r
 #        )
@@ -71,8 +71,8 @@ class OpsLogicalMixin(object):
         a = register.value
         r = a ^ m
         register.set(r)
-        self.cc.clear_NZV()
-        self.cc.update_NZ_8(r)
+        self.clear_NZV()
+        self.update_NZ_8(r)
 #        log.debug("\tEOR %s: %i ^ %i = %i",
 #            register.name, a, m, r
 #        )
@@ -94,8 +94,8 @@ class OpsLogicalMixin(object):
         a = register.value
         r = a | m
         register.set(r)
-        self.cc.clear_NZV()
-        self.cc.update_NZ_8(r)
+        self.clear_NZV()
+        self.update_NZ_8(r)
 #         log.debug("$%04x OR %s: %02x | %02x = %02x",
 #             self.program_counter, register.name, a, m, r
 #         )
@@ -116,13 +116,13 @@ class OpsLogicalMixin(object):
 
         CC bits "HNZVC": ddddd
         """
-        assert register == self.cc
+        assert register == self.cc_register
 
-        old_cc = self.cc.value
+        old_cc = self.get_cc_value()
         new_cc = old_cc & m
-        self.cc.set(new_cc)
+        self.set_cc(new_cc)
 #        log.debug("\tANDCC: $%x AND $%x = $%x | set CC to %s",
-#             old_cc, m, new_cc, self.cc.get_info
+#             old_cc, m, new_cc, self.get_cc_info()
 #         )
 
     @opcode(# OR condition code register
@@ -139,13 +139,13 @@ class OpsLogicalMixin(object):
 
         CC bits "HNZVC": ddddd
         """
-        assert register == self.cc
+        assert register == self.cc_register
 
-        old_cc = self.cc.value
+        old_cc = self.get_cc_value()
         new_cc = old_cc | m
-        self.cc.set(new_cc)
+        self.set_cc(new_cc)
 #        log.debug("\tORCC: $%x OR $%x = $%x | set CC to %s",
-#             old_cc, m, new_cc, self.cc.get_info
+#             old_cc, m, new_cc, self.get_cc_info()
 #         )
 
     # ---- Logical shift: LSL, LSR ----
@@ -164,8 +164,8 @@ class OpsLogicalMixin(object):
         CC bits "HNZVC": naaas
         """
         r = a << 1
-        self.cc.clear_NZVC()
-        self.cc.update_NZVC_8(a, a, r)
+        self.clear_NZVC()
+        self.update_NZVC_8(a, a, r)
         return r
 
     @opcode(0x8, 0x68, 0x78) # LSL/ASL (direct, indexed, extended)
@@ -204,9 +204,9 @@ class OpsLogicalMixin(object):
         CC bits "HNZVC": -0a-s
         """
         r = a >> 1
-        self.cc.clear_NZC()
-        self.cc.C = get_bit(a, bit=0) # same as: self.cc.C |= (a & 1)
-        self.cc.set_Z8(r)
+        self.clear_NZC()
+        self.C = get_bit(a, bit=0) # same as: self.C |= (a & 1)
+        self.set_Z8(r)
         return r
 
     @opcode(0x4, 0x64, 0x74) # LSR (direct, indexed, extended)
@@ -243,9 +243,9 @@ class OpsLogicalMixin(object):
         CC bits "HNZVC": uaa-s
         """
         r = (a >> 1) | (a & 0x80)
-        self.cc.clear_NZC()
-        self.cc.C = get_bit(a, bit=0) # same as: self.cc.C |= (a & 1)
-        self.cc.update_NZ_8(r)
+        self.clear_NZC()
+        self.C = get_bit(a, bit=0) # same as: self.C |= (a & 1)
+        self.update_NZ_8(r)
         return r
 
     @opcode(0x7, 0x67, 0x77) # ASR (direct, indexed, extended)
@@ -283,9 +283,9 @@ class OpsLogicalMixin(object):
 
         CC bits "HNZVC": -aaas
         """
-        r = (a << 1) | self.cc.C
-        self.cc.clear_NZVC()
-        self.cc.update_NZVC_8(a, a, r)
+        r = (a << 1) | self.C
+        self.clear_NZVC()
+        self.update_NZVC_8(a, a, r)
         return r
 
     @opcode(0x9, 0x69, 0x79) # ROL (direct, indexed, extended)
@@ -322,10 +322,10 @@ class OpsLogicalMixin(object):
 
         CC bits "HNZVC": -aa-s
         """
-        r = (a >> 1) | (self.cc.C << 7)
-        self.cc.clear_NZ()
-        self.cc.update_NZ_8(r)
-        self.cc.C = get_bit(a, bit=0) # same as: self.cc.C = (a & 1)
+        r = (a >> 1) | (self.C << 7)
+        self.clear_NZ()
+        self.update_NZ_8(r)
+        self.C = get_bit(a, bit=0) # same as: self.C = (a & 1)
         return r
 
     @opcode(0x6, 0x66, 0x76) # ROR (direct, indexed, extended)

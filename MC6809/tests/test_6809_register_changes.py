@@ -63,11 +63,11 @@ class Test6809_TFR(BaseCPUTestCase):
         transfer 8 bit register in a 16 bit register
         TODO: verify this behaviour on real hardware!
         """
-        self.cpu.cc.set(0x34)
+        self.cpu.set_cc(0x34)
         self.cpu_test_run(start=0x4000, end=None, mem=[
             0x1F, 0xA1, # TFR CC,X
         ])
-        self.assertEqualHexByte(self.cpu.cc.value, 0x34)
+        self.assertEqualHexByte(self.cpu.get_cc_value(), 0x34)
         self.assertEqualHexWord(self.cpu.index_x.value, 0xff34)
 
     def test_TFR_CC_A(self):
@@ -76,11 +76,11 @@ class Test6809_TFR(BaseCPUTestCase):
         TODO: verify this behaviour on real hardware!
         """
         self.cpu.accu_a.set(0xab)
-        self.cpu.cc.set(0x89)
+        self.cpu.set_cc(0x89)
         self.cpu_test_run(start=0x4000, end=None, mem=[
             0x1F, 0xA8, # TFR CC,A
         ])
-        self.assertEqualHexByte(self.cpu.cc.value, 0x89)
+        self.assertEqualHexByte(self.cpu.get_cc_value(), 0x89)
         self.assertEqualHexByte(self.cpu.accu_a.value, 0x89)
 
     def test_TFR_Y_B(self):
@@ -147,24 +147,24 @@ class Test6809_EXG(BaseCPUTestCase):
         TODO: verify this behaviour on real hardware!
         """
         self.cpu.accu_a.set(0x1f)
-        self.cpu.cc.set(0xe2)
+        self.cpu.set_cc(0xe2)
         self.cpu_test_run(start=0x2000, end=None, mem=[
             0x1E, 0x8A, # EXG A,CC
         ])
         self.assertEqualHexByte(self.cpu.accu_a.value, 0xe2)
-        self.assertEqualHexByte(self.cpu.cc.value, 0x1f)
+        self.assertEqualHexByte(self.cpu.get_cc_value(), 0x1f)
 
     def test_EXG_X_CC(self):
         """
         TODO: verify this behaviour on real hardware!
         """
         self.cpu.index_x.set(0x1234)
-        self.cpu.cc.set(0x56)
+        self.cpu.set_cc(0x56)
         self.cpu_test_run(start=0x2000, end=None, mem=[
             0x1E, 0x1A, # EXG X,CC
         ])
         self.assertEqualHexWord(self.cpu.index_x.value, 0xff56)
-        self.assertEqualHexByte(self.cpu.cc.value, 0x34)
+        self.assertEqualHexByte(self.cpu.get_cc_value(), 0x34)
 
     def test_EXG_undefined_to_X(self):
         """

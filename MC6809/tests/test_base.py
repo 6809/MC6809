@@ -24,7 +24,7 @@ except ImportError:
 from MC6809.utils.byte_word_values import bin2hexline
 from MC6809.components.cpu6809 import CPU
 from MC6809.components.memory import Memory
-from MC6809.components.cpu_utils.MC6809_registers import ConditionCodeRegister, ValueStorage8Bit
+from MC6809.components.cpu_utils.MC6809_registers import ValueStorage8Bit
 from MC6809.tests.test_config import TestCfg
 
 

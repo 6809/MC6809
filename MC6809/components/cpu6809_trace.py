@@ -75,7 +75,7 @@ class InstructionTrace(PrepagedInstructions):
             "mnemonic": op_code_data["mnemonic"],
             "kwargs": " ".join(kwargs_info),
             "cpu": self.cpu.get_info,
-            "cc": self.cpu.cc.get_info,
+            "cc": self.cpu.get_cc_info(),
             "mem": self.get_mem_info(op_address)
         }
         sys.stdout.write(msg)

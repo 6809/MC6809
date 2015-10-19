@@ -53,8 +53,8 @@ class OpsLoadStoreMixin(object):
 #            self.cfg.mem_info.get_shortest(m)
 #        ))
         register.set(m)
-        self.cc.clear_NZV()
-        self.cc.update_NZ_16(m)
+        self.clear_NZV()
+        self.update_NZ_16(m)
 
     @opcode(# Load accumulator from memory
         0x86, 0x96, 0xa6, 0xb6, # LDA (immediate, direct, indexed, extended)
@@ -73,8 +73,8 @@ class OpsLoadStoreMixin(object):
 #            register.name, m,
 #        ))
         register.set(m)
-        self.cc.clear_NZV()
-        self.cc.update_NZ_8(m)
+        self.clear_NZV()
+        self.update_NZ_8(m)
 
     @opcode(# Store register to memory
         0xdd, 0xed, 0xfd, # STD (direct, indexed, extended)
@@ -98,8 +98,8 @@ class OpsLoadStoreMixin(object):
 #             value, register.name, ea,
 #             self.cfg.mem_info.get_shortest(ea)
 #         ))
-        self.cc.clear_NZV()
-        self.cc.update_NZ_16(value)
+        self.clear_NZV()
+        self.update_NZ_16(value)
         return ea, value # write word to Memory
 
     @opcode(# Store accumulator to memory
@@ -120,8 +120,8 @@ class OpsLoadStoreMixin(object):
 #             value, register.name, ea,
 #             self.cfg.mem_info.get_shortest(ea)
 #         ))
-        self.cc.clear_NZV()
-        self.cc.update_NZ_8(value)
+        self.clear_NZV()
+        self.update_NZ_8(value)
         return ea, value # write byte to Memory
 
 
