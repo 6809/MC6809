@@ -35,8 +35,8 @@ lint: ## Run code formatters and linter
 
 fix-code-style: ## Fix code formatting
 	poetry run flynt --line_length=${MAX_LINE_LENGTH} MC6809
-	poetry run isort --apply --recursive MC6809
 	poetry run autopep8 --ignore-local-config --max-line-length=${MAX_LINE_LENGTH} --aggressive --aggressive --in-place --recursive MC6809
+	poetry run isort --apply --recursive MC6809
 
 tox-listenvs: check-poetry ## List all tox test environments
 	poetry run tox --listenvs
