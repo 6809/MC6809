@@ -10,16 +10,10 @@
 """
 
 
-import sys
 import unittest
 
 from MC6809.tests.test_base import BaseCPUTestCase
 from MC6809.utils.byte_word_values import signed8
-
-
-PY2 = sys.version_info[0] == 2
-if PY2:
-    range = xrange
 
 
 class CCTestCase(BaseCPUTestCase):

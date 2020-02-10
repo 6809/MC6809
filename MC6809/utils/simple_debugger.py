@@ -18,10 +18,6 @@ import traceback
 import click
 
 
-PY2 = sys.version_info[0] == 2
-if PY2:
-    range = xrange
-
 MAX_CHARS = 256
 
 

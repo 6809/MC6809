@@ -13,15 +13,6 @@
 
 
 import string
-import sys
-
-
-PY2 = sys.version_info[0] == 2
-if PY2:
-    range = xrange
-    binary_type = str
-else:
-    binary_type = bytes
 
 
 def signed5(x):
@@ -102,7 +93,7 @@ def bin2hexline(data, add_addr=True, width=16):
     0128 9d 68 ba 89 d9 09 d4 da d9 09 d4 da d9 09 d4 da .h..............
     0144 d0 71 41 da d8 09                               .qA...
     """
-    assert isinstance(data, binary_type), (
+    assert isinstance(data, bytes), (
         f"is type: {type(data)} and not bytes/str: {repr(data)}"
     )
 
@@ -119,8 +110,6 @@ def bin2hexline(data, add_addr=True, width=16):
         ascii_block = ""
         for i in range(width):
             b = data[addr]
-            if PY2:
-                b = ord(b)
 
             if chr(b) in string.printable:
                 ascii_block += chr(b)
@@ -148,11 +137,3 @@ def _bin2hexline_example():
         data = f.read(500)
 
     print("\n".join(bin2hexline(data, width=16)))
-
-
-if __name__ == "__main__":
-    import doctest
-
-    print(doctest.testmod(verbose=0))
-
-    # _bin2hexline_example()

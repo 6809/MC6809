@@ -85,7 +85,7 @@ def print_unittest2(lines):
     print("        self.cpu_test_run(start=0x0100, end=None, mem=[")
     for line in lines:
         hex_list = line["hex_list"]
-        address = line["address"]
+        # address = line["address"]
         lable = line["lable"]
         code1 = line["code1"]
         code2 = line["code2"]
@@ -107,8 +107,8 @@ def print_unittest2(lines):
 def print_bas(lines, line_no):
     for line in lines:
         hex_list = line["hex_list"]
-        address = line["address"]
-        lable = line["lable"]
+        # address = line["address"]
+        # lable = line["lable"]
         code1 = line["code1"]
         code2 = line["code2"]
         doc = line["doc"]

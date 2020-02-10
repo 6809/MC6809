@@ -13,15 +13,9 @@
 
 
 import os
-import sys
 
 from MC6809.components.MC6809data.MC6809_op_data import BYTE, OP_DATA, WORD
 from MC6809.components.MC6809data.MC6809_op_docs import OP_DOC
-
-
-PY2 = sys.version_info[0] == 2
-if PY2:
-    range = xrange
 
 
 OUTFILENAME = "CPU6809_opcodes.html"

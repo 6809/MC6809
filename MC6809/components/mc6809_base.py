@@ -46,16 +46,6 @@ from MC6809.components.MC6809data.MC6809_op_data import (
     REG_X,
     REG_Y,
 )
-from MC6809.utils.bits import get_bit, is_bit_set
-from MC6809.utils.byte_word_values import signed5, signed8, signed16
-
-
-if sys.version_info[0] == 3:
-    # Python 3
-    pass
-else:
-    # Python 2
-    range = xrange
 
 
 log = logging.getLogger("MC6809")

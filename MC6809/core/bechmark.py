@@ -10,19 +10,12 @@
 """
 
 
-import locale
 import logging
 import string
-import sys
 import time
 
-from MC6809.tests.test_6809_program import Test6809_Program, Test6809_Program_Division2
+from MC6809.tests.test_6809_program import Test6809_Program
 from MC6809.utils.humanize import locale_format_number
-
-
-PY2 = sys.version_info[0] == 2
-if PY2:
-    range = xrange
 
 
 log = logging.getLogger("MC6809")
@@ -39,10 +32,7 @@ class Test6809_Program2(Test6809_Program):
         self.cpu.cycles = 0
 
         txt = string.printable
-
-        if not PY2:
-            txt = bytes(txt, encoding="UTF-8")
-
+        txt = bytes(txt, encoding="UTF-8")
         txt = txt * multiply
 
         print(f"\nStart {loops:d} {msg} loops with {len(txt):d} Bytes test string...")
@@ -82,30 +72,8 @@ def run_benchmark(loops, multiply):
 
     # --------------------------------------------------------------------------
     print("-" * 79)
-    print("\nTotal of %i benchmak loops run in %.2f sec %s CPU cycles." % (
-        loops, total_duration, locale_format_number(total_cycles)
-    ))
-    print("\tavg.: %s CPU cycles/sec" % locale_format_number(total_cycles / total_duration))
-
-
-if __name__ == '__main__':
-    from MC6809.utils.logging_utils import setup_logging
-
-    setup_logging(log,
-                  #        level=1 # hardcore debug ;)
-                  #        level=10 # DEBUG
-                  #        level=20 # INFO
-                  #        level=30 # WARNING
-                  #         level=40 # ERROR
-                  level=50  # CRITICAL/FATAL
-                  )
-
-    # will be done in CLI:
-    locale.setlocale(locale.LC_ALL, '')  # For Formating cycles/sec number
-
-    run_benchmark(
-        loops=1
-        #        loops=2
-        #        loops=10
+    print(
+        f"\nTotal of {loops:d} benchmak loops run in {total_duration:.2f} sec"
+        f" {locale_format_number(total_cycles)} CPU cycles."
     )
-    print(" --- END --- ")
+    print("\tavg.: %s CPU cycles/sec" % locale_format_number(total_cycles / total_duration))

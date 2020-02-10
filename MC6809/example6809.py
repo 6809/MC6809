@@ -23,7 +23,6 @@
 
 import binascii
 import string
-import sys
 import time
 
 from MC6809.components.cpu6809 import CPU

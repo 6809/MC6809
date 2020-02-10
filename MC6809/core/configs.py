@@ -10,12 +10,7 @@
 
 import inspect
 import logging
-import sys
 
-
-PY2 = sys.version_info[0] == 2
-if PY2:
-    range = xrange
 
 log = logging.getLogger("MC6809")
 

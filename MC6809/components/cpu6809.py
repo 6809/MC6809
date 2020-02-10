@@ -22,7 +22,6 @@
 
 
 import logging
-import sys
 
 from MC6809.components.mc6809_addressing import AddressingMixin
 from MC6809.components.mc6809_base import CPUBase
@@ -36,14 +35,6 @@ from MC6809.components.mc6809_speedlimited import CPUSpeedLimitMixin
 from MC6809.components.mc6809_stack import StackMixin
 from MC6809.components.mc6809_tools import CPUThreadedStatusMixin, CPUTypeAssertMixin
 from MC6809.core.cpu_control_server import CPUControlServerMixin
-
-
-if sys.version_info[0] == 3:
-    # Python 3
-    pass
-else:
-    # Python 2
-    range = xrange
 
 
 log = logging.getLogger("MC6809")

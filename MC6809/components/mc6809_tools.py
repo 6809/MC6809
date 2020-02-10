@@ -22,21 +22,12 @@
 
 
 import inspect
-import sys
+import queue
 import threading
 import time
 import warnings
 
-
-if sys.version_info[0] == 3:
-    # Python 3
-    import queue
-    import _thread
-else:
-    # Python 2
-    import Queue as queue
-    import thread as _thread
-    range = xrange
+import _thread
 
 
 class CPUStatusThread(threading.Thread):

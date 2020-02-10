@@ -20,11 +20,6 @@ from MC6809.tests.test_base import BaseCPUTestCase
 from MC6809.utils.bits import get_bit, is_bit_set
 
 
-PY2 = sys.version_info[0] == 2
-if PY2:
-    range = xrange
-
-
 log = logging.getLogger("MC6809")
 
 

@@ -22,17 +22,6 @@
 
 import array
 import logging
-import os
-import sys
-
-
-PY2 = sys.version_info[0] == 2
-if PY2:
-    range = xrange
-    string_type = basestring
-else:
-    # Py 3
-    string_type = str
 
 
 log = logging.getLogger("MC6809")
@@ -49,18 +38,24 @@ class Memory:
 
         self.RAM_SIZE = (self.cfg.RAM_END - self.cfg.RAM_START) + 1
         self.ROM_SIZE = (self.cfg.ROM_END - self.cfg.ROM_START) + 1
-        assert not hasattr(
-            cfg, "RAM_SIZE"), f"cfg.RAM_SIZE is deprecated! Remove it from: {self.cfg.__class__.__name__}"
-        assert not hasattr(
-            cfg, "ROM_SIZE"), f"cfg.ROM_SIZE is deprecated! Remove it from: {self.cfg.__class__.__name__}"
+        assert not hasattr(cfg, "RAM_SIZE"), (
+            f"cfg.RAM_SIZE is deprecated! Remove it from: {self.cfg.__class__.__name__}"
+        )
+        assert not hasattr(cfg, "ROM_SIZE"), (
+            f"cfg.ROM_SIZE is deprecated! Remove it from: {self.cfg.__class__.__name__}"
+        )
 
-        assert not hasattr(cfg, "ram"), f"cfg.ram is deprecated! Remove it from: {self.cfg.__class__.__name__}"
+        assert not hasattr(cfg, "ram"), (
+            f"cfg.ram is deprecated! Remove it from: {self.cfg.__class__.__name__}"
+        )
 
-        assert not hasattr(
-            cfg, "DEFAULT_ROM"), f"cfg.DEFAULT_ROM must be converted to DEFAULT_ROMS tuple in {self.cfg.__class__.__name__}"
+        assert not hasattr(cfg, "DEFAULT_ROM"), (
+            f"cfg.DEFAULT_ROM must be converted"
+            f" to DEFAULT_ROMS tuple in {self.cfg.__class__.__name__}"
+        )
 
-        assert self.RAM_SIZE + self.RAM_SIZE <= self.INTERNAL_SIZE, "{} Bytes < {} Bytes".format(
-            self.RAM_SIZE + self.RAM_SIZE, self.INTERNAL_SIZE
+        assert self.RAM_SIZE + self.RAM_SIZE <= self.INTERNAL_SIZE, (
+            f"{self.RAM_SIZE + self.RAM_SIZE} Bytes < {self.INTERNAL_SIZE} Bytes"
         )
 
         # About different types of memory see:
@@ -169,7 +164,7 @@ class Memory:
     # ---------------------------------------------------------------------------
 
     def load(self, address, data):
-        if isinstance(data, string_type):
+        if isinstance(data, str):
             data = [ord(c) for c in data]
 
         log.debug("ROM load at $%04x: %s", address,
@@ -179,10 +174,10 @@ class Memory:
             try:
                 self._mem[ea] = datum
             except OverflowError as err:
-                msg = "%s - datum=$%x ea=$%04x (load address was: $%04x - data length: %iBytes)" % (
-                    err, datum, ea, address, len(data)
+                raise OverflowError(
+                    f"{err} - datum=${datum:x} ea=${ea:04x}"
+                    f" (load address was: ${address:04x} - data length: {len(data):d}Bytes)"
                 )
-                raise OverflowError(msg)
 
     def load_file(self, romfile):
         data = romfile.get_data()
@@ -198,8 +193,9 @@ class Memory:
             byte = self._read_byte_callbacks[address](
                 self.cpu.cycles, self.cpu.last_op_address, address
             )
-            assert byte is not None, "Error: read byte callback for ${:04x} func {!r} has return None!".format(
-                address, self._read_byte_callbacks[address].__name__
+            assert byte is not None, (
+                f"Error: read byte callback for ${address:04x}"
+                f" func {self._read_byte_callbacks[address].__name__!r} has return None!"
             )
             return byte
 
@@ -217,8 +213,9 @@ class Memory:
             byte = self._read_byte_middleware[address](
                 self.cpu.cycles, self.cpu.last_op_address, address, byte
             )
-            assert byte is not None, "Error: read byte middleware for ${:04x} func {!r} has return None!".format(
-                address, self._read_byte_middleware[address].__name__
+            assert byte is not None, (
+                f"Error: read byte middleware for ${address:04x}"
+                f" func {self._read_byte_middleware[address].__name__!r} has return None!"
             )
 
 #        log.log(5, "%04x| (%i) read byte $%x from $%x",
@@ -232,8 +229,9 @@ class Memory:
             word = self._read_word_callbacks[address](
                 self.cpu.cycles, self.cpu.last_op_address, address
             )
-            assert word is not None, "Error: read word callback for ${:04x} func {!r} has return None!".format(
-                address, self._read_word_callbacks[address].__name__
+            assert word is not None, (
+                f"Error: read word callback for ${address:04x}"
+                f" func {self._read_word_callbacks[address].__name__!r} has return None!"
             )
             return word
 
@@ -246,7 +244,9 @@ class Memory:
         self.cpu.cycles += 1
 
         assert value >= 0, f"Write negative byte hex:{value:00x} dez:{value:d} to ${address:04x}"
-        assert value <= 0xff, f"Write out of range byte hex:{value:02x} dez:{value:d} to ${address:04x}"
+        assert value <= 0xff, (
+            f"Write out of range byte hex:{value:02x} dez:{value:d} to ${address:04x}"
+        )
 #         if not (0x0 <= value <= 0xff):
 #             log.error("Write out of range value $%02x to $%04x", value, address)
 #             value = value & 0xff
@@ -256,8 +256,9 @@ class Memory:
             value = self._write_byte_middleware[address](
                 self.cpu.cycles, self.cpu.last_op_address, address, value
             )
-            assert value is not None, "Error: write byte middleware for ${:04x} func {!r} has return None!".format(
-                address, self._write_byte_middleware[address].__name__
+            assert value is not None, (
+                f"Error: write byte middleware for ${address:04x}"
+                f" func {self._write_byte_middleware[address].__name__!r} has return None!"
             )
 
         if address in self._write_byte_callbacks:
@@ -266,7 +267,10 @@ class Memory:
             )
 
         if self.cfg.ROM_START <= address <= self.cfg.ROM_END:
-            msg = f"{self.cpu.program_counter.value:04x}| writing into ROM at ${address:04x} ignored."
+            msg = (
+                f"{self.cpu.program_counter.value:04x}|"
+                f" writing into ROM at ${address:04x} ignored."
+            )
             self.cfg.mem_info(address, msg)
             msg2 = f"{msg}: ${address:x}"
             log.critical(msg2)
@@ -275,7 +279,10 @@ class Memory:
         try:
             self._mem[address] = value
         except (IndexError, KeyError):
-            msg = f"{self.cpu.program_counter.value:04x}| writing to {address:x} is outside RAM/ROM !"
+            msg = (
+                f"{self.cpu.program_counter.value:04x}|"
+                f" writing to {address:x} is outside RAM/ROM !"
+            )
             self.cfg.mem_info(address, msg)
             msg2 = f"{msg}: ${address:x}"
             log.warning(msg2)
@@ -283,14 +290,17 @@ class Memory:
 
     def write_word(self, address, word):
         assert word >= 0, f"Write negative word hex:{word:04x} dez:{word:d} to ${address:04x}"
-        assert word <= 0xffff, f"Write out of range word hex:{word:04x} dez:{word:d} to ${address:04x}"
+        assert word <= 0xffff, (
+            f"Write out of range word hex:{word:04x} dez:{word:d} to ${address:04x}"
+        )
 
         if address in self._write_word_middleware:
             word = self._write_word_middleware[address](
                 self.cpu.cycles, self.cpu.last_op_address, address, word
             )
-            assert word is not None, "Error: write word middleware for ${:04x} func {!r} has return None!".format(
-                address, self._write_word_middleware[address].__name__
+            assert word is not None, (
+                f"Error: write word middleware for ${address:04x}"
+                f" func {self._write_word_middleware[address].__name__!r} has return None!"
             )
 
         if address in self._write_word_callbacks:

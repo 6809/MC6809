@@ -18,19 +18,11 @@
 
 import json
 import logging
-import os
 import re
 import select
-import sys
 import threading
 import traceback
-
-
-try:
-    from http.server import BaseHTTPRequestHandler  # Python 3
-except ImportError:
-    from BaseHTTPServer import BaseHTTPRequestHandler  # Python 2
-    range = xrange
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
 
 log = logging.getLogger("MC6809")
@@ -255,7 +247,7 @@ class CPUControlServerMixin:
         control_handler = ControlHandlerFactory(self)
         server_address = (self.cfg.CPU_CONTROL_ADDR, self.cfg.CPU_CONTROL_PORT)
         try:
-            control_server = http.server.HTTPServer(server_address, control_handler)
+            control_server = HTTPServer(server_address, control_handler)
         except BaseException:
             self.running = False
             raise

@@ -23,8 +23,6 @@ from MC6809.tests.test_base import BaseStackTestCase
 
 log = logging.getLogger("MC6809")
 
-PY3 = sys.version_info[0] == 3
-
 
 class Test6809_Program(BaseStackTestCase):
     #     def setUp(self):
@@ -144,8 +142,7 @@ class Test6809_Program(BaseStackTestCase):
         return crc32 ^ 0xFFFFFFFF
 
     def _test_crc32(self, txt):
-        if PY3:
-            txt = bytes(txt, encoding="UTF-8")
+        txt = bytes(txt, encoding="UTF-8")
         crc32 = self._crc32(txt)
         excpected_crc32 = binascii.crc32(txt) & 0xffffffff
         hex1 = f"${crc32:08x}"

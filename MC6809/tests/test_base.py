@@ -15,16 +15,9 @@ import logging
 import unittest
 
 from MC6809.components.cpu6809 import CPU
-from MC6809.components.cpu_utils.MC6809_registers import ValueStorage8Bit
 from MC6809.components.memory import Memory
 from MC6809.tests.test_config import TestCfg
 from MC6809.utils.byte_word_values import bin2hexline
-
-
-try:
-    import queue  # Python 3
-except ImportError:
-    import Queue as queue  # Python 2
 
 
 log = logging.getLogger("MC6809")
@@ -142,12 +135,12 @@ class BaseStackTestCase(BaseCPUTestCase):
         self.cpu.user_stack_pointer.set(self.INITIAL_USER_STACK_ADDR)
 
 
-class TestCPU:
-    def __init__(self):
-        self.accu_a = ValueStorage8Bit("A", 0)  # A - 8 bit accumulator
-        self.accu_b = ValueStorage8Bit("B", 0)  # B - 8 bit accumulator
-        # 8 bit condition code register bits: E F H I N Z V C
-        self.cc = ConditionCodeRegister()
+# class TestCPU:
+#     def __init__(self):
+#         self.accu_a = ValueStorage8Bit("A", 0)  # A - 8 bit accumulator
+#         self.accu_b = ValueStorage8Bit("B", 0)  # B - 8 bit accumulator
+#         # 8 bit condition code register bits: E F H I N Z V C
+#         self.cc = ConditionCodeRegister()
 
 
 def print_cpu_state_data(state):

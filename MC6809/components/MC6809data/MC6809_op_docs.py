@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# flake8: noqa
 
 """
     6809 instruction set data
