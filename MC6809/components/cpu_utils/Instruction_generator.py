@@ -8,7 +8,6 @@
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
-from __future__ import absolute_import, division, print_function
 
 import os
 import sys
@@ -158,15 +157,15 @@ def generate_code(f):
 
     for register in sorted([REGISTER_DICT[register] for register in registers]):
         f.write(
-            "        self.%(r)s=self.cpu.%(r)s\n" % {
-                "r": register,
-            }
+            "        self.{r}=self.cpu.{r}\n".format(
+                r=register,
+            )
         )
     f.write("\n")
 
     for addr_mode in sorted(addr_modes):
         f.write(
-            "        self.%(a)s=self.cpu.%(a)s\n" % {"a": addr_mode}
+            "        self.{a}=self.cpu.{a}\n".format(a=addr_mode)
         )
     f.write("\n")
 

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding: utf-8
 
 """
     MC6809 - 6809 CPU emulator in Python
@@ -21,7 +20,6 @@
     more info, see README
 """
 
-from __future__ import absolute_import, division, print_function
 
 import logging
 
@@ -31,7 +29,7 @@ from MC6809.utils.humanize import cc_value2txt
 log = logging.getLogger("MC6809")
 
 
-class ConditionCodeRegister(object):
+class ConditionCodeRegister:
     """
     Imitate the normal register API
     """
@@ -50,11 +48,11 @@ class ConditionCodeRegister(object):
         return self.set_cc(status)
 
 
-class CPUConditionCodeRegisterMixin(object):
+class CPUConditionCodeRegisterMixin:
     """ CC - 8 bit condition code register bits """
 
     def __init__(self, *args, **kwargs):
-        super(CPUConditionCodeRegisterMixin, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.E = 0  # E - 0x80 - bit 7 - Entire register state stacked
         self.F = 0  # F - 0x40 - bit 6 - FIRQ interrupt masked
         self.H = 0  # H - 0x20 - bit 5 - Half-Carry

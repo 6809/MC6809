@@ -9,12 +9,11 @@
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
-from __future__ import absolute_import, division, print_function
 
 import sys
 
 
-class BaseMemoryInfo(object):
+class BaseMemoryInfo:
     def __init__(self, out_func):
         self.out_func = out_func
 

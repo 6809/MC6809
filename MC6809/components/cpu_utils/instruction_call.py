@@ -1,4 +1,3 @@
-
 """
     This file was generated with: "Instruction_generator.py"
     Please don't change it directly ;)
@@ -15,7 +14,7 @@ from MC6809.components.cpu_utils.instruction_base import InstructionBase
 
 class PrepagedInstructions(InstructionBase):
     def __init__(self, *args, **kwargs):
-        super(PrepagedInstructions, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         self.write_byte = self.cpu.memory.write_byte
         self.write_word = self.cpu.memory.write_word

@@ -19,7 +19,6 @@
     more info, see README
 """
 
-from __future__ import absolute_import, division, print_function
 
 import array
 import logging
@@ -39,7 +38,7 @@ else:
 log = logging.getLogger("MC6809")
 
 
-class Memory(object):
+class Memory:
     def __init__(self, cfg, read_bus_request_queue=None, read_bus_response_queue=None, write_bus_queue=None):
         self.cfg = cfg
         self.read_bus_request_queue = read_bus_request_queue
@@ -60,7 +59,7 @@ class Memory(object):
         assert not hasattr(
             cfg, "DEFAULT_ROM"), f"cfg.DEFAULT_ROM must be converted to DEFAULT_ROMS tuple in {self.cfg.__class__.__name__}"
 
-        assert self.RAM_SIZE + self.RAM_SIZE <= self.INTERNAL_SIZE, "%s Bytes < %s Bytes" % (
+        assert self.RAM_SIZE + self.RAM_SIZE <= self.INTERNAL_SIZE, "{} Bytes < {} Bytes".format(
             self.RAM_SIZE + self.RAM_SIZE, self.INTERNAL_SIZE
         )
 
@@ -199,7 +198,7 @@ class Memory(object):
             byte = self._read_byte_callbacks[address](
                 self.cpu.cycles, self.cpu.last_op_address, address
             )
-            assert byte is not None, "Error: read byte callback for $%04x func %r has return None!" % (
+            assert byte is not None, "Error: read byte callback for ${:04x} func {!r} has return None!".format(
                 address, self._read_byte_callbacks[address].__name__
             )
             return byte
@@ -218,7 +217,7 @@ class Memory(object):
             byte = self._read_byte_middleware[address](
                 self.cpu.cycles, self.cpu.last_op_address, address, byte
             )
-            assert byte is not None, "Error: read byte middleware for $%04x func %r has return None!" % (
+            assert byte is not None, "Error: read byte middleware for ${:04x} func {!r} has return None!".format(
                 address, self._read_byte_middleware[address].__name__
             )
 
@@ -233,7 +232,7 @@ class Memory(object):
             word = self._read_word_callbacks[address](
                 self.cpu.cycles, self.cpu.last_op_address, address
             )
-            assert word is not None, "Error: read word callback for $%04x func %r has return None!" % (
+            assert word is not None, "Error: read word callback for ${:04x} func {!r} has return None!".format(
                 address, self._read_word_callbacks[address].__name__
             )
             return word
@@ -257,7 +256,7 @@ class Memory(object):
             value = self._write_byte_middleware[address](
                 self.cpu.cycles, self.cpu.last_op_address, address, value
             )
-            assert value is not None, "Error: write byte middleware for $%04x func %r has return None!" % (
+            assert value is not None, "Error: write byte middleware for ${:04x} func {!r} has return None!".format(
                 address, self._write_byte_middleware[address].__name__
             )
 
@@ -290,7 +289,7 @@ class Memory(object):
             word = self._write_word_middleware[address](
                 self.cpu.cycles, self.cpu.last_op_address, address, word
             )
-            assert word is not None, "Error: write word middleware for $%04x func %r has return None!" % (
+            assert word is not None, "Error: write word middleware for ${:04x} func {!r} has return None!".format(
                 address, self._write_word_middleware[address].__name__
             )
 
@@ -319,7 +318,7 @@ class Memory(object):
         dump_lines = []
         for addr, value in self.iter_bytes(start, end):
             msg = f"${addr:04x}: ${value:02x} (dez: {value:d})"
-            msg = "%-25s| %s" % (
+            msg = "{:<25}| {}".format(
                 msg, self.cfg.mem_info.get_shortest(addr)
             )
             dump_lines.append(msg)

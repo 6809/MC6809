@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding: utf-8
 
 """
     MC6809 - 6809 CPU emulator in Python
@@ -21,7 +20,6 @@
     more info, see README
 """
 
-from __future__ import absolute_import, division, print_function
 
 import logging
 import sys

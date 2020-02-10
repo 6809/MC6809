@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding: utf-8
 
 """
     MC6809 - 6809 CPU emulator in Python
@@ -21,7 +20,6 @@
     more info, see README
 """
 
-from __future__ import absolute_import, division, print_function
 
 import inspect
 import sys
@@ -48,7 +46,7 @@ class CPUStatusThread(threading.Thread):
     """
 
     def __init__(self, cpu, cpu_status_queue):
-        super(CPUStatusThread, self).__init__(name="CPU-Status-Thread")
+        super().__init__(name="CPU-Status-Thread")
         self.cpu = cpu
         self.cpu_status_queue = cpu_status_queue
 
@@ -73,7 +71,7 @@ class CPUStatusThread(threading.Thread):
             raise
 
 
-class CPUThreadedStatusMixin(object):
+class CPUThreadedStatusMixin:
     def __init__(self, *args, **kwargs):
         cpu_status_queue = kwargs.get("cpu_status_queue", None)
         if cpu_status_queue is not None:
@@ -82,7 +80,7 @@ class CPUThreadedStatusMixin(object):
             status_thread.start()
 
 
-class CPUTypeAssertMixin(object):
+class CPUTypeAssertMixin:
     """
     assert that all attributes of the CPU class will remain as the same.
 
@@ -97,7 +95,7 @@ class CPUTypeAssertMixin(object):
     __ATTR_DICT = {}
 
     def __init__(self, *args, **kwargs):
-        super(CPUTypeAssertMixin, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.__set_attr_dict()
         warnings.warn(
             "CPU TypeAssert used! (Should be only activated for debugging!)"

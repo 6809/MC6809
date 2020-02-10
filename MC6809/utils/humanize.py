@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding: utf-8
 
 """
     DragonPy - Humanize
@@ -9,7 +8,6 @@
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
-from __future__ import absolute_import, division, print_function
 
 import locale
 import platform
@@ -93,7 +91,7 @@ def get_python_info():
         return f"Python {ver_info}"
         # e.g.: Python 2.7.6 [PyPy 2.3.1 with GCC 4.8.2]
     else:
-        return "%s %s" % (
+        return "{} {}".format(
             sys.executable,
             sys.version.replace("\n", " ")
         )

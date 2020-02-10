@@ -1,5 +1,3 @@
-# coding: utf-8
-
 """
     MC6809 - 6809 CPU emulator in Python
     =======================================
@@ -9,7 +7,6 @@
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
-from __future__ import absolute_import, division, print_function
 
 import inspect
 import logging
@@ -23,7 +20,7 @@ if PY2:
 log = logging.getLogger("MC6809")
 
 
-class DummyMemInfo(object):
+class DummyMemInfo:
     def get_shortest(self, *args):
         return ">>mem info not active<<"
 
@@ -41,7 +38,7 @@ class AddressAreas(dict):
     """
 
     def __init__(self, areas):
-        super(AddressAreas, self).__init__()
+        super().__init__()
         for start_addr, end_addr, txt in areas:
             self.add_area(start_addr, end_addr, txt)
 
@@ -50,7 +47,7 @@ class AddressAreas(dict):
             dict.__setitem__(self, addr, txt)
 
 
-class BaseConfig(object):
+class BaseConfig:
     #     # http address/port number for the CPU control server
     #     CPU_CONTROL_ADDR = "127.0.0.1"
     #     CPU_CONTROL_PORT = 6809
@@ -119,11 +116,11 @@ class BaseConfig(object):
             if not isinstance(value, (int, str, list, tuple, dict)):
                 continue
             if isinstance(value, int):
-                print("%20s = %-6s in hex: %7s" % (
+                print("{:>20} = {:<6} in hex: {:>7}".format(
                     name, value, hex(value)
                 ))
             else:
-                print("%20s = %s" % (name, value))
+                print(f"{name:>20} = {value}")
 
 
 def test_run():

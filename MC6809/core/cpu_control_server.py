@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding: utf-8
 
 """
     DragonPy - CPU control http server
@@ -16,7 +15,6 @@
     more info, see README
 """
 
-from __future__ import absolute_import, division, print_function
 
 import json
 import logging
@@ -63,7 +61,7 @@ class ControlHandler(BaseHTTPRequestHandler):
         BaseHTTPRequestHandler.__init__(self, request, client_address, server)
 
     def log_message(self, format, *args):
-        msg = "%s - - [%s] %s\n" % (
+        msg = "{} - - [{}] {}\n".format(
             self.client_address[0], self.log_date_time_string(), format % args
         )
         log.critical(msg)
@@ -254,7 +252,7 @@ def control_server_thread(cpu, cfg, control_server):
         log.critical("Quit control server thread, because CPU doesn't run.")
 
 
-class CPUControlServerMixin(object):
+class CPUControlServerMixin:
     def __init__(self, *args, **kwargs):
         control_handler = ControlHandlerFactory(self)
         server_address = (self.cfg.CPU_CONTROL_ADDR, self.cfg.CPU_CONTROL_PORT)

@@ -11,7 +11,6 @@
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
-from __future__ import absolute_import, division, print_function
 
 import string
 import sys
@@ -87,7 +86,7 @@ def bin2hexline(data, add_addr=True, width=16):
     Format binary data to a Hex-Editor like format...
 
     e.g.:
-    with open(r"C:\Python27\python.exe", "rb") as f:
+    with open(r"C:\\Python27\\python.exe", "rb") as f:
         data = f.read(150)
 
     print("\n".join(bin2hexline(data, width=16)))

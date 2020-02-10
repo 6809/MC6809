@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding: utf-8
 
 """
     MC6809 - 6809 CPU emulator in Python
@@ -21,12 +20,11 @@
     more info, see README
 """
 
-from __future__ import absolute_import, division, print_function
 
 from MC6809.components.cpu_utils.instruction_caller import opcode
 
 
-class InterruptMixin(object):
+class InterruptMixin:
 
     # ---- Not Implemented, yet. ----
 

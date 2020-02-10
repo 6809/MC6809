@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding: utf-8
 
 """
     borrowed from http://code.activestate.com/recipes/52215/
@@ -12,7 +11,6 @@
         print_exc_plus()
 """
 
-from __future__ import absolute_import, division, print_function
 
 import sys
 import traceback

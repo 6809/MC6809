@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding: utf-8
 
 """
     MC6809 - 6809 CPU emulator in Python
@@ -11,7 +10,6 @@
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
-from __future__ import absolute_import, division, print_function
 
 import logging
 import sys
@@ -25,7 +23,7 @@ log = logging.getLogger("DragonPy.cpu6809.trace")
 
 class InstructionTrace(PrepagedInstructions):
     def __init__(self, *args, **kwargs):
-        super(InstructionTrace, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.cfg = self.cpu.cfg
         self.get_mem_info = self.cpu.cfg.mem_info.get_shortest
 
@@ -69,15 +67,15 @@ class InstructionTrace(PrepagedInstructions):
         if "m" in kwargs:
             kwargs_info.append(f"m:{kwargs['m']:x}")
 
-        msg = "%(op_address)04x| %(op_bytes)-11s %(mnemonic)-7s %(kwargs)-19s %(cpu)s | %(cc)s | %(mem)s\n" % {
-            "op_address": op_address,
-            "op_bytes": op_bytes,
-            "mnemonic": op_code_data["mnemonic"],
-            "kwargs": " ".join(kwargs_info),
-            "cpu": self.cpu.get_info,
-            "cc": self.cpu.get_cc_info(),
-            "mem": self.get_mem_info(op_address)
-        }
+        msg = "{op_address:04x}| {op_bytes:<11} {mnemonic:<7} {kwargs:<19} {cpu} | {cc} | {mem}\n".format(
+            op_address=op_address,
+            op_bytes=op_bytes,
+            mnemonic=op_code_data["mnemonic"],
+            kwargs=" ".join(kwargs_info),
+            cpu=self.cpu.get_info,
+            cc=self.cpu.get_cc_info(),
+            mem=self.get_mem_info(op_address)
+        )
         sys.stdout.write(msg)
 
         if not op_bytes.startswith(f"{opcode:02x}"):

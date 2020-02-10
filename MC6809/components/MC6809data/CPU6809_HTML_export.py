@@ -11,7 +11,6 @@
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
-from __future__ import absolute_import, division, print_function
 
 import os
 import sys
@@ -34,7 +33,7 @@ WIDTH_DICT = {
 }
 
 
-class Cell(object):
+class Cell:
     def __init__(self, txt):
         self.txt = txt
         self.rowspan = 0

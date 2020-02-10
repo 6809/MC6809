@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding: utf-8
 
 """
     MC6809 - 6809 CPU emulator in Python
@@ -21,7 +20,6 @@
     more info, see README
 """
 
-from __future__ import absolute_import, division, print_function
 
 import logging
 import sys
@@ -69,7 +67,7 @@ HTML_TRACE = False
 undefined_reg = UndefinedRegister()
 
 
-class CPUBase(object):
+class CPUBase:
 
     SWI3_VECTOR = 0xfff2
     SWI2_VECTOR = 0xfff4
@@ -117,7 +115,7 @@ class CPUBase(object):
         # DP - 8 bit direct page register
         self.direct_page = ValueStorage8Bit(REG_DP, 0)
 
-        super(CPUBase, self).__init__()
+        super().__init__()
 
         self.register_str2object = {
             REG_X: self.index_x,
@@ -357,7 +355,7 @@ class CPUBase(object):
 
     @property
     def get_info(self):
-        return "cc=%02x a=%02x b=%02x dp=%02x x=%04x y=%04x u=%04x s=%04x" % (
+        return "cc={:02x} a={:02x} b={:02x} dp={:02x} x={:04x} y={:04x} u={:04x} s={:04x}".format(
             self.get_cc_value(),
             self.accu_a.value, self.accu_b.value,
             self.direct_page.value,

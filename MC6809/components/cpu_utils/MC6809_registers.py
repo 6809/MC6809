@@ -11,7 +11,6 @@
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
-from __future__ import absolute_import, division, print_function
 
 import logging
 
@@ -19,7 +18,7 @@ import logging
 log = logging.getLogger("MC6809")
 
 
-class ValueStorageBase(object):
+class ValueStorageBase:
     def __init__(self, name, initial_value):
         self.name = name
         self.value = initial_value
@@ -90,7 +89,7 @@ class ValueStorage16Bit(ValueStorageBase):
         return f"{self.name}={self.value:04x}"
 
 
-class ConcatenatedAccumulator(object):
+class ConcatenatedAccumulator:
     """
     6809 has register D - 16 bit concatenated reg. (A + B)
     """

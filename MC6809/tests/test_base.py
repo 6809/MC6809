@@ -10,7 +10,6 @@
 """
 
 
-from __future__ import absolute_import, division, print_function
 
 import hashlib
 import logging
@@ -139,12 +138,12 @@ class BaseStackTestCase(BaseCPUTestCase):
     INITIAL_USER_STACK_ADDR = 0x2000
 
     def setUp(self):
-        super(BaseStackTestCase, self).setUp()
+        super().setUp()
         self.cpu.system_stack_pointer.set(self.INITIAL_SYSTEM_STACK_ADDR)
         self.cpu.user_stack_pointer.set(self.INITIAL_USER_STACK_ADDR)
 
 
-class TestCPU(object):
+class TestCPU:
     def __init__(self):
         self.accu_a = ValueStorage8Bit("A", 0)  # A - 8 bit accumulator
         self.accu_b = ValueStorage8Bit("B", 0)  # B - 8 bit accumulator

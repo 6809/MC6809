@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding: utf-8
 
 """
     MC6809 - 6809 CPU emulator in Python
@@ -21,14 +20,13 @@
     more info, see README
 """
 
-from __future__ import absolute_import, division, print_function
 
 from MC6809.components.MC6809data.MC6809_op_data import REG_S, REG_U, REG_X, REG_Y
 from MC6809.utils.bits import is_bit_set
 from MC6809.utils.byte_word_values import signed5, signed8, signed16
 
 
-class AddressingMixin(object):
+class AddressingMixin:
 
     def get_m_immediate(self):
         ea, m = self.read_pc_byte()

@@ -10,7 +10,6 @@
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
-from __future__ import absolute_import, division, print_function
 
 from MC6809.components.MC6809data.MC6809_op_data import OP_DATA
 

@@ -45,7 +45,7 @@ class Config(BaseConfig):
     ROM_END = 0xFFFF
 
 
-class MC6809Example(object):
+class MC6809Example:
     def __init__(self):
         cfg = Config(CFG_DICT)
         memory = Memory(cfg)
@@ -128,8 +128,7 @@ class MC6809Example(object):
 
     def compare_crc32(self, data):
 
-        if sys.version_info > (3,):
-            data = bytes(data, encoding="ASCII")
+        data = bytes(data, encoding="ASCII")
 
         print(f"Compare CRC32 with: {data!r}")
 

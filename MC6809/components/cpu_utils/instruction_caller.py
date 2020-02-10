@@ -8,7 +8,6 @@
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
-from __future__ import absolute_import, division, print_function
 
 import inspect
 
@@ -27,7 +26,7 @@ def opcode(*opcodes):
     return decorator
 
 
-class OpCollection(object):
+class OpCollection:
     def __init__(self, cpu):
         self.cpu = cpu
         self.opcode_dict = {}

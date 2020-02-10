@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding: utf-8
 
 # copy&paste .lst content from e.g.: http://www.asm80.com/
 lst = """
@@ -75,11 +74,11 @@ def print_unittest1(lines):
         else:
             hex_list += "#"
 
-        line = "            %-20s %s|%6s %-5s %-8s" % (
+        line = "            {:<20} {}|{:>6} {:<5} {:<8}".format(
             hex_list, address, lable, code1, code2
         )
         if doc:
-            line = "%40s ; %s" % (line, doc)
+            line = f"{line:>40} ; {doc}"
         print(line.rstrip())
     print("        ])")
 
@@ -100,11 +99,11 @@ def print_unittest2(lines):
         else:
             hex_list += "#"
 
-        line = "            %-20s %6s %-5s %-8s" % (
+        line = "            {:<20} {:>6} {:<5} {:<8}".format(
             hex_list, lable, code1, code2
         )
         if doc:
-            line = "%40s ; %s" % (line, doc)
+            line = f"{line:>40} ; {doc}"
         print(line.rstrip())
     print("        ])")
 
@@ -120,11 +119,11 @@ def print_bas(lines, line_no):
 
         line = f"{line_no} ' {code1} {code2}"
         if doc:
-            line = "%-20s ; %s" % (line, doc)
+            line = f"{line:<20} ; {doc}"
         print(line.upper())
         line_no += 10
 
-        line = "%s DATA %s" % (
+        line = "{} DATA {}".format(
             line_no,
             ",".join(["%x" % i for i in hex_list])
         )

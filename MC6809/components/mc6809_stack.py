@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding: utf-8
 
 """
     MC6809 - 6809 CPU emulator in Python
@@ -21,13 +20,12 @@
     more info, see README
 """
 
-from __future__ import absolute_import, division, print_function
 
 from MC6809.components.cpu_utils.instruction_caller import opcode
 from MC6809.components.MC6809data.MC6809_op_data import REG_A, REG_B, REG_CC, REG_DP, REG_PC, REG_U, REG_X, REG_Y
 
 
-class StackMixin(object):
+class StackMixin:
 
     def push_byte(self, stack_pointer, byte):
         """ pushed a byte onto stack """

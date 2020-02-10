@@ -1,5 +1,3 @@
-# coding: utf-8
-
 """
     MC6809 - 6809 CPU emulator in Python
     =======================================
@@ -9,7 +7,6 @@
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
-from __future__ import absolute_import, division, print_function
 
 from MC6809.core.configs import BaseConfig
 
@@ -34,4 +31,4 @@ class TestCfg(BaseConfig):
 
     def __init__(self, cfg_dict):
 
-        super(TestCfg, self).__init__(cfg_dict)
+        super().__init__(cfg_dict)
