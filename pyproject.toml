@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "MC6809"
-version = "0.3.0.rc3"
+version = "0.6.0.dev0"
 description = "MC6809 CPU emulator written in Python"
 authors = ["JensDiemer <git@jensdiemer.de>"]
 packages = [
