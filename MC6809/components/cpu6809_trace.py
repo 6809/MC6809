@@ -65,9 +65,9 @@ class InstructionTrace(PrepagedInstructions):
         if "register" in kwargs:
             kwargs_info.append(str(kwargs["register"]))
         if "ea" in kwargs:
-            kwargs_info.append("ea:%04x" % kwargs["ea"])
+            kwargs_info.append(f"ea:{kwargs['ea']:04x}")
         if "m" in kwargs:
-            kwargs_info.append("m:%x" % kwargs["m"])
+            kwargs_info.append(f"m:{kwargs['m']:x}")
 
         msg = "%(op_address)04x| %(op_bytes)-11s %(mnemonic)-7s %(kwargs)-19s %(cpu)s | %(cc)s | %(mem)s\n" % {
             "op_address": op_address,
@@ -80,12 +80,10 @@ class InstructionTrace(PrepagedInstructions):
         }
         sys.stdout.write(msg)
 
-        if not op_bytes.startswith("%02x" % opcode):
+        if not op_bytes.startswith(f"{opcode:02x}"):
             self.cpu.memory.print_dump(op_address, op_address + ob_bytes)
             self.cpu.memory.print_dump(op_address - 10, op_address + ob_bytes + 10)
-        assert op_bytes.startswith("%02x" % opcode), "%s doesn't start with %02x" % (
-            op_bytes, self.opcode
-        )
+        assert op_bytes.startswith(f"{opcode:02x}"), f"{op_bytes} doesn't start with {self.opcode:02x}"
 
         return result
 

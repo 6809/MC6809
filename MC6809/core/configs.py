@@ -71,7 +71,7 @@ class BaseConfig(object):
 #         else:
 #             self.bus = None # Will be set in cpu6809.start_CPU()
 
-        assert not hasattr(cfg_dict, "ram"), "cfg_dict.ram is deprecated! Remove it from: %s" % self.cfg_dict.__class__.__name__
+        assert not hasattr(cfg_dict, "ram"), f"cfg_dict.ram is deprecated! Remove it from: {self.cfg_dict.__class__.__name__}"
 
 #         if cfg_dict["rom"]:
 #             raw_rom_cfg = cfg_dict["rom"]
@@ -106,7 +106,7 @@ class BaseConfig(object):
 #         self._mem = [0x00] * size
 
     def print_debug_info(self):
-        print("Config: '%s'" % self.__class__.__name__)
+        print(f"Config: '{self.__class__.__name__}'")
 
         for name, value in inspect.getmembers(self): # , inspect.isdatadescriptor):
             if name.startswith("_"):

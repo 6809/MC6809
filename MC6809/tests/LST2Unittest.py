@@ -120,9 +120,7 @@ def print_bas(lines, line_no):
         code2 = line["code2"]
         doc = line["doc"]
 
-        line = "%s ' %s %s" % (
-            line_no, code1, code2
-        )
+        line = f"{line_no} ' {code1} {code2}"
         if doc:
             line = "%-20s ; %s" % (line, doc)
         print(line.upper())

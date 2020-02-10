@@ -64,11 +64,7 @@ def print_exc_plus():
         fg="blue", bold=True
     )
     for frame in stack:
-        click.secho('\n *** File "%s", line %i, in %s' % (
-                frame.f_code.co_filename,
-                frame.f_lineno,
-                frame.f_code.co_name,
-            ),
+        click.secho(f'\n *** File "{frame.f_code.co_filename}", line {frame.f_lineno:d}, in {frame.f_code.co_name}',
             fg="white",
             bold=True
         )
@@ -79,12 +75,12 @@ def print_exc_plus():
             # printer! Calling str() on an unknown object could cause an
             # error we don't want.
             if isinstance(value, int):
-                value = "$%x (decimal: %i)" % (value, value)
+                value = f"${value:x} (decimal: {value:d})"
             else:
                 value = repr(value)
 
             if len(value) > MAX_CHARS:
-                value = "%s..." % value[:MAX_CHARS]
+                value = f"{value[:MAX_CHARS]}..."
 
             try:
                 print(value)

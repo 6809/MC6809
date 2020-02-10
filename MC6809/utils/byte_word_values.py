@@ -103,7 +103,7 @@ def bin2hexline(data, add_addr=True, width=16):
     0144 d0 71 41 da d8 09                               .qA...
     """
     assert isinstance(data, binary_type), (
-        "is type: %s and not bytes/str: %s" % (type(data), repr(data))
+        f"is type: {type(data)} and not bytes/str: {repr(data)}"
     )
 
     addr = 0
@@ -112,7 +112,7 @@ def bin2hexline(data, add_addr=True, width=16):
     line_width = 4 + (width * 3) + 1
     while run:
         if add_addr:
-            line = ["%04i" % addr]
+            line = [f"{addr:04d}"]
         else:
             line = []
 
@@ -127,7 +127,7 @@ def bin2hexline(data, add_addr=True, width=16):
             else:
                 ascii_block += "."
 
-            line.append("%02x" % b)
+            line.append(f"{b:02x}")
 
             addr += 1
             if addr >= len(data):

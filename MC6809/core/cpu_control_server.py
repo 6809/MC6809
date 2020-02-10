@@ -78,10 +78,10 @@ class ControlHandler(BaseHTTPRequestHandler):
                     f(m)
                 except Exception as err:
                     txt = traceback.format_exc()
-                    self.response_500("Error call %r: %s" % (f.__name__, err), txt)
+                    self.response_500(f"Error call {f.__name__!r}: {err}", txt)
                 return
         else:
-            self.response_404("url %r doesn't match any urls" % self.path)
+            self.response_404(f"url {self.path!r} doesn't match any urls")
 
     def response(self, s, status_code=200):
         log.critical("send %s response", status_code)

@@ -18,7 +18,7 @@ import MC6809
 try:
     import click
 except ImportError as err:
-    print("Import error: %s" % err)
+    print(f"Import error: {err}")
     print()
     print("Please install 'click' !")
     print("more info: http://click.pocoo.org")
@@ -46,9 +46,9 @@ DEFAULT_LOOPS = 5
 DEFAULT_MULTIPLY = 15
 @cli.command(help="Run a 6809 Emulation benchmark")
 @click.option("--loops", default=DEFAULT_LOOPS,
-    help="How many benchmark loops should be run? (default: %i)" % DEFAULT_LOOPS)
+    help=f"How many benchmark loops should be run? (default: {DEFAULT_LOOPS:d})")
 @click.option("--multiply", default=DEFAULT_MULTIPLY,
-    help="Test data multiplier (default: %i)" % DEFAULT_MULTIPLY)
+    help=f"Test data multiplier (default: {DEFAULT_MULTIPLY:d})")
 def benchmark(loops, multiply):
     run_benchmark(loops, multiply)
 

@@ -141,8 +141,8 @@ loop:
             ])
             dst = self.cpu.accu_b.value
 
-            src_bit_str = '{0:08b}'.format(src)
-            dst_bit_str = '{0:08b}'.format(dst)
+            src_bit_str = f'{src:08b}'
+            dst_bit_str = f'{dst:08b}'
 
 #             print "%02x %s > ASRB > %02x %s -> %s" % (
 #                 src, src_bit_str,
@@ -152,9 +152,9 @@ loop:
 
             # Bit seven is held constant.
             if src_bit_str[0] == "1":
-                excpeted_bits = "1%s" % src_bit_str[:-1]
+                excpeted_bits = f"1{src_bit_str[:-1]}"
             else:
-                excpeted_bits = "0%s" % src_bit_str[:-1]
+                excpeted_bits = f"0{src_bit_str[:-1]}"
 
             # test ASRB/LSRB result
             self.assertEqual(dst_bit_str, excpeted_bits)
@@ -190,16 +190,12 @@ class Test6809_Rotate(BaseCPUTestCase):
     """
 
     def assertROL(self, src, dst, source_carry):
-        src_bit_str = '{0:08b}'.format(src)
-        dst_bit_str = '{0:08b}'.format(dst)
-        print("%02x %s > ROLA > %02x %s -> %s" % (
-            src, src_bit_str,
-            dst, dst_bit_str,
-            self.cpu.get_cc_info()
-        ))
+        src_bit_str = f'{src:08b}'
+        dst_bit_str = f'{dst:08b}'
+        print(f"{src:02x} {src_bit_str} > ROLA > {dst:02x} {dst_bit_str} -> {self.cpu.get_cc_info()}")
 
         # Carry was cleared and moved into bit 0
-        excpeted_bits = "%s%s" % (src_bit_str[1:], source_carry)
+        excpeted_bits = f"{src_bit_str[1:]}{source_carry}"
         self.assertEqual(dst_bit_str, excpeted_bits)
 
         # test negative
@@ -283,8 +279,8 @@ class Test6809_Rotate(BaseCPUTestCase):
             self.assertEqual(self.cpu.H, 1)
 
     def assertROR(self, src, dst, source_carry):
-            src_bit_str = '{0:08b}'.format(src)
-            dst_bit_str = '{0:08b}'.format(dst)
+            src_bit_str = f'{src:08b}'
+            dst_bit_str = f'{dst:08b}'
 #            print "%02x %s > RORA > %02x %s -> %s" % (
 #                src, src_bit_str,
 #                dst, dst_bit_str,
@@ -292,7 +288,7 @@ class Test6809_Rotate(BaseCPUTestCase):
 #            )
 
             # Carry was cleared and moved into bit 0
-            excpeted_bits = "%s%s" % (source_carry, src_bit_str[:-1])
+            excpeted_bits = f"{source_carry}{src_bit_str[:-1]}"
             self.assertEqual(dst_bit_str, excpeted_bits)
 
             # test negative

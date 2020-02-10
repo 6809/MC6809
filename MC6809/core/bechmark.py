@@ -35,7 +35,7 @@ class Test6809_Program2(Test6809_Program):
         pass
 
     def bench(self, loops, multiply, func, msg):
-        print("\n%s benchmark" % msg)
+        print(f"\n{msg} benchmark")
 
         self.setUp()
         self.cpu.cycles = 0
@@ -47,18 +47,14 @@ class Test6809_Program2(Test6809_Program):
 
         txt = txt * multiply
 
-        print("\nStart %i %s loops with %i Bytes test string..." % (
-            loops, msg, len(txt)
-        ))
+        print(f"\nStart {loops:d} {msg} loops with {len(txt):d} Bytes test string...")
 
         start_time = time.time()
         for __ in range(loops):
             self._crc32(txt)
         duration = time.time() - start_time
 
-        print("%s benchmark runs %s CPU cycles in %.2f sec" % (
-            msg, locale_format_number(self.cpu.cycles), duration
-        ))
+        print(f"{msg} benchmark runs {locale_format_number(self.cpu.cycles)} CPU cycles in {duration:.2f} sec")
 
         return duration, self.cpu.cycles
 

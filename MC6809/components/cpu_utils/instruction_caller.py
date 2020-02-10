@@ -57,9 +57,7 @@ class OpCollection(object):
 #         ))
         for op_code in opcodes:
             assert op_code not in self.opcode_dict, \
-                "Opcode $%x (%s) defined more then one time!" % (
-                    op_code, instr_func.__name__
-            )
+                f"Opcode ${op_code:x} ({instr_func.__name__}) defined more then one time!"
 
             op_code_data = MC6809OP_DATA_DICT[op_code]
 
@@ -74,7 +72,7 @@ class OpCollection(object):
             try:
                 func = getattr(instrution_class, func_name)
             except AttributeError as err:
-                raise AttributeError("%s (op code: $%02x)" % (err, op_code))
+                raise AttributeError(f"{err} (op code: ${op_code:02x})")
 
             self.opcode_dict[op_code] = (op_code_data["cycles"], func)
 
@@ -93,11 +91,11 @@ if __name__ == "__main__":
     for op_code, data in sorted(cpu.opcode_dict.items()):
         cycles, func = data
         if op_code > 0xff:
-            op_code = "$%04x" % op_code
+            op_code = f"${op_code:04x}"
         else:
-            op_code = "  $%02x" % op_code
+            op_code = f"  ${op_code:02x}"
 
-        print("Op %s - cycles: %2i - func: %s" % (op_code, cycles, func.__name__))
+        print(f"Op {op_code} - cycles: {cycles:2d} - func: {func.__name__}")
 
     print(" --- END --- ")
 

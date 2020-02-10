@@ -149,8 +149,8 @@ class Test6809_Program(BaseStackTestCase):
             txt = bytes(txt, encoding="UTF-8")
         crc32 = self._crc32(txt)
         excpected_crc32 = binascii.crc32(txt) & 0xffffffff
-        hex1 = "$%08x" % crc32
-        hex2 = "$%08x" % excpected_crc32
+        hex1 = f"${crc32:08x}"
+        hex2 = f"${excpected_crc32:08x}"
 #        print
 #        print "Test String: %s" % repr(txt)
 #        print "\tpython..:", hex1
@@ -237,12 +237,13 @@ class Test6809_Program(BaseStackTestCase):
 
             a = Decimal(dividend)
             b = Decimal(divisor)
-            expected_quotient = a // b
-            expected_remainder = a % b
+            expected_quotient = int(a // b)
+            expected_remainder = int(a % b)
 
-            first = "%i/%i=%i remainder: %i" % (dividend, divisor, quotient, remainder)
-            second = "%i/%i=%i remainder: %i" % (dividend, divisor, expected_quotient, expected_remainder)
-#             print first
+            first = f"{dividend:d}/{divisor:d}={quotient:d} remainder: {remainder:d}"
+            second = (
+                f"{dividend:d}/{divisor:d}={expected_quotient:d} remainder: {expected_remainder:d}"
+            )
             self.assertEqual(first, second)
 
         test(10, 5)
@@ -350,7 +351,7 @@ class Test6809_Program_Division2(BaseStackTestCase):
             )
             second = "%i/%i=%i remainder: %i (hex: q:$%x r:=$%x)" % (
                 dividend, divisor, expected_quotient, expected_remainder,
-                expected_quotient, expected_remainder
+                int(expected_quotient), int(expected_remainder)
             )
 #             if first != second:
 #                 print "ERROR: %r should be: %r\n" % (first, second)

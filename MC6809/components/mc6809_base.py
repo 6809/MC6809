@@ -214,7 +214,7 @@ class CPUBase(object):
 
         log.info("\tread reset vector from $%04x", self.RESET_VECTOR)
         ea = self.memory.read_word(self.RESET_VECTOR)
-        log.info("\tset PC to $%04x" % ea)
+        log.info(f"\tset PC to ${ea:04x}")
         if ea == 0x0000:
             log.critical("Reset vector is $%04x ??? ROM loading in the right place?!?", ea)
         self.program_counter.set(ea)
@@ -242,7 +242,7 @@ class CPUBase(object):
         try:
             cycles, instr_func = self.opcode_dict[opcode]
         except KeyError:
-            msg = "$%x *** UNKNOWN OP $%x" % (op_address, opcode)
+            msg = f"${op_address:x} *** UNKNOWN OP ${opcode:x}"
             log.error(msg)
             sys.exit(msg)
 
@@ -329,7 +329,7 @@ class CPUBase(object):
                 return
             get_and_call_next_op()
         log.critical("Max ops %i arrived!", max_ops)
-        raise RuntimeError("Max ops %i arrived!" % max_ops)
+        raise RuntimeError(f"Max ops {max_ops:d} arrived!")
 
 
     def test_run2(self, start, count):

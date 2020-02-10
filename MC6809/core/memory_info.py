@@ -31,19 +31,19 @@ class BaseMemoryInfo(object):
                 shortest = start, end, txt
 
         if shortest is None:
-            return "$%x: UNKNOWN" % addr
+            return f"${addr:x}: UNKNOWN"
 
         start, end, txt = shortest
         if start == end:
-            return "$%x: %s" % (addr, txt)
+            return f"${addr:x}: {txt}"
         else:
-            return "$%x: $%x-$%x - %s" % (addr, start, end, txt)
+            return f"${addr:x}: ${start:x}-${end:x} - {txt}"
 
     def __call__(self, addr, info="", shortest=True):
         if shortest:
             mem_info = self.get_shortest(addr)
             if info:
-                self.out_func("%s: %s" % (info, mem_info))
+                self.out_func(f"{info}: {mem_info}")
             else:
                 self.out_func(mem_info)
             return
@@ -56,11 +56,11 @@ class BaseMemoryInfo(object):
                 )
 
         if not mem_info:
-            self.out_func("%s $%x: UNKNOWN" % (info, addr))
+            self.out_func(f"{info} ${addr:x}: UNKNOWN")
         else:
-            self.out_func("%s $%x:" % (info, addr))
+            self.out_func(f"{info} ${addr:x}:")
             for start, end, txt in mem_info:
                 if start == end:
-                    self.out_func(" * $%x - %s" % (start, txt))
+                    self.out_func(f" * ${start:x} - {txt}")
                 else:
-                    self.out_func(" * $%x-$%x - %s" % (start, end, txt))
+                    self.out_func(f" * ${start:x}-${end:x} - {txt}")

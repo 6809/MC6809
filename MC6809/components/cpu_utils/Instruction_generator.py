@@ -79,11 +79,11 @@ def build_func_name(addr_mode, ea, register, read, write):
     if ea:
         func_name += "_ea"
     if register:
-        func_name += "_%s" % register
+        func_name += f"_{register}"
     if read:
-        func_name += "_read%s" % read
+        func_name += f"_read{read}"
     if write:
-        func_name += "_write%s" % write
+        func_name += f"_write{write}"
 
 #    print(func_name
     return func_name
@@ -125,11 +125,11 @@ def generate_code(f):
                 variants.add(variant)
 
                 if needs_ea and read_from_memory:
-                    addr_modes.add("get_ea_m_%s" % addr_mode)
+                    addr_modes.add(f"get_ea_m_{addr_mode}")
                 elif needs_ea:
-                    addr_modes.add("get_ea_%s" % addr_mode)
+                    addr_modes.add(f"get_ea_{addr_mode}")
                 elif read_from_memory:
-                    addr_modes.add("get_m_%s" % addr_mode)
+                    addr_modes.add(f"get_m_{addr_mode}")
 
                 if register is not None:
                     registers.add(register)
@@ -144,7 +144,7 @@ def generate_code(f):
     # print("+++++++++++++")
 
     for line in INIT_CODE.splitlines():
-        f.write("%s\n" % line)
+        f.write(f"{line}\n")
 
     for register in sorted([REGISTER_DICT[register] for register in registers]):
         f.write(
@@ -163,12 +163,12 @@ def generate_code(f):
     for addr_mode, needs_ea, register, read_from_memory, write_to_memory in variants:
         func_name = build_func_name(addr_mode, needs_ea, register, read_from_memory, write_to_memory)
 
-        f.write("    def %s(self, opcode):\n" % func_name)
+        f.write(f"    def {func_name}(self, opcode):\n")
 
         code = []
 
         if needs_ea and read_from_memory:
-            code.append("ea, m = self.cpu.get_ea_m_%s()" % addr_mode)
+            code.append(f"ea, m = self.cpu.get_ea_m_{addr_mode}()")
 
         if write_to_memory:
             code.append("ea, value = self.instr_func(")
@@ -180,13 +180,13 @@ def generate_code(f):
             code.append("    ea=ea,")
             code.append("    m=m,")
         elif needs_ea:
-            code.append("    ea=self.get_ea_%s()," % addr_mode)
+            code.append(f"    ea=self.get_ea_{addr_mode}(),")
         elif read_from_memory:
-            code.append("    m=self.get_m_%s()," % addr_mode)
+            code.append(f"    m=self.get_m_{addr_mode}(),")
 
         if register:
             code.append(
-                "    register=self.%s," % REGISTER_DICT[register]
+                f"    register=self.{REGISTER_DICT[register]},"
             )
 
         code.append(")")
@@ -197,7 +197,7 @@ def generate_code(f):
             code.append("self.write_word(ea, value)")
 
         for line in code:
-            f.write("        %s\n" % line)
+            f.write(f"        {line}\n")
 
         f.write("\n")
 
@@ -206,7 +206,7 @@ def generate(filename):
     with open(filename, "w") as f:
 #        generate_code(sys.stdout)
         generate_code(f)
-    sys.stderr.write("New %r generated.\n" % filename)
+    sys.stderr.write(f"New {filename!r} generated.\n")
 
 
 

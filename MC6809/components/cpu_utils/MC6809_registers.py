@@ -35,7 +35,7 @@ class ValueStorageBase(object):
         self.set(self.value + value)
 
     def __str__(self):
-        return "<%s:$%x>" % (self.name, self.value)
+        return f"<{self.name}:${self.value:x}>"
     __repr__ = __str__
 
 
@@ -70,7 +70,7 @@ class ValueStorage8Bit(ValueStorageBase):
         self.value = v
 
     def __str__(self):
-        return "%s=%02x" % (self.name, self.value)
+        return f"{self.name}={self.value:02x}"
 
 
 class ValueStorage16Bit(ValueStorageBase):
@@ -88,7 +88,7 @@ class ValueStorage16Bit(ValueStorageBase):
         self.value = v
 
     def __str__(self):
-        return "%s=%04x" % (self.name, self.value)
+        return f"{self.name}={self.value:04x}"
 
 
 
@@ -116,7 +116,7 @@ class ConcatenatedAccumulator(object):
         return self._a.value * 256 + self._b.value
 
     def __str__(self):
-        return "%s=%04x" % (self.name, self.value)
+        return f"{self.name}={self.value:04x}"
 
 
 def convert_differend_width(src_reg, dst_reg):

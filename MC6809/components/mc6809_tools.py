@@ -111,9 +111,7 @@ class CPUTypeAssertMixin(object):
         if attr in self.__ATTR_DICT:
             obj = self.__ATTR_DICT[attr]
             assert isinstance(value, obj), \
-                "Attribute %r is no more type %s (Is now: %s)!" % (
-                    attr, obj, type(obj)
-                )
+                f"Attribute {attr!r} is no more type {obj} (Is now: {type(obj)})!"
         return object.__setattr__(self, attr, value)
 
 

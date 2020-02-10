@@ -70,7 +70,7 @@ class InterruptMixin(object):
 
         CC bits "HNZVC": *****
         """
-        raise NotImplementedError("$%x RESET" % opcode)
+        raise NotImplementedError(f"${opcode:x} RESET")
         # Update CC bits: *****
 
 
@@ -176,7 +176,7 @@ class InterruptMixin(object):
 
         CC bits "HNZVC": -----
         """
-        raise NotImplementedError("$%x SWI" % opcode)
+        raise NotImplementedError(f"${opcode:x} SWI")
 
     @opcode(# Software interrupt (absolute indirect)
         0x103f, # SWI2 (inherent)
@@ -193,7 +193,7 @@ class InterruptMixin(object):
 
         CC bits "HNZVC": -----
         """
-        raise NotImplementedError("$%x SWI2" % opcode)
+        raise NotImplementedError(f"${opcode:x} SWI2")
 
     @opcode(# Software interrupt (absolute indirect)
         0x113f, # SWI3 (inherent)
@@ -209,7 +209,7 @@ class InterruptMixin(object):
 
         CC bits "HNZVC": -----
         """
-        raise NotImplementedError("$%x SWI3" % opcode)
+        raise NotImplementedError(f"${opcode:x} SWI3")
 
     @opcode(# Synchronize with interrupt line
         0x13, # SYNC (inherent)
@@ -224,5 +224,5 @@ class InterruptMixin(object):
 
         CC bits "HNZVC": -----
         """
-        raise NotImplementedError("$%x SYNC" % opcode)
+        raise NotImplementedError(f"${opcode:x} SYNC")
 

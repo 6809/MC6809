@@ -42,7 +42,7 @@ class CLITestCase(unittest.TestCase):
 
     def assert_contains_members(self, members, container):
         for member in members:
-            msg = "%r not found in:\n%s" % (member, container)
+            msg = f"{member!r} not found in:\n{container}"
             # self.assertIn(member, container, msg) # Bad error message :(
             if not member in container:
                 self.fail(msg)
@@ -50,7 +50,7 @@ class CLITestCase(unittest.TestCase):
     def assert_not_contains_members(self, members, container):
         for member in members:
             if member in container:
-                self.fail("%r found in:\n%s" % (member, container))
+                self.fail(f"{member!r} found in:\n{container}")
 
     def test_main_help(self):
         result = self._invoke("--help")

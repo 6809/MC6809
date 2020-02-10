@@ -131,19 +131,19 @@ class MC6809Example(object):
         if sys.version_info > (3,):
             data = bytes(data, encoding="ASCII")
 
-        print("Compare CRC32 with: %r" % data)
+        print(f"Compare CRC32 with: {data!r}")
 
         print("\nCreate CRC32 with binascii:")
         start_time = time.time()
         excpected_crc32 = binascii.crc32(data) & 0xffffffff
         duration = time.time() - start_time
-        print("\tbinascii crc32..: $%X calculated in %.6fsec" % (excpected_crc32, duration))
+        print(f"\tbinascii crc32..: ${excpected_crc32:X} calculated in {duration:.6f}sec")
 
         print("\nCreate CRC32 with Emulated 6809 CPU:")
         start_time = time.time()
         crc32_value = self.crc32(data)
         duration = time.time() - start_time
-        print("\tMC6809 crc32..: $%X calculated in %.2fsec" % (crc32_value, duration))
+        print(f"\tMC6809 crc32..: ${crc32_value:X} calculated in {duration:.2f}sec")
         print()
         if crc32_value==excpected_crc32:
             print(" *** CRC32 values from 6809 and binascii are the same, ok.\n")

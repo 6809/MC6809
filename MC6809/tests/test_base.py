@@ -38,41 +38,41 @@ class BaseTestCase(unittest.TestCase):
     maxDiff=3000
 
     def assertHexList(self, first, second, msg=None):
-        first = ["$%x" % value for value in first]
-        second = ["$%x" % value for value in second]
+        first = [f"${value:x}" for value in first]
+        second = [f"${value:x}" for value in second]
         self.assertEqual(first, second, msg)
 
     def assertEqualHex(self, hex1, hex2, msg=None):
-        first = "$%x" % hex1
-        second = "$%x" % hex2
+        first = f"${hex1:x}"
+        second = f"${hex2:x}"
         if msg is None:
-            msg = "%s != %s" % (first, second)
+            msg = f"{first} != {second}"
         self.assertEqual(first, second, msg)
 
     def assertIsByteRange(self, value):
-        self.assertTrue(0x0 <= value, "Value (dez: %i - hex: %x) is negative!" % (value, value))
-        self.assertTrue(0xff >= value, "Value (dez: %i - hex: %x) is greater than 0xff!" % (value, value))
+        self.assertTrue(0x0 <= value, f"Value (dez: {value:d} - hex: {value:x}) is negative!")
+        self.assertTrue(0xff >= value, f"Value (dez: {value:d} - hex: {value:x}) is greater than 0xff!")
 
     def assertIsWordRange(self, value):
-        self.assertTrue(0x0 <= value, "Value (dez: %i - hex: %x) is negative!" % (value, value))
-        self.assertTrue(0xffff >= value, "Value (dez: %i - hex: %x) is greater than 0xffff!" % (value, value))
+        self.assertTrue(0x0 <= value, f"Value (dez: {value:d} - hex: {value:x}) is negative!")
+        self.assertTrue(0xffff >= value, f"Value (dez: {value:d} - hex: {value:x}) is greater than 0xffff!")
 
     def assertEqualHexByte(self, hex1, hex2, msg=None):
         self.assertIsByteRange(hex1)
         self.assertIsByteRange(hex2)
-        first = "$%02x" % hex1
-        second = "$%02x" % hex2
+        first = f"${hex1:02x}"
+        second = f"${hex2:02x}"
         if msg is None:
-            msg = "%s != %s" % (first, second)
+            msg = f"{first} != {second}"
         self.assertEqual(first, second, msg)
 
     def assertEqualHexWord(self, hex1, hex2, msg=None):
         self.assertIsWordRange(hex1)
         self.assertIsWordRange(hex2)
-        first = "$%04x" % hex1
-        second = "$%04x" % hex2
+        first = f"${hex1:04x}"
+        second = f"${hex2:04x}"
         if msg is None:
-            msg = "%s != %s" % (first, second)
+            msg = f"{first} != {second}"
         self.assertEqual(first, second, msg)
 
     def assertBinEqual(self, bin1, bin2, msg=None, width=16):
@@ -104,8 +104,8 @@ class BaseCPUTestCase(BaseTestCase):
 
     def cpu_test_run(self, start, end, mem):
         for cell in mem:
-            self.assertLess(-1, cell, "$%x < 0" % cell)
-            self.assertGreater(0x100, cell, "$%x > 0xff" % cell)
+            self.assertLess(-1, cell, f"${cell:x} < 0")
+            self.assertGreater(0x100, cell, f"${cell:x} > 0xff")
         log.debug("memory load at $%x: %s", start,
             ", ".join(["$%x" % i for i in mem])
         )
@@ -117,8 +117,8 @@ class BaseCPUTestCase(BaseTestCase):
 
     def cpu_test_run2(self, start, count, mem):
         for cell in mem:
-            self.assertLess(-1, cell, "$%x < 0" % cell)
-            self.assertGreater(0x100, cell, "$%x > 0xff" % cell)
+            self.assertLess(-1, cell, f"${cell:x} < 0")
+            self.assertGreater(0x100, cell, f"${cell:x} > 0xff")
         self.cpu.memory.load(start, mem)
         self.cpu.test_run2(start, count)
     cpu_test_run2.__test__=False # Exclude from nose
@@ -128,9 +128,7 @@ class BaseCPUTestCase(BaseTestCase):
             address = start + index
             is_byte = self.cpu.memory.read_byte(address)
 
-            msg = "$%02x is not $%02x at address $%04x (index: %i)" % (
-                is_byte, should_byte, address, index
-            )
+            msg = f"${is_byte:02x} is not ${should_byte:02x} at address ${address:04x} (index: {index:d})"
             self.assertEqual(is_byte, should_byte, msg)
 
 
@@ -153,13 +151,13 @@ class TestCPU(object):
 
 
 def print_cpu_state_data(state):
-    print("cpu state data %r (ID:%i):" % (state.__class__.__name__, id(state)))
+    print(f"cpu state data {state.__class__.__name__!r} (ID:{id(state):d}):")
     for k, v in sorted(state.items()):
         if k == "RAM":
             # v = ",".join(["$%x" % i for i in v])
             print("\tSHA from RAM:", hashlib.sha224(repr(v)).hexdigest())
             continue
         if isinstance(v, int):
-            v = "$%x" % v
-        print("\t%r: %s" % (k, v))
+            v = f"${v:x}"
+        print(f"\t{k!r}: {v}")
 

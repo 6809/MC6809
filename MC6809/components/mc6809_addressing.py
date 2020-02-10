@@ -86,7 +86,7 @@ class AddressingMixin(object):
         try:
             register_str = self.INDEX_POSTBYTE2STR[rr]
         except KeyError:
-            raise RuntimeError("Register $%x doesn't exists! (postbyte: $%x)" % (rr, postbyte))
+            raise RuntimeError(f"Register ${rr:x} doesn't exists! (postbyte: ${postbyte:x})")
 
         register_obj = self.register_str2object[register_str]
         register_value = register_obj.value
@@ -176,7 +176,7 @@ class AddressingMixin(object):
 #             log.debug("\t1111 0xf | [n] | 16 bit address - extended indirect")
             __, ea = self.read_pc_word()
         else:
-            raise RuntimeError("Illegal indexed addressing mode: $%x" % addr_mode)
+            raise RuntimeError(f"Illegal indexed addressing mode: ${addr_mode:x}")
 
         if offset is not None:
             ea = register_value + offset
