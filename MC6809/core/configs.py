@@ -116,9 +116,7 @@ class BaseConfig:
             if not isinstance(value, (int, str, list, tuple, dict)):
                 continue
             if isinstance(value, int):
-                print("{:>20} = {:<6} in hex: {:>7}".format(
-                    name, value, hex(value)
-                ))
+                print(f"{name:>20} = {value:<6} in hex: {hex(value):>7}")
             else:
                 print(f"{name:>20} = {value}")
 

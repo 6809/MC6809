@@ -14,7 +14,6 @@
 """
 
 
-
 def is_bit_set(value, bit):
     """
     Return True/False if the bit at offset >bit< is 1 or 0 in given value.

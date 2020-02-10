@@ -318,9 +318,7 @@ class Memory:
         dump_lines = []
         for addr, value in self.iter_bytes(start, end):
             msg = f"${addr:04x}: ${value:02x} (dez: {value:d})"
-            msg = "{:<25}| {}".format(
-                msg, self.cfg.mem_info.get_shortest(addr)
-            )
+            msg = f"{msg:<25}| {self.cfg.mem_info.get_shortest(addr)}"
             dump_lines.append(msg)
         return dump_lines
 

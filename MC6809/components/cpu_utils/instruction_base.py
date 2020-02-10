@@ -9,7 +9,6 @@
 """
 
 
-
 class InstructionBase:
     def __init__(self, cpu, instr_func):
         self.cpu = cpu

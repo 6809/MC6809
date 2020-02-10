@@ -74,9 +74,7 @@ def print_unittest1(lines):
         else:
             hex_list += "#"
 
-        line = "            {:<20} {}|{:>6} {:<5} {:<8}".format(
-            hex_list, address, lable, code1, code2
-        )
+        line = f"            {hex_list:<20} {address}|{lable:>6} {code1:<5} {code2:<8}"
         if doc:
             line = f"{line:>40} ; {doc}"
         print(line.rstrip())
@@ -99,9 +97,7 @@ def print_unittest2(lines):
         else:
             hex_list += "#"
 
-        line = "            {:<20} {:>6} {:<5} {:<8}".format(
-            hex_list, lable, code1, code2
-        )
+        line = f"            {hex_list:<20} {lable:>6} {code1:<5} {code2:<8}"
         if doc:
             line = f"{line:>40} ; {doc}"
         print(line.rstrip())
@@ -123,10 +119,7 @@ def print_bas(lines, line_no):
         print(line.upper())
         line_no += 10
 
-        line = "{} DATA {}".format(
-            line_no,
-            ",".join(["%x" % i for i in hex_list])
-        )
+        line = f"{line_no} DATA {','.join([('%x' % i) for i in hex_list])}"
         print(line.upper())
         line_no += 10
 

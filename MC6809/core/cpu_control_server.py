@@ -61,9 +61,7 @@ class ControlHandler(BaseHTTPRequestHandler):
         BaseHTTPRequestHandler.__init__(self, request, client_address, server)
 
     def log_message(self, format, *args):
-        msg = "{} - - [{}] {}\n".format(
-            self.client_address[0], self.log_date_time_string(), format % args
-        )
+        msg = f"{self.client_address[0]} - - [{self.log_date_time_string()}] {format % args}\n"
         log.critical(msg)
 
     def dispatch(self, urls):
