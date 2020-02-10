@@ -1,8 +1,7 @@
-
 """
     This file was generated with: "Instruction_generator.py"
     Please don't change it directly ;)
-    
+
 
     :copyleft: 2013-2015 by the MC6809 team, see AUTHORS for more details.
     :license: GNU GPL v3 or above, see LICENSE for more details.
@@ -12,38 +11,39 @@
 
 from MC6809.components.cpu_utils.instruction_base import InstructionBase
 
+
 class PrepagedInstructions(InstructionBase):
     def __init__(self, *args, **kwargs):
-        super(PrepagedInstructions, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         self.write_byte = self.cpu.memory.write_byte
         self.write_word = self.cpu.memory.write_word
 
-        self.accu_a=self.cpu.accu_a
-        self.accu_b=self.cpu.accu_b
-        self.accu_d=self.cpu.accu_d
-        self.cc_register=self.cpu.cc_register
-        self.index_x=self.cpu.index_x
-        self.index_y=self.cpu.index_y
-        self.system_stack_pointer=self.cpu.system_stack_pointer
-        self.user_stack_pointer=self.cpu.user_stack_pointer
+        self.accu_a = self.cpu.accu_a
+        self.accu_b = self.cpu.accu_b
+        self.accu_d = self.cpu.accu_d
+        self.cc_register = self.cpu.cc_register
+        self.index_x = self.cpu.index_x
+        self.index_y = self.cpu.index_y
+        self.system_stack_pointer = self.cpu.system_stack_pointer
+        self.user_stack_pointer = self.cpu.user_stack_pointer
 
-        self.get_ea_direct=self.cpu.get_ea_direct
-        self.get_ea_extended=self.cpu.get_ea_extended
-        self.get_ea_indexed=self.cpu.get_ea_indexed
-        self.get_ea_m_direct=self.cpu.get_ea_m_direct
-        self.get_ea_m_extended=self.cpu.get_ea_m_extended
-        self.get_ea_m_indexed=self.cpu.get_ea_m_indexed
-        self.get_ea_relative=self.cpu.get_ea_relative
-        self.get_ea_relative_word=self.cpu.get_ea_relative_word
-        self.get_m_direct=self.cpu.get_m_direct
-        self.get_m_direct_word=self.cpu.get_m_direct_word
-        self.get_m_extended=self.cpu.get_m_extended
-        self.get_m_extended_word=self.cpu.get_m_extended_word
-        self.get_m_immediate=self.cpu.get_m_immediate
-        self.get_m_immediate_word=self.cpu.get_m_immediate_word
-        self.get_m_indexed=self.cpu.get_m_indexed
-        self.get_m_indexed_word=self.cpu.get_m_indexed_word
+        self.get_ea_direct = self.cpu.get_ea_direct
+        self.get_ea_extended = self.cpu.get_ea_extended
+        self.get_ea_indexed = self.cpu.get_ea_indexed
+        self.get_ea_m_direct = self.cpu.get_ea_m_direct
+        self.get_ea_m_extended = self.cpu.get_ea_m_extended
+        self.get_ea_m_indexed = self.cpu.get_ea_m_indexed
+        self.get_ea_relative = self.cpu.get_ea_relative
+        self.get_ea_relative_word = self.cpu.get_ea_relative_word
+        self.get_m_direct = self.cpu.get_m_direct
+        self.get_m_direct_word = self.cpu.get_m_direct_word
+        self.get_m_extended = self.cpu.get_m_extended
+        self.get_m_extended_word = self.cpu.get_m_extended_word
+        self.get_m_immediate = self.cpu.get_m_immediate
+        self.get_m_immediate_word = self.cpu.get_m_immediate_word
+        self.get_m_indexed = self.cpu.get_m_indexed
+        self.get_m_indexed_word = self.cpu.get_m_indexed_word
 
     def direct_A_read8(self, opcode):
         self.instr_func(
@@ -576,4 +576,3 @@ class PrepagedInstructions(InstructionBase):
             opcode=opcode,
             ea=self.get_ea_relative_word(),
         )
-

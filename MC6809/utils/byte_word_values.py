@@ -11,44 +11,35 @@
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
-from __future__ import absolute_import, division, print_function
 
 import string
-import sys
-
-PY2 = sys.version_info[0] == 2
-if PY2:
-    range = xrange
-    binary_type = str
-else:
-    binary_type = bytes
 
 
 def signed5(x):
     """ convert to signed 5-bit """
-    if x > 0xf: # 0xf == 2**4-1 == 15
-        x = x - 0x20 # 0x20 == 2**5 == 32
+    if x > 0xf:  # 0xf == 2**4-1 == 15
+        x = x - 0x20  # 0x20 == 2**5 == 32
     return x
 
 
 def signed8(x):
     """ convert to signed 8-bit """
-    if x > 0x7f: # 0x7f ==  2**7-1 == 127
-        x = x - 0x100 # 0x100 == 2**8 == 256
+    if x > 0x7f:  # 0x7f ==  2**7-1 == 127
+        x = x - 0x100  # 0x100 == 2**8 == 256
     return x
 
 
 def unsigned8(x):
     """ convert a signed 8-Bit value into a unsigned value """
     if x < 0:
-        x = x + 0x0100 # 0x100 == 2**8 == 256
+        x = x + 0x0100  # 0x100 == 2**8 == 256
     return x
 
 
 def signed16(x):
     """ convert to signed 16-bit """
-    if x > 0x7fff: # 0x7fff ==  2**15-1 == 32767
-        x = x - 0x10000 # 0x100 == 2**16 == 65536
+    if x > 0x7fff:  # 0x7fff ==  2**15-1 == 32767
+        x = x - 0x10000  # 0x100 == 2**16 == 65536
     return x
 
 
@@ -86,7 +77,7 @@ def bin2hexline(data, add_addr=True, width=16):
     Format binary data to a Hex-Editor like format...
 
     e.g.:
-    with open("C:\Python27\python.exe", "rb") as f:
+    with open(r"C:\\Python27\\python.exe", "rb") as f:
         data = f.read(150)
 
     print("\n".join(bin2hexline(data, width=16)))
@@ -102,8 +93,8 @@ def bin2hexline(data, add_addr=True, width=16):
     0128 9d 68 ba 89 d9 09 d4 da d9 09 d4 da d9 09 d4 da .h..............
     0144 d0 71 41 da d8 09                               .qA...
     """
-    assert isinstance(data, binary_type), (
-        "is type: %s and not bytes/str: %s" % (type(data), repr(data))
+    assert isinstance(data, bytes), (
+        f"is type: {type(data)} and not bytes/str: {repr(data)}"
     )
 
     addr = 0
@@ -112,22 +103,20 @@ def bin2hexline(data, add_addr=True, width=16):
     line_width = 4 + (width * 3) + 1
     while run:
         if add_addr:
-            line = ["%04i" % addr]
+            line = [f"{addr:04d}"]
         else:
             line = []
 
         ascii_block = ""
         for i in range(width):
             b = data[addr]
-            if PY2:
-                b = ord(b)
 
             if chr(b) in string.printable:
                 ascii_block += chr(b)
             else:
                 ascii_block += "."
 
-            line.append("%02x" % b)
+            line.append(f"{b:02x}")
 
             addr += 1
             if addr >= len(data):
@@ -148,11 +137,3 @@ def _bin2hexline_example():
         data = f.read(500)
 
     print("\n".join(bin2hexline(data, width=16)))
-
-
-if __name__ == "__main__":
-    import doctest
-
-    print(doctest.testmod(verbose=0))
-
-    # _bin2hexline_example()

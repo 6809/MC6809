@@ -8,14 +8,14 @@
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
-from __future__ import absolute_import, division, print_function
 
 import inspect
 
-from MC6809.components.MC6809data.MC6809_data_utils import MC6809OP_DATA_DICT
-from MC6809.components.cpu_utils.Instruction_generator import func_name_from_op_code
-from MC6809.components.cpu_utils.instruction_call import PrepagedInstructions
 from MC6809.components.cpu6809_trace import InstructionTrace
+from MC6809.components.cpu_utils.instruction_call import PrepagedInstructions
+from MC6809.components.cpu_utils.Instruction_generator import func_name_from_op_code
+from MC6809.components.MC6809data.MC6809_data_utils import MC6809OP_DATA_DICT
+
 
 def opcode(*opcodes):
     """A decorator for opcodes"""
@@ -26,7 +26,7 @@ def opcode(*opcodes):
     return decorator
 
 
-class OpCollection(object):
+class OpCollection:
     def __init__(self, cpu):
         self.cpu = cpu
         self.opcode_dict = {}
@@ -52,14 +52,12 @@ class OpCollection(object):
             self._add_ops(opcodes, instr_func)
 
     def _add_ops(self, opcodes, instr_func):
-#         log.debug("%20s: %s" % (
-#             instr_func.__name__, ",".join(["$%x" % c for c in opcodes])
-#         ))
+        #         log.debug("%20s: %s" % (
+        #             instr_func.__name__, ",".join(["$%x" % c for c in opcodes])
+        #         ))
         for op_code in opcodes:
             assert op_code not in self.opcode_dict, \
-                "Opcode $%x (%s) defined more then one time!" % (
-                    op_code, instr_func.__name__
-            )
+                f"Opcode ${op_code:x} ({instr_func.__name__}) defined more then one time!"
 
             op_code_data = MC6809OP_DATA_DICT[op_code]
 
@@ -74,7 +72,7 @@ class OpCollection(object):
             try:
                 func = getattr(instrution_class, func_name)
             except AttributeError as err:
-                raise AttributeError("%s (op code: $%02x)" % (err, op_code))
+                raise AttributeError(f"{err} (op code: ${op_code:02x})")
 
             self.opcode_dict[op_code] = (op_code_data["cycles"], func)
 
@@ -93,12 +91,10 @@ if __name__ == "__main__":
     for op_code, data in sorted(cpu.opcode_dict.items()):
         cycles, func = data
         if op_code > 0xff:
-            op_code = "$%04x" % op_code
+            op_code = f"${op_code:04x}"
         else:
-            op_code = "  $%02x" % op_code
+            op_code = f"  ${op_code:02x}"
 
-        print("Op %s - cycles: %2i - func: %s" % (op_code, cycles, func.__name__))
+        print(f"Op {op_code} - cycles: {cycles:2d} - func: {func.__name__}")
 
     print(" --- END --- ")
-
-

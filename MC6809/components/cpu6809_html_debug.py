@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding: utf-8
 
 """
     MC6809 - 6809 CPU emulator in Python
@@ -12,17 +11,15 @@
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
-from __future__ import absolute_import, division, print_function
 
-
-
-import atexit
-import os
-import datetime
-
-from MC6809.components.cpu_utils.instruction_call import PrepagedInstructions
-
+# import atexit
+# import datetime
+# import os
 #
+# from MC6809.components.cpu_utils.instruction_call import PrepagedInstructions
+#
+#
+# #
 # DEBUG_FILENAME = os.path.abspath(os.path.join(
 #     os.path.dirname(__file__),
 #     "../dragonpy_debug_%s.html" % datetime.datetime.today().strftime("%Y%m%d%H%M%S")

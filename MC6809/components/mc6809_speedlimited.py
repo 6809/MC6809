@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding: utf-8
 
 """
     MC6809 - 6809 CPU emulator in Python
@@ -21,15 +20,13 @@
     more info, see README
 """
 
-from __future__ import absolute_import, division, print_function
-
 
 import time
 
 
-class CPUSpeedLimitMixin(object):
-    max_delay = 0.01 # maximum time.sleep() value per burst run
-    delay = 0 # the current time.sleep() value per burst run
+class CPUSpeedLimitMixin:
+    max_delay = 0.01  # maximum time.sleep() value per burst run
+    delay = 0  # the current time.sleep() value per burst run
 
     def delayed_burst_run(self, target_cycles_per_sec):
         """ Run CPU not faster than given speedlimit """

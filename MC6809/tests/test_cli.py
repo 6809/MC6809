@@ -8,7 +8,6 @@
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
-from __future__ import absolute_import, division, print_function
 
 import unittest
 
@@ -42,22 +41,23 @@ class CLITestCase(unittest.TestCase):
 
     def assert_contains_members(self, members, container):
         for member in members:
-            msg = "%r not found in:\n%s" % (member, container)
+            msg = f"{member!r} not found in:\n{container}"
             # self.assertIn(member, container, msg) # Bad error message :(
-            if not member in container:
+            if member not in container:
                 self.fail(msg)
 
     def assert_not_contains_members(self, members, container):
         for member in members:
             if member in container:
-                self.fail("%r found in:\n%s" % (member, container))
+                self.fail(f"{member!r} found in:\n{container}")
 
     def test_main_help(self):
         result = self._invoke("--help")
         self.assert_contains_members([
             "cli [OPTIONS] COMMAND [ARGS]...",
             "Commands:",
-            "benchmark  Run a 6809 Emulation benchmark",
+            "benchmark ", " Run a MC6809 emulation benchmark",
+            "profile ", " Profile the MC6809 emulation benchmark",
         ], result.output)
 
         errors = ["Error", "Traceback"]
@@ -73,7 +73,7 @@ class CLITestCase(unittest.TestCase):
         #        print(cli_err)
         self.assert_contains_members([
             "Usage: cli benchmark [OPTIONS]",
-            "Run a 6809 Emulation benchmark",
+            "Run a MC6809 emulation benchmark",
         ], result.output)
 
         errors = ["Error", "Traceback"]
@@ -86,6 +86,22 @@ class CLITestCase(unittest.TestCase):
             "Start 1 CRC16 loops",
             "CRC32 benchmark",
             "Start 1 CRC32 loops",
+        ], result.output)
+
+        errors = ["Error", "Traceback"]
+        self.assert_not_contains_members(errors, result.output)
+
+    def test_run_profile(self):
+        result = self._invoke("profile", "--loops", "1", "--multiply", "1")
+        self.assert_contains_members([
+            "CRC16 benchmark",
+            "Start 1 CRC16 loops",
+            "CRC32 benchmark",
+            "Start 1 CRC32 loops",
+
+            "function calls",
+            "MC6809/components/mc6809_base.py",
+            "MC6809/components/memory.py",
         ], result.output)
 
         errors = ["Error", "Traceback"]

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding: utf-8
 
 """
     borrowed from http://code.activestate.com/recipes/52215/
@@ -12,26 +11,23 @@
         print_exc_plus()
 """
 
-from __future__ import absolute_import, division, print_function
 
 import sys
 import traceback
 
 import click
 
-PY2 = sys.version_info[0] == 2
-if PY2:
-    range = xrange
 
 MAX_CHARS = 256
+
 
 def print_exc_plus():
     """
     Print the usual traceback information, followed by a listing of all the
     local variables in each frame.
     """
-    sys.stderr.flush() # for eclipse
-    sys.stdout.flush() # for eclipse
+    sys.stderr.flush()  # for eclipse
+    sys.stdout.flush()  # for eclipse
 
     tb = sys.exc_info()[2]
     while True:
@@ -64,14 +60,10 @@ def print_exc_plus():
         fg="blue", bold=True
     )
     for frame in stack:
-        click.secho('\n *** File "%s", line %i, in %s' % (
-                frame.f_code.co_filename,
-                frame.f_lineno,
-                frame.f_code.co_name,
-            ),
-            fg="white",
-            bold=True
-        )
+        click.secho(f'\n *** File "{frame.f_code.co_filename}", line {frame.f_lineno:d}, in {frame.f_code.co_name}',
+                    fg="white",
+                    bold=True
+                    )
 
         for key, value in list(frame.f_locals.items()):
             print(click.style("%30s = " % key, bold=True), end=' ')
@@ -79,15 +71,14 @@ def print_exc_plus():
             # printer! Calling str() on an unknown object could cause an
             # error we don't want.
             if isinstance(value, int):
-                value = "$%x (decimal: %i)" % (value, value)
+                value = f"${value:x} (decimal: {value:d})"
             else:
                 value = repr(value)
 
             if len(value) > MAX_CHARS:
-                value = "%s..." % value[:MAX_CHARS]
+                value = f"{value[:MAX_CHARS]}..."
 
             try:
                 print(value)
-            except:
+            except BaseException:
                 print("<ERROR WHILE PRINTING VALUE>")
-

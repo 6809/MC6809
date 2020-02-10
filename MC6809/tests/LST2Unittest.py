@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding: utf-8
 
 # copy&paste .lst content from e.g.: http://www.asm80.com/
 lst = """
@@ -50,15 +49,13 @@ for line in lst.strip().splitlines():
 
     # for BASIC
     lines.append({
-        "hex_list":hex_list,
-        "address":address,
-        "lable":lable,
-        "code1":code1,
-        "code2":code2,
-        "doc":doc,
+        "hex_list": hex_list,
+        "address": address,
+        "lable": lable,
+        "code1": code1,
+        "code2": code2,
+        "doc": doc,
     })
-
-
 
 
 def print_unittest1(lines):
@@ -71,17 +68,15 @@ def print_unittest1(lines):
         code2 = line["code2"]
         doc = line["doc"]
 
-        hex_list = ", ".join(["0x%02x" % i for i in hex_list])
+        hex_list = ", ".join("0x%02x" % i for i in hex_list)
         if hex_list:
             hex_list += ", #"
         else:
             hex_list += "#"
 
-        line = "            %-20s %s|%6s %-5s %-8s" % (
-            hex_list, address, lable, code1, code2
-        )
+        line = f"            {hex_list:<20} {address}|{lable:>6} {code1:<5} {code2:<8}"
         if doc:
-            line = "%40s ; %s" % (line, doc)
+            line = f"{line:>40} ; {doc}"
         print(line.rstrip())
     print("        ])")
 
@@ -90,23 +85,21 @@ def print_unittest2(lines):
     print("        self.cpu_test_run(start=0x0100, end=None, mem=[")
     for line in lines:
         hex_list = line["hex_list"]
-        address = line["address"]
+        # address = line["address"]
         lable = line["lable"]
         code1 = line["code1"]
         code2 = line["code2"]
         doc = line["doc"]
 
-        hex_list = ", ".join(["0x%02x" % i for i in hex_list])
+        hex_list = ", ".join("0x%02x" % i for i in hex_list)
         if hex_list:
             hex_list += ", #"
         else:
             hex_list += "#"
 
-        line = "            %-20s %6s %-5s %-8s" % (
-            hex_list, lable, code1, code2
-        )
+        line = f"            {hex_list:<20} {lable:>6} {code1:<5} {code2:<8}"
         if doc:
-            line = "%40s ; %s" % (line, doc)
+            line = f"{line:>40} ; {doc}"
         print(line.rstrip())
     print("        ])")
 
@@ -114,39 +107,34 @@ def print_unittest2(lines):
 def print_bas(lines, line_no):
     for line in lines:
         hex_list = line["hex_list"]
-        address = line["address"]
-        lable = line["lable"]
+        # address = line["address"]
+        # lable = line["lable"]
         code1 = line["code1"]
         code2 = line["code2"]
         doc = line["doc"]
 
-        line = "%s ' %s %s" % (
-            line_no, code1, code2
-        )
+        line = f"{line_no} ' {code1} {code2}"
         if doc:
-            line = "%-20s ; %s" % (line, doc)
+            line = f"{line:<20} ; {doc}"
         print(line.upper())
         line_no += 10
 
-        line = "%s DATA %s" % (
-            line_no,
-            ",".join(["%x" % i for i in hex_list])
-        )
+        line = f"{line_no} DATA {','.join(('%x' % i) for i in hex_list)}"
         print(line.upper())
         line_no += 10
 
 
-print("-"*79)
+print("-" * 79)
 
-print_unittest1(lines) # with address
+print_unittest1(lines)  # with address
 
-print("-"*79)
+print("-" * 79)
 
-print_unittest2(lines) # without address
+print_unittest2(lines)  # without address
 
-print("-"*79)
+print("-" * 79)
 
 # for a basic file:
 print_bas(lines,
-    line_no=1050
-)
+          line_no=1050
+          )

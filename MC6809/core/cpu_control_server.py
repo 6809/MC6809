@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding: utf-8
 
 """
     DragonPy - CPU control http server
@@ -16,27 +15,17 @@
     more info, see README
 """
 
-from __future__ import absolute_import, division, print_function
-
-try:
-    from http.server import BaseHTTPRequestHandler # Python 3
-except ImportError:
-    from BaseHTTPServer import BaseHTTPRequestHandler # Python 2
-    range = xrange
-
 
 import json
 import logging
-import os
 import re
 import select
-import sys
 import threading
 import traceback
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
-import logging
 
-log=logging.getLogger("MC6809")
+log = logging.getLogger("MC6809")
 
 
 class ControlHandler(BaseHTTPRequestHandler):
@@ -64,9 +53,7 @@ class ControlHandler(BaseHTTPRequestHandler):
         BaseHTTPRequestHandler.__init__(self, request, client_address, server)
 
     def log_message(self, format, *args):
-        msg = "%s - - [%s] %s\n" % (
-            self.client_address[0], self.log_date_time_string(), format % args
-        )
+        msg = f"{self.client_address[0]} - - [{self.log_date_time_string()}] {format % args}\n"
         log.critical(msg)
 
     def dispatch(self, urls):
@@ -78,10 +65,10 @@ class ControlHandler(BaseHTTPRequestHandler):
                     f(m)
                 except Exception as err:
                     txt = traceback.format_exc()
-                    self.response_500("Error call %r: %s" % (f.__name__, err), txt)
+                    self.response_500(f"Error call {f.__name__!r}: {err}", txt)
                 return
         else:
-            self.response_404("url %r doesn't match any urls" % self.path)
+            self.response_404(f"url {self.path!r} doesn't match any urls")
 
     def response(self, s, status_code=200):
         log.critical("send %s response", status_code)
@@ -134,16 +121,16 @@ class ControlHandler(BaseHTTPRequestHandler):
         self.response_html(
             headline="DragonPy - 6809 CPU control server",
             text=(
-            "<p>Example urls:"
-            "<ul>"
-            '<li>CPU status:<a href="/status/">/status/</a></li>'
-            '<li>6809 interrupt vectors memory dump:'
-            '<a href="/memory/fff0-ffff/">/memory/fff0-ffff/</a></li>'
-            '</ul>'
-            '<form action="/quit/" method="post">'
-            '<input type="submit" value="Quit CPU">'
-            '</form>'
-        ))
+                "<p>Example urls:"
+                "<ul>"
+                '<li>CPU status:<a href="/status/">/status/</a></li>'
+                '<li>6809 interrupt vectors memory dump:'
+                '<a href="/memory/fff0-ffff/">/memory/fff0-ffff/</a></li>'
+                '</ul>'
+                '<form action="/quit/" method="post">'
+                '<input type="submit" value="Quit CPU">'
+                '</form>'
+            ))
 
     def get_disassemble(self, m):
         addr = int(m.group(1))
@@ -163,7 +150,7 @@ class ControlHandler(BaseHTTPRequestHandler):
             end = int(e)
         else:
             end = addr
-        self.response("".join([chr(self.cpu.read_byte(x)) for x in range(addr, end + 1)]))
+        self.response("".join(chr(self.cpu.read_byte(x)) for x in range(addr, end + 1)))
 
     def get_memory(self, m):
         addr = int(m.group(1), 16)
@@ -229,6 +216,7 @@ class ControlHandler(BaseHTTPRequestHandler):
 class ControlHandlerFactory:
     def __init__(self, cpu):
         self.cpu = cpu
+
     def __call__(self, request, client_address, server):
         return ControlHandler(request, client_address, server, self.cpu)
 
@@ -247,21 +235,20 @@ def control_server_thread(cpu, cfg, control_server):
 
     if cpu.running:
         threading.Timer(interval=0.5,
-            function=control_server_thread,
-            args=(cpu, cfg, control_server)
-        ).start()
+                        function=control_server_thread,
+                        args=(cpu, cfg, control_server)
+                        ).start()
     else:
         log.critical("Quit control server thread, because CPU doesn't run.")
 
 
-
-class CPUControlServerMixin(object):
+class CPUControlServerMixin:
     def __init__(self, *args, **kwargs):
         control_handler = ControlHandlerFactory(self)
         server_address = (self.cfg.CPU_CONTROL_ADDR, self.cfg.CPU_CONTROL_PORT)
         try:
-            control_server = http.server.HTTPServer(server_address, control_handler)
-        except:
+            control_server = HTTPServer(server_address, control_handler)
+        except BaseException:
             self.running = False
             raise
         url = "http://%s:%s" % server_address

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding: utf-8
 
 """
     MC6809 - 6809 CPU emulator in Python
@@ -21,21 +20,22 @@
     more info, see README
 """
 
-from __future__ import absolute_import, division, print_function
-
-from MC6809.utils.humanize import cc_value2txt
 
 import logging
 
-log=logging.getLogger("MC6809")
+from MC6809.utils.humanize import cc_value2txt
 
 
-class ConditionCodeRegister(object):
+log = logging.getLogger("MC6809")
+
+
+class ConditionCodeRegister:
     """
     Imitate the normal register API
     """
-    name="CC"
+    name = "CC"
     WIDTH = 8  # 8 Bit
+
     def __init__(self, cpu):
         self.get_cc_value = cpu.get_cc_value
         self.set_cc = cpu.set_cc
@@ -48,11 +48,11 @@ class ConditionCodeRegister(object):
         return self.set_cc(status)
 
 
-class CPUConditionCodeRegisterMixin(object):
+class CPUConditionCodeRegisterMixin:
     """ CC - 8 bit condition code register bits """
 
     def __init__(self, *args, **kwargs):
-        super(CPUConditionCodeRegisterMixin, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.E = 0  # E - 0x80 - bit 7 - Entire register state stacked
         self.F = 0  # F - 0x40 - bit 6 - FIRQ interrupt masked
         self.H = 0  # H - 0x20 - bit 5 - Half-Carry
@@ -174,31 +174,31 @@ class CPUConditionCodeRegisterMixin(object):
     ####
 
     def clear_NZ(self):
-#        log.debug("\tclear_NZ()")
+        #        log.debug("\tclear_NZ()")
         self.N = 0
         self.Z = 0
 
     def clear_NZC(self):
-#        log.debug("\tclear_NZC()")
+        #        log.debug("\tclear_NZC()")
         self.N = 0
         self.Z = 0
         self.C = 0
 
     def clear_NZV(self):
-#        log.debug("\tclear_NZV()")
+        #        log.debug("\tclear_NZV()")
         self.N = 0
         self.Z = 0
         self.V = 0
 
     def clear_NZVC(self):
-#        log.debug("\tclear_NZVC()")
+        #        log.debug("\tclear_NZVC()")
         self.N = 0
         self.Z = 0
         self.V = 0
         self.C = 0
 
     def clear_HNZVC(self):
-#        log.debug("\tclear_HNZVC()")
+        #        log.debug("\tclear_HNZVC()")
         self.H = 0
         self.N = 0
         self.Z = 0
@@ -261,4 +261,3 @@ class CPUConditionCodeRegisterMixin(object):
         self.set_Z8(r)
         self.set_V8(a, b, r)
         self.set_C8(r)
-

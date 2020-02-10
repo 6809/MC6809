@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding: utf-8
 
 """
     MC6809 - 6809 CPU emulator in Python
@@ -21,24 +20,14 @@
     more info, see README
 """
 
-from __future__ import absolute_import, division, print_function
 
 import inspect
-
+import queue
 import threading
 import time
-import sys
 import warnings
 
-if sys.version_info[0] == 3:
-    # Python 3
-    import queue
-    import _thread
-else:
-    # Python 2
-    import Queue as queue
-    import thread as _thread
-    range = xrange
+import _thread
 
 
 class CPUStatusThread(threading.Thread):
@@ -46,8 +35,9 @@ class CPUStatusThread(threading.Thread):
     Send cycles/sec information via cpu_status_queue to the GUi main thread.
     Just ignore if the cpu_status_queue is full.
     """
+
     def __init__(self, cpu, cpu_status_queue):
-        super(CPUStatusThread, self).__init__(name="CPU-Status-Thread")
+        super().__init__(name="CPU-Status-Thread")
         self.cpu = cpu
         self.cpu_status_queue = cpu_status_queue
 
@@ -59,20 +49,20 @@ class CPUStatusThread(threading.Thread):
             try:
                 self.cpu_status_queue.put(self.cpu.cycles, block=False)
             except queue.Full:
-#                 log.critical("Can't put CPU status: Queue is full.")
+                #                 log.critical("Can't put CPU status: Queue is full.")
                 pass
             time.sleep(0.5)
 
     def run(self):
         try:
             self._run()
-        except:
+        except BaseException:
             self.cpu.running = False
             _thread.interrupt_main()
             raise
 
 
-class CPUThreadedStatusMixin(object):
+class CPUThreadedStatusMixin:
     def __init__(self, *args, **kwargs):
         cpu_status_queue = kwargs.get("cpu_status_queue", None)
         if cpu_status_queue is not None:
@@ -81,7 +71,7 @@ class CPUThreadedStatusMixin(object):
             status_thread.start()
 
 
-class CPUTypeAssertMixin(object):
+class CPUTypeAssertMixin:
     """
     assert that all attributes of the CPU class will remain as the same.
 
@@ -94,15 +84,16 @@ class CPUTypeAssertMixin(object):
         cpu.index_x = 0x1234 # will raised a error
     """
     __ATTR_DICT = {}
+
     def __init__(self, *args, **kwargs):
-        super(CPUTypeAssertMixin, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.__set_attr_dict()
         warnings.warn(
             "CPU TypeAssert used! (Should be only activated for debugging!)"
         )
 
     def __set_attr_dict(self):
-        for name, obj in inspect.getmembers(self, lambda x:not(inspect.isroutine(x))):
+        for name, obj in inspect.getmembers(self, lambda x: not(inspect.isroutine(x))):
             if name.startswith("_") or name == "cfg":
                 continue
             self.__ATTR_DICT[name] = type(obj)
@@ -111,9 +102,7 @@ class CPUTypeAssertMixin(object):
         if attr in self.__ATTR_DICT:
             obj = self.__ATTR_DICT[attr]
             assert isinstance(value, obj), \
-                "Attribute %r is no more type %s (Is now: %s)!" % (
-                    attr, obj, type(obj)
-                )
+                f"Attribute {attr!r} is no more type {obj} (Is now: {type(obj)})!"
         return object.__setattr__(self, attr, value)
 
 
@@ -121,7 +110,7 @@ def calc_new_count(min_value, value, max_value, trigger, target):
     """
     change 'value' between 'min_value' and 'max_value'
     so that 'trigger' will be match 'target'
-    
+
     >>> calc_new_count(min_value=0, value=100, max_value=200, trigger=30, target=30)
     100
 

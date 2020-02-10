@@ -37,3 +37,7 @@ nosetests.xml
 .pydevproject
 .idea/*
 .settings/*
+/poetry.lock
+/coverage.xml
+/CPU6809_opcodes.html
+/publish.log
