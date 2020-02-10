@@ -37,3 +37,5 @@ nosetests.xml
 .pydevproject
 .idea/*
 .settings/*
+/poetry.lock
+/coverage.xml
