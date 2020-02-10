@@ -56,7 +56,8 @@ class CLITestCase(unittest.TestCase):
         self.assert_contains_members([
             "cli [OPTIONS] COMMAND [ARGS]...",
             "Commands:",
-            "benchmark  Run a 6809 Emulation benchmark",
+            "benchmark ", " Run a MC6809 emulation benchmark",
+            "profile ", " Profile the MC6809 emulation benchmark",
         ], result.output)
 
         errors = ["Error", "Traceback"]
@@ -72,7 +73,7 @@ class CLITestCase(unittest.TestCase):
         #        print(cli_err)
         self.assert_contains_members([
             "Usage: cli benchmark [OPTIONS]",
-            "Run a 6809 Emulation benchmark",
+            "Run a MC6809 emulation benchmark",
         ], result.output)
 
         errors = ["Error", "Traceback"]
@@ -85,6 +86,22 @@ class CLITestCase(unittest.TestCase):
             "Start 1 CRC16 loops",
             "CRC32 benchmark",
             "Start 1 CRC32 loops",
+        ], result.output)
+
+        errors = ["Error", "Traceback"]
+        self.assert_not_contains_members(errors, result.output)
+
+    def test_run_profile(self):
+        result = self._invoke("profile", "--loops", "1", "--multiply", "1")
+        self.assert_contains_members([
+            "CRC16 benchmark",
+            "Start 1 CRC16 loops",
+            "CRC32 benchmark",
+            "Start 1 CRC32 loops",
+
+            "function calls",
+            "MC6809/components/mc6809_base.py",
+            "MC6809/components/memory.py",
         ], result.output)
 
         errors = ["Error", "Traceback"]
