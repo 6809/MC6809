@@ -16,12 +16,13 @@ from __future__ import absolute_import, division, print_function
 import os
 import sys
 
+from MC6809.components.MC6809data.MC6809_op_data import BYTE, OP_DATA, WORD
+from MC6809.components.MC6809data.MC6809_op_docs import OP_DOC
+
+
 PY2 = sys.version_info[0] == 2
 if PY2:
     range = xrange
-
-from MC6809.components.MC6809data.MC6809_op_data import OP_DATA, BYTE, WORD
-from MC6809.components.MC6809data.MC6809_op_docs import OP_DOC
 
 
 OUTFILENAME = "CPU6809_opcodes.html"
@@ -38,6 +39,7 @@ class Cell(object):
         self.txt = txt
         self.rowspan = 0
         self.headline = None
+
     def html(self):
         if self.rowspan is None:
             return ""
@@ -51,18 +53,18 @@ class Cell(object):
 
 
 headlines = (
-  "instruction",
-  "mnemonic",
-  "CC flags",
-  "example",
-  "op code",
-  "bytes",
-  "cycles",
-  "address mode",
-  "needs ea",
-  "read from memory",
-  "write to memory",
-  "register",
+    "instruction",
+    "mnemonic",
+    "CC flags",
+    "example",
+    "op code",
+    "bytes",
+    "cycles",
+    "address mode",
+    "needs ea",
+    "read from memory",
+    "write to memory",
+    "register",
 )
 
 
@@ -83,7 +85,6 @@ for instruction, instr_data in sorted(OP_DATA.items()):
                 op_code = f"${op_code:04x}"
             else:
                 op_code = f"${op_code:02x}"
-
 
             data.append([
                 instruction,

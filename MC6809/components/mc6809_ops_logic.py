@@ -23,7 +23,6 @@
 
 from __future__ import absolute_import, division, print_function
 
-
 from MC6809.components.cpu_utils.instruction_caller import opcode
 from MC6809.utils.bits import get_bit
 
@@ -31,10 +30,9 @@ from MC6809.utils.bits import get_bit
 class OpsLogicalMixin(object):
     # ---- Logical Operations ----
 
-
-    @opcode(# AND memory with accumulator
-        0x84, 0x94, 0xa4, 0xb4, # ANDA (immediate, direct, indexed, extended)
-        0xc4, 0xd4, 0xe4, 0xf4, # ANDB (immediate, direct, indexed, extended)
+    @opcode(  # AND memory with accumulator
+        0x84, 0x94, 0xa4, 0xb4,  # ANDA (immediate, direct, indexed, extended)
+        0xc4, 0xd4, 0xe4, 0xf4,  # ANDB (immediate, direct, indexed, extended)
     )
     def instruction_AND(self, opcode, m, register):
         """
@@ -55,9 +53,9 @@ class OpsLogicalMixin(object):
 #            register.name, a, m, r
 #        )
 
-    @opcode(# Exclusive OR memory with accumulator
-        0x88, 0x98, 0xa8, 0xb8, # EORA (immediate, direct, indexed, extended)
-        0xc8, 0xd8, 0xe8, 0xf8, # EORB (immediate, direct, indexed, extended)
+    @opcode(  # Exclusive OR memory with accumulator
+        0x88, 0x98, 0xa8, 0xb8,  # EORA (immediate, direct, indexed, extended)
+        0xc8, 0xd8, 0xe8, 0xf8,  # EORB (immediate, direct, indexed, extended)
     )
     def instruction_EOR(self, opcode, m, register):
         """
@@ -77,9 +75,9 @@ class OpsLogicalMixin(object):
 #            register.name, a, m, r
 #        )
 
-    @opcode(# OR memory with accumulator
-        0x8a, 0x9a, 0xaa, 0xba, # ORA (immediate, direct, indexed, extended)
-        0xca, 0xda, 0xea, 0xfa, # ORB (immediate, direct, indexed, extended)
+    @opcode(  # OR memory with accumulator
+        0x8a, 0x9a, 0xaa, 0xba,  # ORA (immediate, direct, indexed, extended)
+        0xca, 0xda, 0xea, 0xfa,  # ORB (immediate, direct, indexed, extended)
     )
     def instruction_OR(self, opcode, m, register):
         """
@@ -102,9 +100,8 @@ class OpsLogicalMixin(object):
 
     # ---- CC manipulation ----
 
-
-    @opcode(# AND condition code register
-        0x1c, # ANDCC (immediate)
+    @opcode(  # AND condition code register
+        0x1c,  # ANDCC (immediate)
     )
     def instruction_ANDCC(self, opcode, m, register):
         """
@@ -125,8 +122,8 @@ class OpsLogicalMixin(object):
 #             old_cc, m, new_cc, self.get_cc_info()
 #         )
 
-    @opcode(# OR condition code register
-        0x1a, # ORCC (immediate)
+    @opcode(  # OR condition code register
+        0x1a,  # ORCC (immediate)
     )
     def instruction_ORCC(self, opcode, m, register):
         """
@@ -168,7 +165,7 @@ class OpsLogicalMixin(object):
         self.update_NZVC_8(a, a, r)
         return r
 
-    @opcode(0x8, 0x68, 0x78) # LSL/ASL (direct, indexed, extended)
+    @opcode(0x8, 0x68, 0x78)  # LSL/ASL (direct, indexed, extended)
     def instruction_LSL_memory(self, opcode, ea, m):
         """
         Logical shift left memory location / Arithmetic shift of memory left
@@ -181,7 +178,7 @@ class OpsLogicalMixin(object):
 #        ))
         return ea, r & 0xff
 
-    @opcode(0x48, 0x58) # LSLA/ASLA / LSLB/ASLB (inherent)
+    @opcode(0x48, 0x58)  # LSLA/ASLA / LSLB/ASLB (inherent)
     def instruction_LSL_register(self, opcode, register):
         """
         Logical shift left accumulator / Arithmetic shift of accumulator
@@ -205,11 +202,11 @@ class OpsLogicalMixin(object):
         """
         r = a >> 1
         self.clear_NZC()
-        self.C = get_bit(a, bit=0) # same as: self.C |= (a & 1)
+        self.C = get_bit(a, bit=0)  # same as: self.C |= (a & 1)
         self.set_Z8(r)
         return r
 
-    @opcode(0x4, 0x64, 0x74) # LSR (direct, indexed, extended)
+    @opcode(0x4, 0x64, 0x74)  # LSR (direct, indexed, extended)
     def instruction_LSR_memory(self, opcode, ea, m):
         """ Logical shift right memory location """
         r = self.LSR(m)
@@ -220,7 +217,7 @@ class OpsLogicalMixin(object):
 #        ))
         return ea, r & 0xff
 
-    @opcode(0x44, 0x54) # LSRA / LSRB (inherent)
+    @opcode(0x44, 0x54)  # LSRA / LSRB (inherent)
     def instruction_LSR_register(self, opcode, register):
         """ Logical shift right accumulator """
         a = register.value
@@ -244,11 +241,11 @@ class OpsLogicalMixin(object):
         """
         r = (a >> 1) | (a & 0x80)
         self.clear_NZC()
-        self.C = get_bit(a, bit=0) # same as: self.C |= (a & 1)
+        self.C = get_bit(a, bit=0)  # same as: self.C |= (a & 1)
         self.update_NZ_8(r)
         return r
 
-    @opcode(0x7, 0x67, 0x77) # ASR (direct, indexed, extended)
+    @opcode(0x7, 0x67, 0x77)  # ASR (direct, indexed, extended)
     def instruction_ASR_memory(self, opcode, ea, m):
         """ Arithmetic shift memory right """
         r = self.ASR(m)
@@ -259,7 +256,7 @@ class OpsLogicalMixin(object):
 #        ))
         return ea, r & 0xff
 
-    @opcode(0x47, 0x57) # ASRA/ASRB (inherent)
+    @opcode(0x47, 0x57)  # ASRA/ASRB (inherent)
     def instruction_ASR_register(self, opcode, register):
         """ Arithmetic shift accumulator right """
         a = register.value
@@ -270,9 +267,7 @@ class OpsLogicalMixin(object):
 #        ))
         register.set(r)
 
-
     # ---- Rotate: ROL, ROR ----
-
 
     def ROL(self, a):
         """
@@ -288,7 +283,7 @@ class OpsLogicalMixin(object):
         self.update_NZVC_8(a, a, r)
         return r
 
-    @opcode(0x9, 0x69, 0x79) # ROL (direct, indexed, extended)
+    @opcode(0x9, 0x69, 0x79)  # ROL (direct, indexed, extended)
     def instruction_ROL_memory(self, opcode, ea, m):
         """ Rotate memory left """
         r = self.ROL(m)
@@ -299,7 +294,7 @@ class OpsLogicalMixin(object):
 #        ))
         return ea, r & 0xff
 
-    @opcode(0x49, 0x59) # ROLA / ROLB (inherent)
+    @opcode(0x49, 0x59)  # ROLA / ROLB (inherent)
     def instruction_ROL_register(self, opcode, register):
         """ Rotate accumulator left """
         a = register.value
@@ -325,10 +320,10 @@ class OpsLogicalMixin(object):
         r = (a >> 1) | (self.C << 7)
         self.clear_NZ()
         self.update_NZ_8(r)
-        self.C = get_bit(a, bit=0) # same as: self.C = (a & 1)
+        self.C = get_bit(a, bit=0)  # same as: self.C = (a & 1)
         return r
 
-    @opcode(0x6, 0x66, 0x76) # ROR (direct, indexed, extended)
+    @opcode(0x6, 0x66, 0x76)  # ROR (direct, indexed, extended)
     def instruction_ROR_memory(self, opcode, ea, m):
         """ Rotate memory right """
         r = self.ROR(m)
@@ -339,7 +334,7 @@ class OpsLogicalMixin(object):
 #        ))
         return ea, r & 0xff
 
-    @opcode(0x46, 0x56) # RORA/RORB (inherent)
+    @opcode(0x46, 0x56)  # RORA/RORB (inherent)
     def instruction_ROR_register(self, opcode, register):
         """ Rotate accumulator right """
         a = register.value

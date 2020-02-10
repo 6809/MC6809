@@ -11,8 +11,8 @@
 
 from __future__ import absolute_import, division, print_function
 
-
 import sys
+
 
 class BaseMemoryInfo(object):
     def __init__(self, out_func):

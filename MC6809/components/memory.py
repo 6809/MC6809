@@ -22,9 +22,10 @@
 from __future__ import absolute_import, division, print_function
 
 import array
+import logging
 import os
 import sys
-import logging
+
 
 PY2 = sys.version_info[0] == 2
 if PY2:
@@ -49,12 +50,15 @@ class Memory(object):
 
         self.RAM_SIZE = (self.cfg.RAM_END - self.cfg.RAM_START) + 1
         self.ROM_SIZE = (self.cfg.ROM_END - self.cfg.ROM_START) + 1
-        assert not hasattr(cfg, "RAM_SIZE"), f"cfg.RAM_SIZE is deprecated! Remove it from: {self.cfg.__class__.__name__}"
-        assert not hasattr(cfg, "ROM_SIZE"), f"cfg.ROM_SIZE is deprecated! Remove it from: {self.cfg.__class__.__name__}"
+        assert not hasattr(
+            cfg, "RAM_SIZE"), f"cfg.RAM_SIZE is deprecated! Remove it from: {self.cfg.__class__.__name__}"
+        assert not hasattr(
+            cfg, "ROM_SIZE"), f"cfg.ROM_SIZE is deprecated! Remove it from: {self.cfg.__class__.__name__}"
 
         assert not hasattr(cfg, "ram"), f"cfg.ram is deprecated! Remove it from: {self.cfg.__class__.__name__}"
 
-        assert not hasattr(cfg, "DEFAULT_ROM"), f"cfg.DEFAULT_ROM must be converted to DEFAULT_ROMS tuple in {self.cfg.__class__.__name__}"
+        assert not hasattr(
+            cfg, "DEFAULT_ROM"), f"cfg.DEFAULT_ROM must be converted to DEFAULT_ROMS tuple in {self.cfg.__class__.__name__}"
 
         assert self.RAM_SIZE + self.RAM_SIZE <= self.INTERNAL_SIZE, "%s Bytes < %s Bytes" % (
             self.RAM_SIZE + self.RAM_SIZE, self.INTERNAL_SIZE
@@ -70,7 +74,7 @@ class Memory(object):
 #        self._mem = bytearray(self.cfg.MEMORY_SIZE)
 
         # array consumes also less RAM than lists and it's a little bit faster:
-        self._mem = array.array("B", [0x00] * self.INTERNAL_SIZE) # unsigned char
+        self._mem = array.array("B", [0x00] * self.INTERNAL_SIZE)  # unsigned char
 
         if cfg and cfg.rom_cfg:
             for romfile in cfg.rom_cfg:
@@ -119,16 +123,14 @@ class Memory(object):
 #             "memory write middlewares: %s", self._write_byte_middleware
 #         )
 
-
         log.critical("init RAM $%04x (dez.:%s) Bytes RAM $%04x (dez.:%s) Bytes (total %s real: %s)",
-            self.RAM_SIZE, self.RAM_SIZE,
-            self.ROM_SIZE, self.ROM_SIZE,
-            self.RAM_SIZE + self.ROM_SIZE,
-            len(self._mem)
-        )
+                     self.RAM_SIZE, self.RAM_SIZE,
+                     self.ROM_SIZE, self.ROM_SIZE,
+                     self.RAM_SIZE + self.ROM_SIZE,
+                     len(self._mem)
+                     )
 
-
-    #---------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------
 
     def _map_address_range(self, callbacks_dict, callback_func, start_addr, end_addr=None):
         if end_addr is None:
@@ -137,7 +139,7 @@ class Memory(object):
             for addr in range(start_addr, end_addr + 1):
                 callbacks_dict[addr] = callback_func
 
-    #---------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------
 
     def add_read_byte_callback(self, callback_func, start_addr, end_addr=None):
         self._map_address_range(self._read_byte_callbacks, callback_func, start_addr, end_addr)
@@ -151,7 +153,7 @@ class Memory(object):
     def add_write_word_callback(self, callback_func, start_addr, end_addr=None):
         self._map_address_range(self._write_word_callbacks, callback_func, start_addr, end_addr)
 
-    #---------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------
 
     def add_read_byte_middleware(self, callback_func, start_addr, end_addr=None):
         self._map_address_range(self._read_byte_middleware, callback_func, start_addr, end_addr)
@@ -165,21 +167,20 @@ class Memory(object):
     def add_write_word_middleware(self, callback_func, start_addr, end_addr=None):
         self._map_address_range(self._write_word_middleware, callback_func, start_addr, end_addr)
 
-    #---------------------------------------------------------------------------
-
+    # ---------------------------------------------------------------------------
 
     def load(self, address, data):
         if isinstance(data, string_type):
             data = [ord(c) for c in data]
 
         log.debug("ROM load at $%04x: %s", address,
-            ", ".join(["$%02x" % i for i in data])
-        )
+                  ", ".join(["$%02x" % i for i in data])
+                  )
         for ea, datum in enumerate(data, address):
             try:
                 self._mem[ea] = datum
             except OverflowError as err:
-                msg="%s - datum=$%x ea=$%04x (load address was: $%04x - data length: %iBytes)" % (
+                msg = "%s - datum=$%x ea=$%04x (load address was: $%04x - data length: %iBytes)" % (
                     err, datum, ea, address, len(data)
                 )
                 raise OverflowError(msg)
@@ -189,7 +190,7 @@ class Memory(object):
         self.load(romfile.address, data)
         log.critical("Load ROM file %r to $%04x", romfile.filepath, romfile.address)
 
-    #---------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------
 
     def read_byte(self, address):
         self.cpu.cycles += 1
@@ -240,7 +241,7 @@ class Memory(object):
         # 6809 is Big-Endian
         return (self.read_byte(address) << 8) + self.read_byte(address + 1)
 
-    #---------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------
 
     def write_byte(self, address, value):
         self.cpu.cycles += 1
@@ -302,7 +303,7 @@ class Memory(object):
         self.write_byte(address, word >> 8)
         self.write_byte(address + 1, word & 0xff)
 
-    #---------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------
 
     def get(self, start, end):
         """
@@ -328,5 +329,3 @@ class Memory(object):
         print(f"Memory dump from ${start:04x} to ${end:04x}:")
         dump_lines = self.get_dump(start, end)
         print("\n".join(["\t%s" % line for line in dump_lines]))
-
-

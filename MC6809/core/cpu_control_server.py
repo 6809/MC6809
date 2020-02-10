@@ -18,13 +18,6 @@
 
 from __future__ import absolute_import, division, print_function
 
-try:
-    from http.server import BaseHTTPRequestHandler # Python 3
-except ImportError:
-    from BaseHTTPServer import BaseHTTPRequestHandler # Python 2
-    range = xrange
-
-
 import json
 import logging
 import os
@@ -34,9 +27,15 @@ import sys
 import threading
 import traceback
 
-import logging
 
-log=logging.getLogger("MC6809")
+try:
+    from http.server import BaseHTTPRequestHandler  # Python 3
+except ImportError:
+    from BaseHTTPServer import BaseHTTPRequestHandler  # Python 2
+    range = xrange
+
+
+log = logging.getLogger("MC6809")
 
 
 class ControlHandler(BaseHTTPRequestHandler):
@@ -134,16 +133,16 @@ class ControlHandler(BaseHTTPRequestHandler):
         self.response_html(
             headline="DragonPy - 6809 CPU control server",
             text=(
-            "<p>Example urls:"
-            "<ul>"
-            '<li>CPU status:<a href="/status/">/status/</a></li>'
-            '<li>6809 interrupt vectors memory dump:'
-            '<a href="/memory/fff0-ffff/">/memory/fff0-ffff/</a></li>'
-            '</ul>'
-            '<form action="/quit/" method="post">'
-            '<input type="submit" value="Quit CPU">'
-            '</form>'
-        ))
+                "<p>Example urls:"
+                "<ul>"
+                '<li>CPU status:<a href="/status/">/status/</a></li>'
+                '<li>6809 interrupt vectors memory dump:'
+                '<a href="/memory/fff0-ffff/">/memory/fff0-ffff/</a></li>'
+                '</ul>'
+                '<form action="/quit/" method="post">'
+                '<input type="submit" value="Quit CPU">'
+                '</form>'
+            ))
 
     def get_disassemble(self, m):
         addr = int(m.group(1))
@@ -229,6 +228,7 @@ class ControlHandler(BaseHTTPRequestHandler):
 class ControlHandlerFactory:
     def __init__(self, cpu):
         self.cpu = cpu
+
     def __call__(self, request, client_address, server):
         return ControlHandler(request, client_address, server, self.cpu)
 
@@ -247,12 +247,11 @@ def control_server_thread(cpu, cfg, control_server):
 
     if cpu.running:
         threading.Timer(interval=0.5,
-            function=control_server_thread,
-            args=(cpu, cfg, control_server)
-        ).start()
+                        function=control_server_thread,
+                        args=(cpu, cfg, control_server)
+                        ).start()
     else:
         log.critical("Quit control server thread, because CPU doesn't run.")
-
 
 
 class CPUControlServerMixin(object):
@@ -261,7 +260,7 @@ class CPUControlServerMixin(object):
         server_address = (self.cfg.CPU_CONTROL_ADDR, self.cfg.CPU_CONTROL_PORT)
         try:
             control_server = http.server.HTTPServer(server_address, control_handler)
-        except:
+        except BaseException:
             self.running = False
             raise
         url = "http://%s:%s" % server_address

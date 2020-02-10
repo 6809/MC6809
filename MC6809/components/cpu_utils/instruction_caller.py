@@ -12,10 +12,11 @@ from __future__ import absolute_import, division, print_function
 
 import inspect
 
-from MC6809.components.MC6809data.MC6809_data_utils import MC6809OP_DATA_DICT
-from MC6809.components.cpu_utils.Instruction_generator import func_name_from_op_code
-from MC6809.components.cpu_utils.instruction_call import PrepagedInstructions
 from MC6809.components.cpu6809_trace import InstructionTrace
+from MC6809.components.cpu_utils.instruction_call import PrepagedInstructions
+from MC6809.components.cpu_utils.Instruction_generator import func_name_from_op_code
+from MC6809.components.MC6809data.MC6809_data_utils import MC6809OP_DATA_DICT
+
 
 def opcode(*opcodes):
     """A decorator for opcodes"""
@@ -52,9 +53,9 @@ class OpCollection(object):
             self._add_ops(opcodes, instr_func)
 
     def _add_ops(self, opcodes, instr_func):
-#         log.debug("%20s: %s" % (
-#             instr_func.__name__, ",".join(["$%x" % c for c in opcodes])
-#         ))
+        #         log.debug("%20s: %s" % (
+        #             instr_func.__name__, ",".join(["$%x" % c for c in opcodes])
+        #         ))
         for op_code in opcodes:
             assert op_code not in self.opcode_dict, \
                 f"Opcode ${op_code:x} ({instr_func.__name__}) defined more then one time!"
@@ -98,5 +99,3 @@ if __name__ == "__main__":
         print(f"Op {op_code} - cycles: {cycles:2d} - func: {func.__name__}")
 
     print(" --- END --- ")
-
-

@@ -19,19 +19,21 @@ import traceback
 
 import click
 
+
 PY2 = sys.version_info[0] == 2
 if PY2:
     range = xrange
 
 MAX_CHARS = 256
 
+
 def print_exc_plus():
     """
     Print the usual traceback information, followed by a listing of all the
     local variables in each frame.
     """
-    sys.stderr.flush() # for eclipse
-    sys.stdout.flush() # for eclipse
+    sys.stderr.flush()  # for eclipse
+    sys.stdout.flush()  # for eclipse
 
     tb = sys.exc_info()[2]
     while True:
@@ -65,9 +67,9 @@ def print_exc_plus():
     )
     for frame in stack:
         click.secho(f'\n *** File "{frame.f_code.co_filename}", line {frame.f_lineno:d}, in {frame.f_code.co_name}',
-            fg="white",
-            bold=True
-        )
+                    fg="white",
+                    bold=True
+                    )
 
         for key, value in list(frame.f_locals.items()):
             print(click.style("%30s = " % key, bold=True), end=' ')
@@ -84,6 +86,5 @@ def print_exc_plus():
 
             try:
                 print(value)
-            except:
+            except BaseException:
                 print("<ERROR WHILE PRINTING VALUE>")
-

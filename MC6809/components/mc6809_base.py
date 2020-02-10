@@ -23,9 +23,34 @@
 
 from __future__ import absolute_import, division, print_function
 
+import logging
 import sys
 import time
+
+from MC6809.components.cpu_utils.instruction_caller import OpCollection, opcode
+from MC6809.components.cpu_utils.MC6809_registers import (
+    ConcatenatedAccumulator,
+    UndefinedRegister,
+    ValueStorage8Bit,
+    ValueStorage16Bit,
+    convert_differend_width,
+)
 from MC6809.components.mc6809_tools import calc_new_count
+from MC6809.components.MC6809data.MC6809_op_data import (
+    REG_A,
+    REG_B,
+    REG_CC,
+    REG_D,
+    REG_DP,
+    REG_PC,
+    REG_S,
+    REG_U,
+    REG_X,
+    REG_Y,
+)
+from MC6809.utils.bits import get_bit, is_bit_set
+from MC6809.utils.byte_word_values import signed5, signed8, signed16
+
 
 if sys.version_info[0] == 3:
     # Python 3
@@ -33,22 +58,6 @@ if sys.version_info[0] == 3:
 else:
     # Python 2
     range = xrange
-
-import logging
-
-from MC6809.components.cpu_utils.instruction_caller import opcode
-
-from MC6809.components.cpu_utils.MC6809_registers import (
-    ValueStorage8Bit, ConcatenatedAccumulator,
-    ValueStorage16Bit, UndefinedRegister,
-    convert_differend_width)
-from MC6809.components.cpu_utils.instruction_caller import OpCollection
-from MC6809.utils.bits import is_bit_set, get_bit
-from MC6809.utils.byte_word_values import signed8, signed16, signed5
-from MC6809.components.MC6809data.MC6809_op_data import (
-    REG_A, REG_B, REG_CC, REG_D, REG_DP, REG_PC,
-    REG_S, REG_U, REG_X, REG_Y
-)
 
 
 log = logging.getLogger("MC6809")
@@ -58,9 +67,6 @@ log = logging.getLogger("MC6809")
 HTML_TRACE = False
 
 undefined_reg = UndefinedRegister()
-
-
-
 
 
 class CPUBase(object):
@@ -74,25 +80,25 @@ class CPUBase(object):
     RESET_VECTOR = 0xfffe
 
     STARTUP_BURST_COUNT = 100
-    min_burst_count = 10 # minimum outer op count per burst
-    max_burst_count = 10000 # maximum outer op count per burst
+    min_burst_count = 10  # minimum outer op count per burst
+    max_burst_count = 10000  # maximum outer op count per burst
 
     def __init__(self, memory, cfg):
         self.memory = memory
-        self.memory.cpu = self # FIXME
+        self.memory.cpu = self  # FIXME
         self.cfg = cfg
 
         self.running = True
         self.cycles = 0
-        self.last_op_address = 0 # Store the current run opcode memory address
+        self.last_op_address = 0  # Store the current run opcode memory address
         self.outer_burst_op_count = self.STARTUP_BURST_COUNT
 
-        #start_http_control_server(self, cfg) # TODO: Move into seperate Class
+        # start_http_control_server(self, cfg) # TODO: Move into seperate Class
 
-        self.index_x = ValueStorage16Bit(REG_X, 0) # X - 16 bit index register
-        self.index_y = ValueStorage16Bit(REG_Y, 0) # Y - 16 bit index register
+        self.index_x = ValueStorage16Bit(REG_X, 0)  # X - 16 bit index register
+        self.index_y = ValueStorage16Bit(REG_Y, 0)  # Y - 16 bit index register
 
-        self.user_stack_pointer = ValueStorage16Bit(REG_U, 0) # U - 16 bit user-stack pointer
+        self.user_stack_pointer = ValueStorage16Bit(REG_U, 0)  # U - 16 bit user-stack pointer
         self.user_stack_pointer.counter = 0
 
         # S - 16 bit system-stack pointer:
@@ -102,8 +108,8 @@ class CPUBase(object):
         # PC - 16 bit program counter register
         self.program_counter = ValueStorage16Bit(REG_PC, 0)
 
-        self.accu_a = ValueStorage8Bit(REG_A, 0) # A - 8 bit accumulator
-        self.accu_b = ValueStorage8Bit(REG_B, 0) # B - 8 bit accumulator
+        self.accu_a = ValueStorage8Bit(REG_A, 0)  # A - 8 bit accumulator
+        self.accu_b = ValueStorage8Bit(REG_B, 0)  # B - 8 bit accumulator
 
         # D - 16 bit concatenated reg. (A + B)
         self.accu_d = ConcatenatedAccumulator(REG_D, self.accu_a, self.accu_b)
@@ -129,7 +135,7 @@ class CPUBase(object):
             REG_DP: self.direct_page,
             REG_CC: self.cc_register,
 
-            undefined_reg.name: undefined_reg, # for TFR, EXG
+            undefined_reg.name: undefined_reg,  # for TFR, EXG
         }
 
 #         log.debug("Add opcode functions:")
@@ -139,7 +145,6 @@ class CPUBase(object):
         # add illegal instruction
 #         for opcode in ILLEGAL_OPS:
 #             self.opcode_dict[opcode] = IllegalInstruction(self, opcode)
-
 
     def get_state(self):
         """
@@ -161,7 +166,7 @@ class CPUBase(object):
             REG_CC: self.get_cc_value(),
 
             "cycles": self.cycles,
-            "RAM": tuple(self.memory._mem) # copy of array.array() values,
+            "RAM": tuple(self.memory._mem)  # copy of array.array() values,
         }
 
     def set_state(self, state):
@@ -195,16 +200,16 @@ class CPUBase(object):
         if self.cfg.__class__.__name__ == "SBC09Cfg":
             # first op is:
             # E400: 1AFF  reset  orcc #$FF  ;Disable interrupts.
-#             log.debug("\tset CC register to 0xff")
-#             self.set_cc(0xff)
+            #             log.debug("\tset CC register to 0xff")
+            #             self.set_cc(0xff)
             log.info("\tset CC register to 0x00")
             self.set_cc(0x00)
         else:
-#             log.info("\tset cc.F=1: FIRQ interrupt masked")
-#             self.F = 1
-#
-#             log.info("\tset cc.I=1: IRQ interrupt masked")
-#             self.I = 1
+            #             log.info("\tset cc.F=1: FIRQ interrupt masked")
+            #             self.F = 1
+            #
+            #             log.info("\tset cc.I=1: IRQ interrupt masked")
+            #             self.I = 1
 
             log.info("\tset E - 0x80 - bit 7 - Entire register state stacked")
             self.E = 1
@@ -249,19 +254,19 @@ class CPUBase(object):
         instr_func(opcode)
         self.cycles += cycles
 
-
     ####
 
     # TODO: Move to __init__
     quickest_sync_callback_cycles = None
     sync_callbacks_cyles = {}
     sync_callbacks = []
+
     def add_sync_callback(self, callback_cycles, callback):
         """ Add a CPU cycle triggered callback """
         self.sync_callbacks_cyles[callback] = 0
         self.sync_callbacks.append([callback_cycles, callback])
         if self.quickest_sync_callback_cycles is None or \
-                        self.quickest_sync_callback_cycles > callback_cycles:
+                self.quickest_sync_callback_cycles > callback_cycles:
             self.quickest_sync_callback_cycles = callback_cycles
 
     def call_sync_callbacks(self):
@@ -281,7 +286,8 @@ class CPUBase(object):
                 callback(current_cycles - last_call_cycles)
 
     # TODO: Move to __init__
-    inner_burst_op_count = 100 # How many ops calls, before next sync call
+    inner_burst_op_count = 100  # How many ops calls, before next sync call
+
     def burst_run(self):
         """ Run CPU as fast as Python can... """
         # https://wiki.python.org/moin/PythonSpeed/PerformanceTips#Avoiding_dots...
@@ -316,7 +322,7 @@ class CPUBase(object):
         )
 
     def test_run(self, start, end, max_ops=1000000):
-#        log.warning("CPU test_run(): from $%x to $%x" % (start, end))
+        #        log.warning("CPU test_run(): from $%x to $%x" % (start, end))
         self.program_counter.set(start)
 #        log.debug("-"*79)
 
@@ -331,9 +337,8 @@ class CPUBase(object):
         log.critical("Max ops %i arrived!", max_ops)
         raise RuntimeError(f"Max ops {max_ops:d} arrived!")
 
-
     def test_run2(self, start, count):
-#        log.warning("CPU test_run2(): from $%x count: %i" % (start, count))
+        #        log.warning("CPU test_run2(): from $%x count: %i" % (start, count))
         self.program_counter.set(start)
 #        log.debug("-"*79)
 
@@ -348,9 +353,7 @@ class CPUBase(object):
         self.outer_burst_op_count = _old_burst_count
         self.inner_burst_op_count = _old_sync_count
 
-
     ####
-
 
     @property
     def get_info(self):
@@ -363,7 +366,6 @@ class CPUBase(object):
         )
 
     ####
-
 
     def read_pc_byte(self):
         op_addr = self.program_counter.value
@@ -379,12 +381,11 @@ class CPUBase(object):
 #        log.log(5, "\tread pc word: $%04x from $%04x", m, op_addr)
         return op_addr, m
 
-
-    #### Op methods:
+    # Op methods:
 
     @opcode(
-        0x10, # PAGE 2 instructions
-        0x11, # PAGE 3 instructions
+        0x10,  # PAGE 2 instructions
+        0x11,  # PAGE 3 instructions
     )
     def instruction_PAGE(self, opcode):
         """ call op from page 2 or 3 """
@@ -395,8 +396,8 @@ class CPUBase(object):
 #        ))
         self.call_instruction_func(op_address - 1, paged_opcode)
 
-    @opcode(# Add B accumulator to X (unsigned)
-        0x3a, # ABX (inherent)
+    @opcode(  # Add B accumulator to X (unsigned)
+        0x3a,  # ABX (inherent)
     )
     def instruction_ABX(self, opcode):
         """
@@ -408,9 +409,9 @@ class CPUBase(object):
         """
         self.index_x.increment(self.accu_b.value)
 
-    @opcode(# Add memory to accumulator with carry
-        0x89, 0x99, 0xa9, 0xb9, # ADCA (immediate, direct, indexed, extended)
-        0xc9, 0xd9, 0xe9, 0xf9, # ADCB (immediate, direct, indexed, extended)
+    @opcode(  # Add memory to accumulator with carry
+        0x89, 0x99, 0xa9, 0xb9,  # ADCA (immediate, direct, indexed, extended)
+        0xc9, 0xd9, 0xe9, 0xf9,  # ADCB (immediate, direct, indexed, extended)
     )
     def instruction_ADC(self, opcode, m, register):
         """
@@ -431,8 +432,8 @@ class CPUBase(object):
         self.clear_HNZVC()
         self.update_HNZVC_8(a, m, r)
 
-    @opcode(# Add memory to D accumulator
-        0xc3, 0xd3, 0xe3, 0xf3, # ADDD (immediate, direct, indexed, extended)
+    @opcode(  # Add memory to D accumulator
+        0xc3, 0xd3, 0xe3, 0xf3,  # ADDD (immediate, direct, indexed, extended)
     )
     def instruction_ADD16(self, opcode, m, register):
         """
@@ -454,9 +455,9 @@ class CPUBase(object):
         self.clear_NZVC()
         self.update_NZVC_16(old, m, r)
 
-    @opcode(# Add memory to accumulator
-        0x8b, 0x9b, 0xab, 0xbb, # ADDA (immediate, direct, indexed, extended)
-        0xcb, 0xdb, 0xeb, 0xfb, # ADDB (immediate, direct, indexed, extended)
+    @opcode(  # Add memory to accumulator
+        0x8b, 0x9b, 0xab, 0xbb,  # ADDA (immediate, direct, indexed, extended)
+        0xcb, 0xdb, 0xeb, 0xfb,  # ADDB (immediate, direct, indexed, extended)
     )
     def instruction_ADD8(self, opcode, m, register):
         """
@@ -478,7 +479,7 @@ class CPUBase(object):
         self.clear_HNZVC()
         self.update_HNZVC_8(old, m, r)
 
-    @opcode(0xf, 0x6f, 0x7f) # CLR (direct, indexed, extended)
+    @opcode(0xf, 0x6f, 0x7f)  # CLR (direct, indexed, extended)
     def instruction_CLR_memory(self, opcode, ea):
         """
         Clear memory location
@@ -488,7 +489,7 @@ class CPUBase(object):
         self.update_0100()
         return ea, 0x00
 
-    @opcode(0x4f, 0x5f) # CLRA / CLRB (inherent)
+    @opcode(0x4f, 0x5f)  # CLRA / CLRB (inherent)
     def instruction_CLR_register(self, opcode, register):
         """
         Clear accumulator A or B
@@ -503,13 +504,13 @@ class CPUBase(object):
         """
         CC bits "HNZVC": -aa01
         """
-        value = ~value # the bits of m inverted
+        value = ~value  # the bits of m inverted
         self.clear_NZ()
         self.update_NZ01_8(value)
         return value
 
-    @opcode(# Complement memory location
-        0x3, 0x63, 0x73, # COM (direct, indexed, extended)
+    @opcode(  # Complement memory location
+        0x3, 0x63, 0x73,  # COM (direct, indexed, extended)
     )
     def instruction_COM_memory(self, opcode, ea, m):
         """
@@ -522,9 +523,9 @@ class CPUBase(object):
 #        ))
         return ea, r & 0xff
 
-    @opcode(# Complement accumulator
-        0x43, # COMA (inherent)
-        0x53, # COMB (inherent)
+    @opcode(  # Complement accumulator
+        0x43,  # COMA (inherent)
+        0x53,  # COMB (inherent)
     )
     def instruction_COM_register(self, opcode, register):
         """
@@ -536,8 +537,8 @@ class CPUBase(object):
 #            self.program_counter, register.name,
 #        ))
 
-    @opcode(# Decimal adjust A accumulator
-        0x19, # DAA (inherent)
+    @opcode(  # Decimal adjust A accumulator
+        0x19,  # DAA (inherent)
     )
     def instruction_DAA(self, opcode):
         """
@@ -579,22 +580,22 @@ class CPUBase(object):
         a = self.accu_a.value
 
         correction_factor = 0
-        a_hi = a & 0xf0 # MSN - Most Significant Nibble
-        a_lo = a & 0x0f # LSN - Least Significant Nibble
+        a_hi = a & 0xf0  # MSN - Most Significant Nibble
+        a_lo = a & 0x0f  # LSN - Least Significant Nibble
 
-        if a_lo > 0x09 or self.H: # cc & 0x20:
+        if a_lo > 0x09 or self.H:  # cc & 0x20:
             correction_factor |= 0x06
 
         if a_hi > 0x80 and a_lo > 0x09:
             correction_factor |= 0x60
 
-        if a_hi > 0x90 or self.C: # cc & 0x01:
+        if a_hi > 0x90 or self.C:  # cc & 0x01:
             correction_factor |= 0x60
 
         new_value = correction_factor + a
         self.accu_a.set(new_value)
 
-        self.clear_NZ() # V is undefined
+        self.clear_NZ()  # V is undefined
         self.update_NZC_8(new_value)
 
     def DEC(self, a):
@@ -616,7 +617,7 @@ class CPUBase(object):
             self.V = 1
         return r
 
-    @opcode(0xa, 0x6a, 0x7a) # DEC (direct, indexed, extended)
+    @opcode(0xa, 0x6a, 0x7a)  # DEC (direct, indexed, extended)
     def instruction_DEC_memory(self, opcode, ea, m):
         """ Decrement memory location """
         r = self.DEC(m)
@@ -627,7 +628,7 @@ class CPUBase(object):
 #        ))
         return ea, r & 0xff
 
-    @opcode(0x4a, 0x5a) # DECA / DECB (inherent)
+    @opcode(0x4a, 0x5a)  # DECA / DECB (inherent)
     def instruction_DEC_register(self, opcode, register):
         """ Decrement accumulator """
         a = register.value
@@ -646,9 +647,9 @@ class CPUBase(object):
             self.V = 1
         return r
 
-    @opcode(# Increment accumulator
-        0x4c, # INCA (inherent)
-        0x5c, # INCB (inherent)
+    @opcode(  # Increment accumulator
+        0x4c,  # INCA (inherent)
+        0x5c,  # INCB (inherent)
     )
     def instruction_INC_register(self, opcode, register):
         """
@@ -666,8 +667,8 @@ class CPUBase(object):
         r = self.INC(a)
         r = register.set(r)
 
-    @opcode(# Increment memory location
-        0xc, 0x6c, 0x7c, # INC (direct, indexed, extended)
+    @opcode(  # Increment memory location
+        0xc, 0x6c, 0x7c,  # INC (direct, indexed, extended)
     )
     def instruction_INC_memory(self, opcode, ea, m):
         """
@@ -684,9 +685,9 @@ class CPUBase(object):
         r = self.INC(m)
         return ea, r & 0xff
 
-    @opcode(# Load effective address into an indexable register
-        0x32, # LEAS (indexed)
-        0x33, # LEAU (indexed)
+    @opcode(  # Load effective address into an indexable register
+        0x32,  # LEAS (indexed)
+        0x33,  # LEAU (indexed)
     )
     def instruction_LEA_pointer(self, opcode, ea, register):
         """
@@ -714,9 +715,9 @@ class CPUBase(object):
 #         ))
         register.set(ea)
 
-    @opcode(# Load effective address into an indexable register
-        0x30, # LEAX (indexed)
-        0x31, # LEAY (indexed)
+    @opcode(  # Load effective address into an indexable register
+        0x30,  # LEAX (indexed)
+        0x31,  # LEAY (indexed)
     )
     def instruction_LEA_register(self, opcode, ea, register):
         """ see instruction_LEA_pointer
@@ -742,8 +743,8 @@ class CPUBase(object):
         self.Z = 0
         self.set_Z16(ea)
 
-    @opcode(# Unsigned multiply (A * B ? D)
-        0x3d, # MUL (inherent)
+    @opcode(  # Unsigned multiply (A * B ? D)
+        0x3d,  # MUL (inherent)
     )
     def instruction_MUL(self, opcode):
         """
@@ -763,9 +764,9 @@ class CPUBase(object):
         self.Z = 1 if r == 0 else 0
         self.C = 1 if r & 0x80 else 0
 
-    @opcode(# Negate accumulator
-        0x40, # NEGA (inherent)
-        0x50, # NEGB (inherent)
+    @opcode(  # Negate accumulator
+        0x40,  # NEGA (inherent)
+        0x50,  # NEGB (inherent)
     )
     def instruction_NEG_register(self, opcode, register):
         """
@@ -780,7 +781,7 @@ class CPUBase(object):
         CC bits "HNZVC": uaaaa
         """
         x = register.value
-        r = x * -1 # same as: r = ~x + 1
+        r = x * -1  # same as: r = ~x + 1
         register.set(r)
 #        log.debug("$%04x NEG %s $%02x to $%02x" % (
 #            self.program_counter, register.name, x, r,
@@ -789,7 +790,7 @@ class CPUBase(object):
         self.update_NZVC_8(0, x, r)
 
     _wrong_NEG = 0
-    @opcode(0x0, 0x60, 0x70) # NEG (direct, indexed, extended)
+    @opcode(0x0, 0x60, 0x70)  # NEG (direct, indexed, extended)
     def instruction_NEG_memory(self, opcode, ea, m):
         """ Negate memory """
         if opcode == 0x0 and ea == 0x0 and m == 0x0:
@@ -799,7 +800,7 @@ class CPUBase(object):
         else:
             self._wrong_NEG = 0
 
-        r = m * -1 # same as: r = ~m + 1
+        r = m * -1  # same as: r = ~m + 1
 
 #        log.debug("$%04x NEG $%02x from %04x to $%02x" % (
 #             self.program_counter, m, ea, r,
@@ -808,7 +809,7 @@ class CPUBase(object):
         self.update_NZVC_8(0, m, r)
         return ea, r & 0xff
 
-    @opcode(0x12) # NOP (inherent)
+    @opcode(0x12)  # NOP (inherent)
     def instruction_NOP(self, opcode):
         """
         No operation
@@ -819,10 +820,9 @@ class CPUBase(object):
         """
 #        log.debug("\tNOP")
 
-
-    @opcode(# Subtract memory from accumulator with borrow
-        0x82, 0x92, 0xa2, 0xb2, # SBCA (immediate, direct, indexed, extended)
-        0xc2, 0xd2, 0xe2, 0xf2, # SBCB (immediate, direct, indexed, extended)
+    @opcode(  # Subtract memory from accumulator with borrow
+        0x82, 0x92, 0xa2, 0xb2,  # SBCA (immediate, direct, indexed, extended)
+        0xc2, 0xd2, 0xe2, 0xf2,  # SBCB (immediate, direct, indexed, extended)
     )
     def instruction_SBC(self, opcode, m, register):
         """
@@ -845,8 +845,8 @@ class CPUBase(object):
         self.clear_NZVC()
         self.update_NZVC_8(a, m, r)
 
-    @opcode(# Sign Extend B accumulator into A accumulator
-        0x1d, # SEX (inherent)
+    @opcode(  # Sign Extend B accumulator into A accumulator
+        0x1d,  # SEX (inherent)
     )
     def instruction_SEX(self, opcode):
         """
@@ -878,12 +878,10 @@ class CPUBase(object):
         self.clear_NZ()
         self.update_NZ_16(d)
 
-
-
-    @opcode(# Subtract memory from accumulator
-        0x80, 0x90, 0xa0, 0xb0, # SUBA (immediate, direct, indexed, extended)
-        0xc0, 0xd0, 0xe0, 0xf0, # SUBB (immediate, direct, indexed, extended)
-        0x83, 0x93, 0xa3, 0xb3, # SUBD (immediate, direct, indexed, extended)
+    @opcode(  # Subtract memory from accumulator
+        0x80, 0x90, 0xa0, 0xb0,  # SUBA (immediate, direct, indexed, extended)
+        0xc0, 0xd0, 0xe0, 0xf0,  # SUBB (immediate, direct, indexed, extended)
+        0x83, 0x93, 0xa3, 0xb3,  # SUBD (immediate, direct, indexed, extended)
     )
     def instruction_SUB(self, opcode, m, register):
         """
@@ -910,26 +908,25 @@ class CPUBase(object):
             assert register.WIDTH == 16
             self.update_NZVC_16(r, m, r_new)
 
-
     # ---- Register Changes - FIXME: Better name for this section?!? ----
 
     REGISTER_BIT2STR = {
-        0x0: REG_D, # 0000 - 16 bit concatenated reg.(A B)
-        0x1: REG_X, # 0001 - 16 bit index register
-        0x2: REG_Y, # 0010 - 16 bit index register
-        0x3: REG_U, # 0011 - 16 bit user-stack pointer
-        0x4: REG_S, # 0100 - 16 bit system-stack pointer
-        0x5: REG_PC, # 0101 - 16 bit program counter register
-        0x6: undefined_reg.name, # undefined
-        0x7: undefined_reg.name, # undefined
-        0x8: REG_A, # 1000 - 8 bit accumulator
-        0x9: REG_B, # 1001 - 8 bit accumulator
-        0xa: REG_CC, # 1010 - 8 bit condition code register as flags
-        0xb: REG_DP, # 1011 - 8 bit direct page register
-        0xc: undefined_reg.name, # undefined
-        0xd: undefined_reg.name, # undefined
-        0xe: undefined_reg.name, # undefined
-        0xf: undefined_reg.name, # undefined
+        0x0: REG_D,  # 0000 - 16 bit concatenated reg.(A B)
+        0x1: REG_X,  # 0001 - 16 bit index register
+        0x2: REG_Y,  # 0010 - 16 bit index register
+        0x3: REG_U,  # 0011 - 16 bit user-stack pointer
+        0x4: REG_S,  # 0100 - 16 bit system-stack pointer
+        0x5: REG_PC,  # 0101 - 16 bit program counter register
+        0x6: undefined_reg.name,  # undefined
+        0x7: undefined_reg.name,  # undefined
+        0x8: REG_A,  # 1000 - 8 bit accumulator
+        0x9: REG_B,  # 1001 - 8 bit accumulator
+        0xa: REG_CC,  # 1010 - 8 bit condition code register as flags
+        0xb: REG_DP,  # 1011 - 8 bit direct page register
+        0xc: undefined_reg.name,  # undefined
+        0xd: undefined_reg.name,  # undefined
+        0xe: undefined_reg.name,  # undefined
+        0xf: undefined_reg.name,  # undefined
     }
 
     def _get_register_obj(self, addr):
@@ -946,7 +943,7 @@ class CPUBase(object):
         reg_value = reg.value
         return reg, reg_value
 
-    @opcode(0x1f) # TFR (immediate)
+    @opcode(0x1f)  # TFR (immediate)
     def instruction_TFR(self, opcode, m):
         """
         source code forms: TFR R1, R2
@@ -961,8 +958,8 @@ class CPUBase(object):
 #             dst_reg, src_value, src_reg.name
 #         )
 
-    @opcode(# Exchange R1 with R2
-        0x1e, # EXG (immediate)
+    @opcode(  # Exchange R1 with R2
+        0x1e,  # EXG (immediate)
     )
     def instruction_EXG(self, opcode, m):
         """
@@ -982,11 +979,3 @@ class CPUBase(object):
 #         log.debug("\tEXG: %s($%x) <-> %s($%x)",
 #             reg1.name, reg1_value, reg2.name, reg2_value
 #         )
-
-
-
-
-
-
-
-

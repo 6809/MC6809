@@ -13,11 +13,11 @@
 
 from __future__ import absolute_import, division, print_function
 
-import sys
 import logging
+import sys
 
-from MC6809.components.MC6809data.MC6809_data_utils import MC6809OP_DATA_DICT
 from MC6809.components.cpu_utils.instruction_call import PrepagedInstructions
+from MC6809.components.MC6809data.MC6809_data_utils import MC6809OP_DATA_DICT
 
 
 log = logging.getLogger("DragonPy.cpu6809.trace")
@@ -88,7 +88,7 @@ class InstructionTrace(PrepagedInstructions):
         return result
 
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 
 def test_run():
@@ -98,19 +98,20 @@ def test_run():
     cmd_args = [
         sys.executable,
         os.path.join("..", "DragonPy_CLI.py"),
-#        "--verbosity", " 1", # hardcode DEBUG ;)
-#        "--verbosity", "10", # DEBUG
-#        "--verbosity", "20", # INFO
-#        "--verbosity", "30", # WARNING
-#         "--verbosity", "40", # ERROR
-        "--verbosity", "50", # CRITICAL/FATAL
+        #        "--verbosity", " 1", # hardcode DEBUG ;)
+        #        "--verbosity", "10", # DEBUG
+        #        "--verbosity", "20", # INFO
+        #        "--verbosity", "30", # WARNING
+        #         "--verbosity", "40", # ERROR
+        "--verbosity", "50",  # CRITICAL/FATAL
         "--machine", "Dragon32", "run",
-#        "--machine", "Vectrex", "run",
-#        "--max_ops", "1",
+        #        "--machine", "Vectrex", "run",
+        #        "--max_ops", "1",
         "--trace",
     ]
     print("Startup CLI with: %s" % " ".join(cmd_args[1:]))
     subprocess.Popen(cmd_args, cwd="..").wait()
+
 
 if __name__ == "__main__":
     test_run()

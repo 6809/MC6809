@@ -23,9 +23,22 @@
 
 from __future__ import absolute_import, division, print_function
 
+import logging
 import sys
+
+from MC6809.components.mc6809_addressing import AddressingMixin
+from MC6809.components.mc6809_base import CPUBase
 from MC6809.components.mc6809_cc_register import CPUConditionCodeRegisterMixin
+from MC6809.components.mc6809_interrupt import InterruptMixin
+from MC6809.components.mc6809_ops_branches import OpsBranchesMixin
+from MC6809.components.mc6809_ops_load_store import OpsLoadStoreMixin
+from MC6809.components.mc6809_ops_logic import OpsLogicalMixin
+from MC6809.components.mc6809_ops_test import OpsTestMixin
 from MC6809.components.mc6809_speedlimited import CPUSpeedLimitMixin
+from MC6809.components.mc6809_stack import StackMixin
+from MC6809.components.mc6809_tools import CPUThreadedStatusMixin, CPUTypeAssertMixin
+from MC6809.core.cpu_control_server import CPUControlServerMixin
+
 
 if sys.version_info[0] == 3:
     # Python 3
@@ -34,18 +47,6 @@ else:
     # Python 2
     range = xrange
 
-import logging
-
-from MC6809.core.cpu_control_server import CPUControlServerMixin
-from MC6809.components.mc6809_interrupt import InterruptMixin
-from MC6809.components.mc6809_addressing import AddressingMixin
-from MC6809.components.mc6809_stack import StackMixin
-from MC6809.components.mc6809_ops_load_store import OpsLoadStoreMixin
-from MC6809.components.mc6809_ops_branches import OpsBranchesMixin
-from MC6809.components.mc6809_ops_logic import OpsLogicalMixin
-from MC6809.components.mc6809_ops_test import OpsTestMixin
-from MC6809.components.mc6809_base import CPUBase
-from MC6809.components.mc6809_tools import CPUThreadedStatusMixin, CPUTypeAssertMixin
 
 log = logging.getLogger("MC6809")
 
@@ -55,7 +56,7 @@ HTML_TRACE = False
 
 
 class CPU(CPUBase, AddressingMixin, StackMixin, InterruptMixin, OpsLoadStoreMixin, OpsBranchesMixin,
-    OpsTestMixin, OpsLogicalMixin, CPUConditionCodeRegisterMixin, CPUThreadedStatusMixin):
+          OpsTestMixin, OpsLogicalMixin, CPUConditionCodeRegisterMixin, CPUThreadedStatusMixin):
 
     def to_speed_limit(self):
         return change_cpu(self, CPUSpeedLimit)
@@ -83,8 +84,8 @@ def change_cpu(old_cpu, NewCPU):
     new_cpu.set_state(cpu_state)
 
     log.critical("Change CPU from %r to %r",
-        old_cpu.__class__.__name__,
-        new_cpu.__class__.__name__
-    )
+                 old_cpu.__class__.__name__,
+                 new_cpu.__class__.__name__
+                 )
 
     return new_cpu

@@ -11,9 +11,11 @@
 
 from __future__ import absolute_import, division, print_function
 
-
 import sys
+
 import MC6809
+from MC6809.core.bechmark import run_benchmark
+
 
 try:
     import click
@@ -23,8 +25,6 @@ except ImportError as err:
     print("Please install 'click' !")
     print("more info: http://click.pocoo.org")
     sys.exit(-1)
-
-from MC6809.core.bechmark import run_benchmark
 
 
 @click.group()
@@ -46,12 +46,11 @@ DEFAULT_LOOPS = 5
 DEFAULT_MULTIPLY = 15
 @cli.command(help="Run a 6809 Emulation benchmark")
 @click.option("--loops", default=DEFAULT_LOOPS,
-    help=f"How many benchmark loops should be run? (default: {DEFAULT_LOOPS:d})")
+              help=f"How many benchmark loops should be run? (default: {DEFAULT_LOOPS:d})")
 @click.option("--multiply", default=DEFAULT_MULTIPLY,
-    help=f"Test data multiplier (default: {DEFAULT_MULTIPLY:d})")
+              help=f"Test data multiplier (default: {DEFAULT_MULTIPLY:d})")
 def benchmark(loops, multiply):
     run_benchmark(loops, multiply)
-
 
 
 if __name__ == "__main__":

@@ -50,15 +50,13 @@ for line in lst.strip().splitlines():
 
     # for BASIC
     lines.append({
-        "hex_list":hex_list,
-        "address":address,
-        "lable":lable,
-        "code1":code1,
-        "code2":code2,
-        "doc":doc,
+        "hex_list": hex_list,
+        "address": address,
+        "lable": lable,
+        "code1": code1,
+        "code2": code2,
+        "doc": doc,
     })
-
-
 
 
 def print_unittest1(lines):
@@ -134,17 +132,17 @@ def print_bas(lines, line_no):
         line_no += 10
 
 
-print("-"*79)
+print("-" * 79)
 
-print_unittest1(lines) # with address
+print_unittest1(lines)  # with address
 
-print("-"*79)
+print("-" * 79)
 
-print_unittest2(lines) # without address
+print_unittest2(lines)  # without address
 
-print("-"*79)
+print("-" * 79)
 
 # for a basic file:
 print_bas(lines,
-    line_no=1050
-)
+          line_no=1050
+          )

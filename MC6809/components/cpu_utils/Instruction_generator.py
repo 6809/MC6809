@@ -13,39 +13,50 @@ from __future__ import absolute_import, division, print_function
 import os
 import sys
 
-from MC6809.components.MC6809data.MC6809_op_data import (
-    OP_DATA, BYTE, WORD, REG_A, REG_B, REG_CC, REG_D , REG_DP, REG_PC,
-    REG_S, REG_U, REG_X, REG_Y
-)
 from MC6809.components.MC6809data.MC6809_data_utils import MC6809OP_DATA_DICT
+from MC6809.components.MC6809data.MC6809_op_data import (
+    BYTE,
+    OP_DATA,
+    REG_A,
+    REG_B,
+    REG_CC,
+    REG_D,
+    REG_DP,
+    REG_PC,
+    REG_S,
+    REG_U,
+    REG_X,
+    REG_Y,
+    WORD,
+)
 
 
 SPECIAL_FUNC_NAME = "special"
 
 REGISTER_DICT = {
-    REG_X:"index_x",
-    REG_Y:"index_y",
+    REG_X: "index_x",
+    REG_Y: "index_y",
 
-    REG_U:"user_stack_pointer",
-    REG_S:"system_stack_pointer",
+    REG_U: "user_stack_pointer",
+    REG_S: "system_stack_pointer",
 
-    REG_PC:"program_counter",
+    REG_PC: "program_counter",
 
-    REG_A:"accu_a",
-    REG_B:"accu_b",
-    REG_D:"accu_d",
+    REG_A: "accu_a",
+    REG_B: "accu_b",
+    REG_D: "accu_d",
 
-    REG_DP:"direct_page",
-    REG_CC:"cc_register",
+    REG_DP: "direct_page",
+    REG_CC: "cc_register",
 
-    #undefined_reg.name:"undefined_reg", # for TFR", EXG
+    # undefined_reg.name:"undefined_reg", # for TFR", EXG
 }
 
 
 if __doc__:
     DOC = __doc__.rsplit("=", 1)[1]
 else:
-    DOC = "" # e.g.: run with --OO
+    DOC = ""  # e.g.: run with --OO
 
 INIT_CODE = '''
 """
@@ -67,9 +78,8 @@ class PrepagedInstructions(InstructionBase):
 ''' % (os.path.basename(__file__), DOC)
 
 
-
 def build_func_name(addr_mode, ea, register, read, write):
-#    print(addr_mode, ea, register, read, write
+    #    print(addr_mode, ea, register, read, write
 
     if addr_mode is None:
         return SPECIAL_FUNC_NAME
@@ -204,16 +214,12 @@ def generate_code(f):
 
 def generate(filename):
     with open(filename, "w") as f:
-#        generate_code(sys.stdout)
+        #        generate_code(sys.stdout)
         generate_code(f)
     sys.stderr.write(f"New {filename!r} generated.\n")
-
 
 
 if __name__ == "__main__":
     # print("LDA immediate:", func_name_from_op_code(0x96))
 
     generate("instruction_call.py")
-
-
-

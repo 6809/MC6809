@@ -11,7 +11,6 @@
 from __future__ import absolute_import, division, print_function
 
 
-
 class InstructionBase(object):
     def __init__(self, cpu, instr_func):
         self.cpu = cpu
@@ -20,5 +19,3 @@ class InstructionBase(object):
     def special(self, opcode):
         # e.g: RESET and PAGE 1/2
         return self.instr_func(opcode)
-
-

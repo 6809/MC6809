@@ -11,15 +11,16 @@
 
 from __future__ import absolute_import, division, print_function
 
-import unittest
 import sys
+import unittest
+
+from MC6809.tests.test_base import BaseCPUTestCase
+from MC6809.utils.byte_word_values import signed8
+
 
 PY2 = sys.version_info[0] == 2
 if PY2:
     range = xrange
-
-from MC6809.tests.test_base import BaseCPUTestCase
-from MC6809.utils.byte_word_values import signed8
 
 
 class CCTestCase(BaseCPUTestCase):
@@ -32,7 +33,7 @@ class CCTestCase(BaseCPUTestCase):
     def test_HNZVC_8(self):
         for i in range(280):
             self.cpu.set_cc(0x00)
-            r = i + 1 # e.g. ADDA 1 loop
+            r = i + 1  # e.g. ADDA 1 loop
             self.cpu.update_HNZVC_8(a=i, b=1, r=r)
             # print r, self.cpu.get_cc_info()
 
@@ -68,11 +69,10 @@ class CCTestCase(BaseCPUTestCase):
 
             # Test that CC registers doesn't reset automaticly
             self.cpu.set_cc(0xff)
-            r = i + 1 # e.g. ADDA 1 loop
+            r = i + 1  # e.g. ADDA 1 loop
             self.cpu.update_HNZVC_8(a=i, b=1, r=r)
             # print "+++", r, self.cpu.get_cc_info()
             self.assertEqualHex(self.cpu.get_cc_value(), 0xff)
-
 
     def test_update_NZ_8_A(self):
         self.cpu.update_NZ_8(r=0x12)
@@ -90,7 +90,7 @@ class CCTestCase(BaseCPUTestCase):
         self.assertEqual(self.cpu.Z, 0)
 
     def test_update_NZ0_16_A(self):
-        self.cpu.update_NZ0_16(r=0x7fff) # 0x7fff == 32767
+        self.cpu.update_NZ0_16(r=0x7fff)  # 0x7fff == 32767
         self.assertEqual(self.cpu.N, 0)
         self.assertEqual(self.cpu.Z, 0)
         self.assertEqual(self.cpu.V, 0)
@@ -102,7 +102,7 @@ class CCTestCase(BaseCPUTestCase):
         self.assertEqual(self.cpu.V, 0)
 
     def test_update_NZ0_16_C(self):
-        self.cpu.update_NZ0_16(r=0x8000) # signed 0x8000 == -32768
+        self.cpu.update_NZ0_16(r=0x8000)  # signed 0x8000 == -32768
         self.assertEqual(self.cpu.N, 1)
         self.assertEqual(self.cpu.Z, 0)
         self.assertEqual(self.cpu.V, 0)
@@ -128,5 +128,3 @@ class CCTestCase(BaseCPUTestCase):
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
-
-

@@ -23,7 +23,6 @@
 
 from __future__ import absolute_import, division, print_function
 
-
 from MC6809.components.cpu_utils.instruction_caller import opcode
 
 
@@ -31,8 +30,8 @@ class OpsBranchesMixin(object):
 
     # ---- Programm Flow Instructions ----
 
-    @opcode(# Jump
-        0xe, 0x6e, 0x7e, # JMP (direct, indexed, extended)
+    @opcode(  # Jump
+        0xe, 0x6e, 0x7e,  # JMP (direct, indexed, extended)
     )
     def instruction_JMP(self, opcode, ea):
         """
@@ -48,8 +47,8 @@ class OpsBranchesMixin(object):
 #        ))
         self.program_counter.set(ea)
 
-    @opcode(# Return from subroutine
-        0x39, # RTS (inherent)
+    @opcode(  # Return from subroutine
+        0x39,  # RTS (inherent)
     )
     def instruction_RTS(self, opcode):
         """
@@ -70,10 +69,10 @@ class OpsBranchesMixin(object):
 
     @opcode(
         # Branch to subroutine:
-        0x8d, # BSR (relative)
-        0x17, # LBSR (relative)
+        0x8d,  # BSR (relative)
+        0x17,  # LBSR (relative)
         # Jump to subroutine:
-        0x9d, 0xad, 0xbd, # JSR (direct, indexed, extended)
+        0x9d, 0xad, 0xbd,  # JSR (direct, indexed, extended)
     )
     def instruction_BSR_JSR(self, opcode, ea):
         """
@@ -94,13 +93,11 @@ class OpsBranchesMixin(object):
         self.push_word(self.system_stack_pointer, self.program_counter.value)
         self.program_counter.set(ea)
 
-
     # ---- Branch Instructions ----
 
-
-    @opcode(# Branch if equal
-        0x27, # BEQ (relative)
-        0x1027, # LBEQ (relative)
+    @opcode(  # Branch if equal
+        0x27,  # BEQ (relative)
+        0x1027,  # LBEQ (relative)
     )
     def instruction_BEQ(self, opcode, ea):
         """
@@ -114,18 +111,18 @@ class OpsBranchesMixin(object):
         CC bits "HNZVC": -----
         """
         if self.Z == 1:
-#            log.info("$%x BEQ branch to $%x, because Z==1 \t| %s" % (
-#                self.program_counter, ea, self.cfg.mem_info.get_shortest(ea)
-#            ))
+            #            log.info("$%x BEQ branch to $%x, because Z==1 \t| %s" % (
+            #                self.program_counter, ea, self.cfg.mem_info.get_shortest(ea)
+            #            ))
             self.program_counter.set(ea)
 #        else:
 #            log.debug("$%x BEQ: don't branch to $%x, because Z==0 \t| %s" % (
 #                self.program_counter, ea, self.cfg.mem_info.get_shortest(ea)
 #            ))
 
-    @opcode(# Branch if greater than or equal (signed)
-        0x2c, # BGE (relative)
-        0x102c, # LBGE (relative)
+    @opcode(  # Branch if greater than or equal (signed)
+        0x2c,  # BGE (relative)
+        0x102c,  # LBGE (relative)
     )
     def instruction_BGE(self, opcode, ea):
         """
@@ -145,18 +142,18 @@ class OpsBranchesMixin(object):
         #    (self.N ^ self.V) == 0
         #    not operator.xor(self.N, self.V)
         if self.N == self.V:
-#            log.info("$%x BGE branch to $%x, because N XOR V == 0 \t| %s" % (
-#                self.program_counter, ea, self.cfg.mem_info.get_shortest(ea)
-#            ))
+            #            log.info("$%x BGE branch to $%x, because N XOR V == 0 \t| %s" % (
+            #                self.program_counter, ea, self.cfg.mem_info.get_shortest(ea)
+            #            ))
             self.program_counter.set(ea)
 #         else:
 #             log.debug("$%x BGE: don't branch to $%x, because N XOR V != 0 \t| %s" % (
 #                 self.program_counter, ea, self.cfg.mem_info.get_shortest(ea)
 #             ))
 
-    @opcode(# Branch if greater (signed)
-        0x2e, # BGT (relative)
-        0x102e, # LBGT (relative)
+    @opcode(  # Branch if greater (signed)
+        0x2e,  # BGT (relative)
+        0x102e,  # LBGT (relative)
     )
     def instruction_BGT(self, opcode, ea):
         """
@@ -177,18 +174,18 @@ class OpsBranchesMixin(object):
         #    self.N == self.V and self.Z == 0
         # ;)
         if not self.Z and self.N == self.V:
-#            log.info("$%x BGT branch to $%x, because (N==V and Z==0) \t| %s" % (
-#                self.program_counter, ea, self.cfg.mem_info.get_shortest(ea)
-#            ))
+            #            log.info("$%x BGT branch to $%x, because (N==V and Z==0) \t| %s" % (
+            #                self.program_counter, ea, self.cfg.mem_info.get_shortest(ea)
+            #            ))
             self.program_counter.set(ea)
 #         else:
 #            log.debug("$%x BGT: don't branch to $%x, because (N==V and Z==0) is False \t| %s" % (
 #                self.program_counter, ea, self.cfg.mem_info.get_shortest(ea)
 #            ))
 
-    @opcode(# Branch if higher (unsigned)
-        0x22, # BHI (relative)
-        0x1022, # LBHI (relative)
+    @opcode(  # Branch if higher (unsigned)
+        0x22,  # BHI (relative)
+        0x1022,  # LBHI (relative)
     )
     def instruction_BHI(self, opcode, ea):
         """
@@ -205,18 +202,18 @@ class OpsBranchesMixin(object):
         CC bits "HNZVC": -----
         """
         if self.C == 0 and self.Z == 0:
-#            log.info("$%x BHI branch to $%x, because C==0 and Z==0 \t| %s" % (
-#                self.program_counter, ea, self.cfg.mem_info.get_shortest(ea)
-#            ))
+            #            log.info("$%x BHI branch to $%x, because C==0 and Z==0 \t| %s" % (
+            #                self.program_counter, ea, self.cfg.mem_info.get_shortest(ea)
+            #            ))
             self.program_counter.set(ea)
 #         else:
 #            log.debug("$%x BHI: don't branch to $%x, because C and Z not 0 \t| %s" % (
 #                self.program_counter, ea, self.cfg.mem_info.get_shortest(ea)
 #            ))
 
-    @opcode(# Branch if less than or equal (signed)
-        0x2f, # BLE (relative)
-        0x102f, # LBLE (relative)
+    @opcode(  # Branch if less than or equal (signed)
+        0x2f,  # BLE (relative)
+        0x102f,  # LBLE (relative)
     )
     def instruction_BLE(self, opcode, ea):
         """
@@ -232,18 +229,18 @@ class OpsBranchesMixin(object):
         CC bits "HNZVC": -----
         """
         if (self.N ^ self.V) == 1 or self.Z == 1:
-#            log.info("$%x BLE branch to $%x, because N^V==1 or Z==1 \t| %s" % (
-#                self.program_counter, ea, self.cfg.mem_info.get_shortest(ea)
-#            ))
+            #            log.info("$%x BLE branch to $%x, because N^V==1 or Z==1 \t| %s" % (
+            #                self.program_counter, ea, self.cfg.mem_info.get_shortest(ea)
+            #            ))
             self.program_counter.set(ea)
 #         else:
 #            log.debug("$%x BLE: don't branch to $%x, because N^V!=1 and Z!=1 \t| %s" % (
 #                self.program_counter, ea, self.cfg.mem_info.get_shortest(ea)
 #            ))
 
-    @opcode(# Branch if lower or same (unsigned)
-        0x23, # BLS (relative)
-        0x1023, # LBLS (relative)
+    @opcode(  # Branch if lower or same (unsigned)
+        0x23,  # BLS (relative)
+        0x1023,  # LBLS (relative)
     )
     def instruction_BLS(self, opcode, ea):
         """
@@ -260,18 +257,18 @@ class OpsBranchesMixin(object):
         """
 #         if (self.C|self.Z) == 0:
         if self.C == 1 or self.Z == 1:
-#            log.info("$%x BLS branch to $%x, because C|Z==1 \t| %s" % (
-#                self.program_counter, ea, self.cfg.mem_info.get_shortest(ea)
-#            ))
+            #            log.info("$%x BLS branch to $%x, because C|Z==1 \t| %s" % (
+            #                self.program_counter, ea, self.cfg.mem_info.get_shortest(ea)
+            #            ))
             self.program_counter.set(ea)
 #         else:
 #            log.debug("$%x BLS: don't branch to $%x, because C|Z!=1 \t| %s" % (
 #                self.program_counter, ea, self.cfg.mem_info.get_shortest(ea)
 #            ))
 
-    @opcode(# Branch if less than (signed)
-        0x2d, # BLT (relative)
-        0x102d, # LBLT (relative)
+    @opcode(  # Branch if less than (signed)
+        0x2d,  # BLT (relative)
+        0x102d,  # LBLT (relative)
     )
     def instruction_BLT(self, opcode, ea):
         """
@@ -285,19 +282,19 @@ class OpsBranchesMixin(object):
 
         CC bits "HNZVC": -----
         """
-        if (self.N ^ self.V) == 1: # N xor V
-#            log.info("$%x BLT branch to $%x, because N XOR V == 1 \t| %s" % (
-#                self.program_counter, ea, self.cfg.mem_info.get_shortest(ea)
-#            ))
+        if (self.N ^ self.V) == 1:  # N xor V
+            #            log.info("$%x BLT branch to $%x, because N XOR V == 1 \t| %s" % (
+            #                self.program_counter, ea, self.cfg.mem_info.get_shortest(ea)
+            #            ))
             self.program_counter.set(ea)
 #         else:
 #            log.debug("$%x BLT: don't branch to $%x, because N XOR V != 1 \t| %s" % (
 #                self.program_counter, ea, self.cfg.mem_info.get_shortest(ea)
 #            ))
 
-    @opcode(# Branch if minus
-        0x2b, # BMI (relative)
-        0x102b, # LBMI (relative)
+    @opcode(  # Branch if minus
+        0x2b,  # BMI (relative)
+        0x102b,  # LBMI (relative)
     )
     def instruction_BMI(self, opcode, ea):
         """
@@ -313,18 +310,18 @@ class OpsBranchesMixin(object):
         CC bits "HNZVC": -----
         """
         if self.N == 1:
-#            log.info("$%x BMI branch to $%x, because N==1 \t| %s" % (
-#                self.program_counter, ea, self.cfg.mem_info.get_shortest(ea)
-#            ))
+            #            log.info("$%x BMI branch to $%x, because N==1 \t| %s" % (
+            #                self.program_counter, ea, self.cfg.mem_info.get_shortest(ea)
+            #            ))
             self.program_counter.set(ea)
 #         else:
 #            log.debug("$%x BMI: don't branch to $%x, because N==0 \t| %s" % (
 #                self.program_counter, ea, self.cfg.mem_info.get_shortest(ea)
 #            ))
 
-    @opcode(# Branch if not equal
-        0x26, # BNE (relative)
-        0x1026, # LBNE (relative)
+    @opcode(  # Branch if not equal
+        0x26,  # BNE (relative)
+        0x1026,  # LBNE (relative)
     )
     def instruction_BNE(self, opcode, ea):
         """
@@ -338,18 +335,18 @@ class OpsBranchesMixin(object):
         CC bits "HNZVC": -----
         """
         if self.Z == 0:
-#            log.info("$%x BNE branch to $%x, because Z==0 \t| %s" % (
-#                self.program_counter, ea, self.cfg.mem_info.get_shortest(ea)
-#            ))
+            #            log.info("$%x BNE branch to $%x, because Z==0 \t| %s" % (
+            #                self.program_counter, ea, self.cfg.mem_info.get_shortest(ea)
+            #            ))
             self.program_counter.set(ea)
 #        else:
 #            log.debug("$%x BNE: don't branch to $%x, because Z==1 \t| %s" % (
 #                self.program_counter, ea, self.cfg.mem_info.get_shortest(ea)
 #            ))
 
-    @opcode(# Branch if plus
-        0x2a, # BPL (relative)
-        0x102a, # LBPL (relative)
+    @opcode(  # Branch if plus
+        0x2a,  # BPL (relative)
+        0x102a,  # LBPL (relative)
     )
     def instruction_BPL(self, opcode, ea):
         """
@@ -366,18 +363,18 @@ class OpsBranchesMixin(object):
         CC bits "HNZVC": -----
         """
         if self.N == 0:
-#            log.info("$%x BPL branch to $%x, because N==0 \t| %s" % (
-#                self.program_counter, ea, self.cfg.mem_info.get_shortest(ea)
-#            ))
+            #            log.info("$%x BPL branch to $%x, because N==0 \t| %s" % (
+            #                self.program_counter, ea, self.cfg.mem_info.get_shortest(ea)
+            #            ))
             self.program_counter.set(ea)
 #         else:
 #            log.debug("$%x BPL: don't branch to $%x, because N==1 \t| %s" % (
 #                self.program_counter, ea, self.cfg.mem_info.get_shortest(ea)
 #            ))
 
-    @opcode(# Branch always
-        0x20, # BRA (relative)
-        0x16, # LBRA (relative)
+    @opcode(  # Branch always
+        0x20,  # BRA (relative)
+        0x16,  # LBRA (relative)
     )
     def instruction_BRA(self, opcode, ea):
         """
@@ -392,9 +389,9 @@ class OpsBranchesMixin(object):
 #        ))
         self.program_counter.set(ea)
 
-    @opcode(# Branch never
-        0x21, # BRN (relative)
-        0x1021, # LBRN (relative)
+    @opcode(  # Branch never
+        0x21,  # BRN (relative)
+        0x1021,  # LBRN (relative)
     )
     def instruction_BRN(self, opcode, ea):
         """
@@ -407,9 +404,9 @@ class OpsBranchesMixin(object):
         """
         pass
 
-    @opcode(# Branch if valid twos complement result
-        0x28, # BVC (relative)
-        0x1028, # LBVC (relative)
+    @opcode(  # Branch if valid twos complement result
+        0x28,  # BVC (relative)
+        0x1028,  # LBVC (relative)
     )
     def instruction_BVC(self, opcode, ea):
         """
@@ -423,18 +420,18 @@ class OpsBranchesMixin(object):
         CC bits "HNZVC": -----
         """
         if self.V == 0:
-#            log.info("$%x BVC branch to $%x, because V==0 \t| %s" % (
-#                self.program_counter, ea, self.cfg.mem_info.get_shortest(ea)
-#            ))
+            #            log.info("$%x BVC branch to $%x, because V==0 \t| %s" % (
+            #                self.program_counter, ea, self.cfg.mem_info.get_shortest(ea)
+            #            ))
             self.program_counter.set(ea)
 #         else:
 #            log.debug("$%x BVC: don't branch to $%x, because V==1 \t| %s" % (
 #                self.program_counter, ea, self.cfg.mem_info.get_shortest(ea)
 #            ))
 
-    @opcode(# Branch if invalid twos complement result
-        0x29, # BVS (relative)
-        0x1029, # LBVS (relative)
+    @opcode(  # Branch if invalid twos complement result
+        0x29,  # BVS (relative)
+        0x1029,  # LBVS (relative)
     )
     def instruction_BVS(self, opcode, ea):
         """
@@ -448,18 +445,18 @@ class OpsBranchesMixin(object):
         CC bits "HNZVC": -----
         """
         if self.V == 1:
-#            log.info("$%x BVS branch to $%x, because V==1 \t| %s" % (
-#                self.program_counter, ea, self.cfg.mem_info.get_shortest(ea)
-#            ))
+            #            log.info("$%x BVS branch to $%x, because V==1 \t| %s" % (
+            #                self.program_counter, ea, self.cfg.mem_info.get_shortest(ea)
+            #            ))
             self.program_counter.set(ea)
 #         else:
 #            log.debug("$%x BVS: don't branch to $%x, because V==0 \t| %s" % (
 #                self.program_counter, ea, self.cfg.mem_info.get_shortest(ea)
 #            ))
 
-    @opcode(# Branch if lower (unsigned)
-        0x25, # BLO/BCS (relative)
-        0x1025, # LBLO/LBCS (relative)
+    @opcode(  # Branch if lower (unsigned)
+        0x25,  # BLO/BCS (relative)
+        0x1025,  # LBLO/LBCS (relative)
     )
     def instruction_BLO(self, opcode, ea):
         """
@@ -467,18 +464,18 @@ class OpsBranchesMixin(object):
         case 0x5: cond = REG_CC & CC_C; break; // BCS, BLO, LBCS, LBLO
         """
         if self.C == 1:
-#            log.info("$%x BLO/BCS/LBLO/LBCS branch to $%x, because C==1 \t| %s" % (
-#                self.program_counter, ea, self.cfg.mem_info.get_shortest(ea)
-#            ))
+            #            log.info("$%x BLO/BCS/LBLO/LBCS branch to $%x, because C==1 \t| %s" % (
+            #                self.program_counter, ea, self.cfg.mem_info.get_shortest(ea)
+            #            ))
             self.program_counter.set(ea)
 #         else:
 #            log.debug("$%x BLO/BCS/LBLO/LBCS: don't branch to $%x, because C==0 \t| %s" % (
 #                self.program_counter, ea, self.cfg.mem_info.get_shortest(ea)
 #            ))
 
-    @opcode(# Branch if lower (unsigned)
-        0x24, # BHS/BCC (relative)
-        0x1024, # LBHS/LBCC (relative)
+    @opcode(  # Branch if lower (unsigned)
+        0x24,  # BHS/BCC (relative)
+        0x1024,  # LBHS/LBCC (relative)
     )
     def instruction_BHS(self, opcode, ea):
         """
@@ -486,9 +483,9 @@ class OpsBranchesMixin(object):
         case 0x4: cond = !(REG_CC & CC_C); break; // BCC, BHS, LBCC, LBHS
         """
         if self.C == 0:
-#            log.info("$%x BHS/BCC/LBHS/LBCC branch to $%x, because C==0 \t| %s" % (
-#                self.program_counter, ea, self.cfg.mem_info.get_shortest(ea)
-#            ))
+            #            log.info("$%x BHS/BCC/LBHS/LBCC branch to $%x, because C==0 \t| %s" % (
+            #                self.program_counter, ea, self.cfg.mem_info.get_shortest(ea)
+            #            ))
             self.program_counter.set(ea)
 #        else:
 #            log.debug("$%x BHS/BCC/LBHS/LBCC: don't branch to $%x, because C==1 \t| %s" % (

@@ -23,7 +23,6 @@
 
 from __future__ import absolute_import, division, print_function
 
-
 from MC6809.components.cpu_utils.instruction_caller import opcode
 
 
@@ -31,8 +30,8 @@ class InterruptMixin(object):
 
     # ---- Not Implemented, yet. ----
 
-    @opcode(# AND condition code register, then wait for interrupt
-        0x3c, # CWAI (immediate)
+    @opcode(  # AND condition code register, then wait for interrupt
+        0x3c,  # CWAI (immediate)
     )
     def instruction_CWAI(self, opcode, m):
         """
@@ -58,8 +57,8 @@ class InterruptMixin(object):
 #        log.error("$%x CWAI not implemented, yet!", opcode)
         # Update CC bits: ddddd
 
-    @opcode(# Undocumented opcode!
-        0x3e, # RESET (inherent)
+    @opcode(  # Undocumented opcode!
+        0x3e,  # RESET (inherent)
     )
     def instruction_RESET(self, opcode):
         """
@@ -73,10 +72,10 @@ class InterruptMixin(object):
         raise NotImplementedError(f"${opcode:x} RESET")
         # Update CC bits: *****
 
-
     # ---- Interrupt handling ----
 
     irq_enabled = False
+
     def irq(self):
         if not self.irq_enabled or self.I == 1:
             # log.critical("$%04x *** IRQ, ignore!\t%s" % (
@@ -95,20 +94,19 @@ class InterruptMixin(object):
         # ))
         self.program_counter.set(ea)
 
-
     def push_irq_registers(self):
         """
         push PC, U, Y, X, DP, B, A, CC on System stack pointer
         """
         self.cycles += 1
-        self.push_word(self.system_stack_pointer, self.program_counter.value) # PC
-        self.push_word(self.system_stack_pointer, self.user_stack_pointer.value) # U
-        self.push_word(self.system_stack_pointer, self.index_y.value) # Y
-        self.push_word(self.system_stack_pointer, self.index_x.value) # X
-        self.push_byte(self.system_stack_pointer, self.direct_page.value) # DP
-        self.push_byte(self.system_stack_pointer, self.accu_b.value) # B
-        self.push_byte(self.system_stack_pointer, self.accu_a.value) # A
-        self.push_byte(self.system_stack_pointer, self.get_cc_value()) # CC
+        self.push_word(self.system_stack_pointer, self.program_counter.value)  # PC
+        self.push_word(self.system_stack_pointer, self.user_stack_pointer.value)  # U
+        self.push_word(self.system_stack_pointer, self.index_y.value)  # Y
+        self.push_word(self.system_stack_pointer, self.index_x.value)  # X
+        self.push_byte(self.system_stack_pointer, self.direct_page.value)  # DP
+        self.push_byte(self.system_stack_pointer, self.accu_b.value)  # B
+        self.push_byte(self.system_stack_pointer, self.accu_a.value)  # A
+        self.push_byte(self.system_stack_pointer, self.get_cc_value())  # CC
 
     def push_firq_registers(self):
         """
@@ -116,12 +114,11 @@ class InterruptMixin(object):
         push PC and CC on System stack pointer
         """
         self.cycles += 1
-        self.push_word(self.system_stack_pointer, self.program_counter.value) # PC
-        self.push_byte(self.system_stack_pointer, self.get_cc_value()) # CC
+        self.push_word(self.system_stack_pointer, self.program_counter.value)  # PC
+        self.push_byte(self.system_stack_pointer, self.get_cc_value())  # CC
 
-
-    @opcode(# Return from interrupt
-        0x3b, # RTI (inherent)
+    @opcode(  # Return from interrupt
+        0x3b,  # RTI (inherent)
     )
     def instruction_RTI(self, opcode):
         """
@@ -134,36 +131,35 @@ class InterruptMixin(object):
 
         CC bits "HNZVC": -----
         """
-        cc = self.pull_byte(self.system_stack_pointer) # CC
+        cc = self.pull_byte(self.system_stack_pointer)  # CC
         self.set_cc(cc)
         if self.E:
             self.accu_a.set(
-                self.pull_byte(self.system_stack_pointer) # A
+                self.pull_byte(self.system_stack_pointer)  # A
             )
             self.accu_b.set(
-                self.pull_byte(self.system_stack_pointer) # B
+                self.pull_byte(self.system_stack_pointer)  # B
             )
             self.direct_page.set(
-                self.pull_byte(self.system_stack_pointer) # DP
+                self.pull_byte(self.system_stack_pointer)  # DP
             )
             self.index_x.set(
-                self.pull_word(self.system_stack_pointer) # X
+                self.pull_word(self.system_stack_pointer)  # X
             )
             self.index_y.set(
-                self.pull_word(self.system_stack_pointer) # Y
+                self.pull_word(self.system_stack_pointer)  # Y
             )
             self.user_stack_pointer.set(
-                self.pull_word(self.system_stack_pointer) # U
+                self.pull_word(self.system_stack_pointer)  # U
             )
 
         self.program_counter.set(
-            self.pull_word(self.system_stack_pointer) # PC
+            self.pull_word(self.system_stack_pointer)  # PC
         )
 #         log.critical("RTI to $%04x", self.program_counter.value)
 
-
-    @opcode(# Software interrupt (absolute indirect)
-        0x3f, # SWI (inherent)
+    @opcode(  # Software interrupt (absolute indirect)
+        0x3f,  # SWI (inherent)
     )
     def instruction_SWI(self, opcode):
         """
@@ -178,8 +174,8 @@ class InterruptMixin(object):
         """
         raise NotImplementedError(f"${opcode:x} SWI")
 
-    @opcode(# Software interrupt (absolute indirect)
-        0x103f, # SWI2 (inherent)
+    @opcode(  # Software interrupt (absolute indirect)
+        0x103f,  # SWI2 (inherent)
     )
     def instruction_SWI2(self, opcode, ea, m):
         """
@@ -195,8 +191,8 @@ class InterruptMixin(object):
         """
         raise NotImplementedError(f"${opcode:x} SWI2")
 
-    @opcode(# Software interrupt (absolute indirect)
-        0x113f, # SWI3 (inherent)
+    @opcode(  # Software interrupt (absolute indirect)
+        0x113f,  # SWI3 (inherent)
     )
     def instruction_SWI3(self, opcode, ea, m):
         """
@@ -211,8 +207,8 @@ class InterruptMixin(object):
         """
         raise NotImplementedError(f"${opcode:x} SWI3")
 
-    @opcode(# Synchronize with interrupt line
-        0x13, # SYNC (inherent)
+    @opcode(  # Synchronize with interrupt line
+        0x13,  # SYNC (inherent)
     )
     def instruction_SYNC(self, opcode):
         """
@@ -225,4 +221,3 @@ class InterruptMixin(object):
         CC bits "HNZVC": -----
         """
         raise NotImplementedError(f"${opcode:x} SYNC")
-

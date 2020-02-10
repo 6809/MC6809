@@ -134,7 +134,6 @@ def invert_byte(value):
     return 2 ** 8 + ~value
 
 
-
 if __name__ == "__main__":
     import doctest
     print(doctest.testmod(verbose=0))

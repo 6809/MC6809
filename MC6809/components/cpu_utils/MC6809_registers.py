@@ -13,11 +13,10 @@
 
 from __future__ import absolute_import, division, print_function
 
-
-
 import logging
 
-log=logging.getLogger("MC6809")
+
+log = logging.getLogger("MC6809")
 
 
 class ValueStorageBase(object):
@@ -41,7 +40,7 @@ class ValueStorageBase(object):
 
 class UndefinedRegister(ValueStorageBase):
     # used in TFR and EXG
-    WIDTH = 16 # 16 Bit
+    WIDTH = 16  # 16 Bit
     name = "undefined!"
     value = 0xffff
 
@@ -56,15 +55,15 @@ class UndefinedRegister(ValueStorageBase):
 
 
 class ValueStorage8Bit(ValueStorageBase):
-    WIDTH = 8 # 8 Bit
+    WIDTH = 8  # 8 Bit
 
     def set(self, v):
         if v > 0xff:
-#            log.info(" **** Value $%x is to big for %s (8-bit)", v, self.name)
+            #            log.info(" **** Value $%x is to big for %s (8-bit)", v, self.name)
             v = v & 0xff
 #            log.info(" ^^^^ Value %s (8-bit) wrap around to $%x", self.name, v)
         elif v < 0:
-#            log.info(" **** %s value $%x is negative", self.name, v)
+            #            log.info(" **** %s value $%x is negative", self.name, v)
             v = 0x100 + v
 #            log.info(" **** Value %s (8-bit) wrap around to $%x", self.name, v)
         self.value = v
@@ -74,15 +73,15 @@ class ValueStorage8Bit(ValueStorageBase):
 
 
 class ValueStorage16Bit(ValueStorageBase):
-    WIDTH = 16 # 16 Bit
+    WIDTH = 16  # 16 Bit
 
     def set(self, v):
         if v > 0xffff:
-#            log.info(" **** Value $%x is to big for %s (16-bit)", v, self.name)
+            #            log.info(" **** Value $%x is to big for %s (16-bit)", v, self.name)
             v = v & 0xffff
 #            log.info(" ^^^^ Value %s (16-bit) wrap around to $%x", self.name, v)
         elif v < 0:
-#            log.info(" **** %s value $%x is negative", self.name, v)
+            #            log.info(" **** %s value $%x is negative", self.name, v)
             v = 0x10000 + v
 #            log.info(" **** Value %s (16-bit) wrap around to $%x", self.name, v)
         self.value = v
@@ -91,16 +90,11 @@ class ValueStorage16Bit(ValueStorageBase):
         return f"{self.name}={self.value:04x}"
 
 
-
-
-
-
-
 class ConcatenatedAccumulator(object):
     """
     6809 has register D - 16 bit concatenated reg. (A + B)
     """
-    WIDTH = 16 # 16 Bit
+    WIDTH = 16  # 16 Bit
 
     def __init__(self, name, a, b):
         self.name = name

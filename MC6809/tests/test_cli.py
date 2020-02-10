@@ -44,7 +44,7 @@ class CLITestCase(unittest.TestCase):
         for member in members:
             msg = f"{member!r} not found in:\n{container}"
             # self.assertIn(member, container, msg) # Bad error message :(
-            if not member in container:
+            if member not in container:
                 self.fail(msg)
 
     def assert_not_contains_members(self, members, container):

@@ -15,6 +15,7 @@ import inspect
 import logging
 import sys
 
+
 PY2 = sys.version_info[0] == 2
 if PY2:
     range = xrange
@@ -25,6 +26,7 @@ log = logging.getLogger("MC6809")
 class DummyMemInfo(object):
     def get_shortest(self, *args):
         return ">>mem info not active<<"
+
     def __call__(self, *args):
         return ">>mem info not active<<"
 
@@ -37,6 +39,7 @@ class AddressAreas(dict):
         Text screen
         Serial/parallel devices
     """
+
     def __init__(self, areas):
         super(AddressAreas, self).__init__()
         for start_addr, end_addr, txt in areas:
@@ -48,9 +51,9 @@ class AddressAreas(dict):
 
 
 class BaseConfig(object):
-#     # http address/port number for the CPU control server
-#     CPU_CONTROL_ADDR = "127.0.0.1"
-#     CPU_CONTROL_PORT = 6809
+    #     # http address/port number for the CPU control server
+    #     CPU_CONTROL_ADDR = "127.0.0.1"
+    #     CPU_CONTROL_PORT = 6809
 
     # How many ops should be execute before make a control server update cycle?
     BURST_COUNT = 10000
@@ -59,7 +62,7 @@ class BaseConfig(object):
 
     def __init__(self, cfg_dict):
         self.cfg_dict = cfg_dict
-        self.cfg_dict["cfg_module"] = self.__module__ # FIXME: !
+        self.cfg_dict["cfg_module"] = self.__module__  # FIXME: !
 
         log.debug("cfg_dict: %s", repr(cfg_dict))
 
@@ -71,7 +74,8 @@ class BaseConfig(object):
 #         else:
 #             self.bus = None # Will be set in cpu6809.start_CPU()
 
-        assert not hasattr(cfg_dict, "ram"), f"cfg_dict.ram is deprecated! Remove it from: {self.cfg_dict.__class__.__name__}"
+        assert not hasattr(
+            cfg_dict, "ram"), f"cfg_dict.ram is deprecated! Remove it from: {self.cfg_dict.__class__.__name__}"
 
 #         if cfg_dict["rom"]:
 #             raw_rom_cfg = cfg_dict["rom"]
@@ -108,7 +112,7 @@ class BaseConfig(object):
     def print_debug_info(self):
         print(f"Config: '{self.__class__.__name__}'")
 
-        for name, value in inspect.getmembers(self): # , inspect.isdatadescriptor):
+        for name, value in inspect.getmembers(self):  # , inspect.isdatadescriptor):
             if name.startswith("_"):
                 continue
 #             print name, type(value)
@@ -123,22 +127,25 @@ class BaseConfig(object):
 
 
 def test_run():
-    import os, sys, subprocess
+    import os
+    import sys
+    import subprocess
     cmd_args = [sys.executable,
-        os.path.join("..", "..", "DragonPy_CLI.py"),
+                os.path.join("..", "..", "DragonPy_CLI.py"),
 
-#         "--verbosity=5",
-        "--verbosity=10", # DEBUG
-#         "--verbosity=20", # INFO
-#         "--verbosity=30", # WARNING
-#         "--verbosity=40", # ERROR
-#         "--verbosity=50", # CRITICAL/FATAL
+                #         "--verbosity=5",
+                "--verbosity=10",  # DEBUG
+                #         "--verbosity=20", # INFO
+                #         "--verbosity=30", # WARNING
+                #         "--verbosity=40", # ERROR
+                #         "--verbosity=50", # CRITICAL/FATAL
 
-#         "--machine=Simple6809",
-        "--machine=sbc09",
-    ]
+                #         "--machine=Simple6809",
+                "--machine=sbc09",
+                ]
     print("Startup CLI with: %s" % " ".join(cmd_args[1:]))
     subprocess.Popen(cmd_args, cwd=".").wait()
+
 
 if __name__ == "__main__":
     test_run()

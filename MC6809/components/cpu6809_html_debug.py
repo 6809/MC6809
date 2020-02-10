@@ -14,13 +14,12 @@
 
 from __future__ import absolute_import, division, print_function
 
-
-
 import atexit
-import os
 import datetime
+import os
 
 from MC6809.components.cpu_utils.instruction_call import PrepagedInstructions
+
 
 #
 # DEBUG_FILENAME = os.path.abspath(os.path.join(

@@ -23,13 +23,8 @@
 
 from __future__ import absolute_import, division, print_function
 
-
 from MC6809.components.cpu_utils.instruction_caller import opcode
-
-from MC6809.components.MC6809data.MC6809_op_data import (
-    REG_A, REG_B, REG_CC, REG_DP, REG_PC,
-    REG_U, REG_X, REG_Y
-)
+from MC6809.components.MC6809data.MC6809_op_data import REG_A, REG_B, REG_CC, REG_DP, REG_PC, REG_U, REG_X, REG_Y
 
 
 class StackMixin(object):
@@ -97,10 +92,9 @@ class StackMixin(object):
 
     ####
 
-
-    @opcode(# Push A, B, CC, DP, D, X, Y, U, or PC onto stack
-        0x36, # PSHU (immediate)
-        0x34, # PSHS (immediate)
+    @opcode(  # Push A, B, CC, DP, D, X, Y, U, or PC onto stack
+        0x36,  # PSHU (immediate)
+        0x34,  # PSHS (immediate)
     )
     def instruction_PSH(self, opcode, m, register):
         """
@@ -132,19 +126,26 @@ class StackMixin(object):
 #        log.debug("$%x PSH%s post byte: $%x", self.program_counter, register.name, m)
 
         # m = postbyte
-        if m & 0x80: push(REG_PC, register) # 16 bit program counter register
-        if m & 0x40: push(REG_U, register) #  16 bit user-stack pointer
-        if m & 0x20: push(REG_Y, register) #  16 bit index register
-        if m & 0x10: push(REG_X, register) #  16 bit index register
-        if m & 0x08: push(REG_DP, register) #  8 bit direct page register
-        if m & 0x04: push(REG_B, register) #   8 bit accumulator
-        if m & 0x02: push(REG_A, register) #   8 bit accumulator
-        if m & 0x01: push(REG_CC, register) #  8 bit condition code register
+        if m & 0x80:
+            push(REG_PC, register)  # 16 bit program counter register
+        if m & 0x40:
+            push(REG_U, register)  # 16 bit user-stack pointer
+        if m & 0x20:
+            push(REG_Y, register)  # 16 bit index register
+        if m & 0x10:
+            push(REG_X, register)  # 16 bit index register
+        if m & 0x08:
+            push(REG_DP, register)  # 8 bit direct page register
+        if m & 0x04:
+            push(REG_B, register)  # 8 bit accumulator
+        if m & 0x02:
+            push(REG_A, register)  # 8 bit accumulator
+        if m & 0x01:
+            push(REG_CC, register)  # 8 bit condition code register
 
-
-    @opcode(# Pull A, B, CC, DP, D, X, Y, U, or PC from stack
-        0x37, # PULU (immediate)
-        0x35, # PULS (immediate)
+    @opcode(  # Pull A, B, CC, DP, D, X, Y, U, or PC from stack
+        0x37,  # PULU (immediate)
+        0x35,  # PULS (immediate)
     )
     def instruction_PUL(self, opcode, m, register):
         """
@@ -164,7 +165,7 @@ class StackMixin(object):
         def pull(register_str, stack_pointer):
             reg_obj = self.register_str2object[register_str]
 
-            reg_width = reg_obj.WIDTH # 8 / 16
+            reg_width = reg_obj.WIDTH  # 8 / 16
             if reg_width == 8:
                 data = self.pull_byte(stack_pointer)
             else:
@@ -176,11 +177,19 @@ class StackMixin(object):
 #        log.debug("$%x PUL%s:", self.program_counter, register.name)
 
         # m = postbyte
-        if m & 0x01: pull(REG_CC, register) # 8 bit condition code register
-        if m & 0x02: pull(REG_A, register) # 8 bit accumulator
-        if m & 0x04: pull(REG_B, register) # 8 bit accumulator
-        if m & 0x08: pull(REG_DP, register) # 8 bit direct page register
-        if m & 0x10: pull(REG_X, register) # 16 bit index register
-        if m & 0x20: pull(REG_Y, register) # 16 bit index register
-        if m & 0x40: pull(REG_U, register) # 16 bit user-stack pointer
-        if m & 0x80: pull(REG_PC, register) # 16 bit program counter register
+        if m & 0x01:
+            pull(REG_CC, register)  # 8 bit condition code register
+        if m & 0x02:
+            pull(REG_A, register)  # 8 bit accumulator
+        if m & 0x04:
+            pull(REG_B, register)  # 8 bit accumulator
+        if m & 0x08:
+            pull(REG_DP, register)  # 8 bit direct page register
+        if m & 0x10:
+            pull(REG_X, register)  # 16 bit index register
+        if m & 0x20:
+            pull(REG_Y, register)  # 16 bit index register
+        if m & 0x40:
+            pull(REG_U, register)  # 16 bit user-stack pointer
+        if m & 0x80:
+            pull(REG_PC, register)  # 16 bit program counter register

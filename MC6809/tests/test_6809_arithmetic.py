@@ -15,11 +15,12 @@ import logging
 import sys
 import unittest
 
+from MC6809.tests.test_base import BaseCPUTestCase
+
+
 PY2 = sys.version_info[0] == 2
 if PY2:
     range = xrange
-
-from MC6809.tests.test_base import BaseCPUTestCase
 
 
 log = logging.getLogger("MC6809")
@@ -28,8 +29,8 @@ log = logging.getLogger("MC6809")
 class Test6809_Arithmetic(BaseCPUTestCase):
     def test_ADDA_extended01(self):
         self.cpu_test_run(start=0x1000, end=0x1003, mem=[
-            0xbb, # ADDA extended
-            0x12, 0x34 # word to add on accu A
+            0xbb,  # ADDA extended
+            0x12, 0x34  # word to add on accu A
         ])
         self.assertEqual(self.cpu.Z, 1)
         self.assertEqual(self.cpu.get_cc_value(), 0x04)
@@ -40,11 +41,11 @@ class Test6809_Arithmetic(BaseCPUTestCase):
         excpected_values = list(range(1, 256))
         excpected_values += list(range(0, 5))
 
-        self.cpu.accu_a.set(0x00) # start value
+        self.cpu.accu_a.set(0x00)  # start value
         for i in range(260):
-            self.cpu.set_cc(0x00) # Clear all CC flags
+            self.cpu.set_cc(0x00)  # Clear all CC flags
             self.cpu_test_run(start=0x1000, end=None, mem=[
-                0x8B, 0x01, # ADDA #$1 Immediate
+                0x8B, 0x01,  # ADDA #$1 Immediate
             ])
             a = self.cpu.accu_a.value
             excpected_value = excpected_values[i]
@@ -86,7 +87,7 @@ class Test6809_Arithmetic(BaseCPUTestCase):
     def test_ADDA1(self):
         for i in range(260):
             self.cpu_test_run(start=0x1000, end=None, mem=[
-                0x8B, 0x01, # ADDA   #$01
+                0x8B, 0x01,  # ADDA   #$01
             ])
             r = self.cpu.accu_a.value
 #             print "$%02x > ADD 1 > $%02x | CC:%s" % (
@@ -94,7 +95,7 @@ class Test6809_Arithmetic(BaseCPUTestCase):
 #             )
 
             # test INC value from RAM
-            self.assertEqualHex(i + 1 & 0xff, r) # expected values are: 1 up to 255 then wrap around to 0 and up to 4
+            self.assertEqualHex(i + 1 & 0xff, r)  # expected values are: 1 up to 255 then wrap around to 0 and up to 4
 
             # test negative
             if 128 <= r <= 255:
@@ -118,11 +119,11 @@ class Test6809_Arithmetic(BaseCPUTestCase):
         areas = list(range(0, 3)) + ["..."] + list(range(0x7ffd, 0x8002)) + ["..."] + list(range(0xfffd, 0x10002))
         for i in areas:
             if i == "...":
-#                 print "..."
+                #                 print "..."
                 continue
             self.cpu.accu_d.set(i)
             self.cpu_test_run(start=0x1000, end=None, mem=[
-                0xc3, 0x00, 0x01, # ADDD   #$01
+                0xc3, 0x00, 0x01,  # ADDD   #$01
             ])
             r = self.cpu.accu_d.value
 #             print "%5s $%04x > ADDD 1 > $%04x | CC:%s" % (
@@ -180,8 +181,8 @@ loop:
             self.cpu.set_cc(0x00)
 
             self.cpu_test_run(start=0x1000, end=None, mem=[
-                0x86, a, # LDA   #$i
-                0x40, # NEGA (inherent)
+                0x86, a,  # LDA   #$i
+                0x40,  # NEGA (inherent)
             ])
             r = self.cpu.accu_a.value
 #            print "%03s - a=%02x r=%02x -> %s" % (
@@ -238,7 +239,7 @@ loop:
 
             self.cpu.memory.write_byte(address, a)
             self.cpu_test_run(start=0x0000, end=None, mem=[
-                0x00, address, # NEG address
+                0x00, address,  # NEG address
             ])
             r = self.cpu.memory.read_byte(address)
 #             print "%03s - a=%02x r=%02x -> %s" % (
@@ -282,11 +283,11 @@ loop:
         excpected_values = list(range(1, 256))
         excpected_values += list(range(0, 5))
 
-        self.cpu.memory.write_byte(0x4500, 0x0) # start value
+        self.cpu.memory.write_byte(0x4500, 0x0)  # start value
         for i in range(260):
-            self.cpu.set_cc(0x00) # Clear all CC flags
+            self.cpu.set_cc(0x00)  # Clear all CC flags
             self.cpu_test_run(start=0x1000, end=None, mem=[
-                0x7c, 0x45, 0x00, # INC $4500
+                0x7c, 0x45, 0x00,  # INC $4500
             ])
             r = self.cpu.memory.read_byte(0x4500)
             excpected_value = excpected_values[i]
@@ -323,7 +324,7 @@ loop:
 
         for i in range(260):
             self.cpu_test_run(start=0x1000, end=None, mem=[
-                0x5c, # INCB
+                0x5c,  # INCB
             ])
             r = self.cpu.accu_b.value
             excpected_value = excpected_values[i]
@@ -354,11 +355,11 @@ loop:
                 self.assertEqual(self.cpu.V, 0)
 
     def test_INC_not_affected_flags1(self):
-        self.cpu.memory.write_byte(0x0100, 0x00) # start value
+        self.cpu.memory.write_byte(0x0100, 0x00)  # start value
 
-        self.cpu.set_cc(0x00) # Clear all CC flags
+        self.cpu.set_cc(0x00)  # Clear all CC flags
         self.cpu_test_run(start=0x0000, end=None, mem=[
-            0x7c, 0x01, 0x00, # INC $0100
+            0x7c, 0x01, 0x00,  # INC $0100
         ])
         r = self.cpu.memory.read_byte(0x0100)
         self.assertEqual(r, 0x01)
@@ -370,11 +371,11 @@ loop:
         self.assertEqual(self.cpu.C, 0)
 
     def test_INC_not_affected_flags2(self):
-        self.cpu.memory.write_byte(0x0100, 0x00) # start value
+        self.cpu.memory.write_byte(0x0100, 0x00)  # start value
 
-        self.cpu.set_cc(0xff) # Set all CC flags
+        self.cpu.set_cc(0xff)  # Set all CC flags
         self.cpu_test_run(start=0x0000, end=None, mem=[
-            0x7c, 0x01, 0x00, # INC $0100
+            0x7c, 0x01, 0x00,  # INC $0100
         ])
         r = self.cpu.memory.read_byte(0x0100)
         self.assertEqual(r, 0x01)
@@ -390,11 +391,11 @@ loop:
         excpected_values = list(range(254, -1, -1))
         excpected_values += list(range(255, 250, -1))
 
-        self.cpu.accu_a.set(0xff) # start value
+        self.cpu.accu_a.set(0xff)  # start value
         for i in range(260):
-            self.cpu.set_cc(0x00) # Clear all CC flags
+            self.cpu.set_cc(0x00)  # Clear all CC flags
             self.cpu_test_run(start=0x1000, end=None, mem=[
-                0x80, 0x01, # SUBA #$01
+                0x80, 0x01,  # SUBA #$01
             ])
             a = self.cpu.accu_a.value
             excpected_value = excpected_values[i]
@@ -420,13 +421,13 @@ loop:
                 self.assertEqual(self.cpu.Z, 0)
 
             # test overflow
-            if a == 127: # V ist set if SUB $80 to $7f
+            if a == 127:  # V ist set if SUB $80 to $7f
                 self.assertEqual(self.cpu.V, 1)
             else:
                 self.assertEqual(self.cpu.V, 0)
 
             # test carry
-            if a == 0xff: # C is set if SUB $00 to $ff
+            if a == 0xff:  # C is set if SUB $00 to $ff
                 self.assertEqual(self.cpu.C, 1)
             else:
                 self.assertEqual(self.cpu.C, 0)
@@ -434,17 +435,17 @@ loop:
     def test_SUBA_indexed(self):
         self.cpu.memory.load(0x1234, [0x12, 0xff])
         self.cpu.system_stack_pointer.set(0x1234)
-        self.cpu.accu_a.set(0xff) # start value
+        self.cpu.accu_a.set(0xff)  # start value
         self.cpu_test_run(start=0x1000, end=None, mem=[
-            0xa0, 0xe0, # SUBA ,S+
+            0xa0, 0xe0,  # SUBA ,S+
         ])
-        self.assertEqualHexByte(self.cpu.accu_a.value, 0xed) # $ff - $12 = $ed
+        self.assertEqualHexByte(self.cpu.accu_a.value, 0xed)  # $ff - $12 = $ed
         self.assertEqualHexWord(self.cpu.system_stack_pointer.value, 0x1235)
 
         self.cpu_test_run(start=0x1000, end=None, mem=[
-            0xa0, 0xe0, # SUBA ,S+
+            0xa0, 0xe0,  # SUBA ,S+
         ])
-        self.assertEqualHexByte(self.cpu.accu_a.value, 0xed - 0xff & 0xff) # $ee
+        self.assertEqualHexByte(self.cpu.accu_a.value, 0xed - 0xff & 0xff)  # $ee
         self.assertEqualHexWord(self.cpu.system_stack_pointer.value, 0x1236)
 
     def test_DEC_extended(self):
@@ -452,12 +453,12 @@ loop:
         excpected_values = list(range(254, -1, -1))
         excpected_values += list(range(255, 250, -1))
 
-        self.cpu.memory.write_byte(0x4500, 0xff) # start value
-        self.cpu.accu_a.set(0xff) # start value
+        self.cpu.memory.write_byte(0x4500, 0xff)  # start value
+        self.cpu.accu_a.set(0xff)  # start value
         for i in range(260):
-            self.cpu.set_cc(0x00) # Clear all CC flags
+            self.cpu.set_cc(0x00)  # Clear all CC flags
             self.cpu_test_run(start=0x1000, end=None, mem=[
-                0x7A, 0x45, 0x00, # DEC $4500
+                0x7A, 0x45, 0x00,  # DEC $4500
             ])
             r = self.cpu.memory.read_byte(0x4500)
             excpected_value = excpected_values[i]
@@ -482,7 +483,7 @@ loop:
                 self.assertEqual(self.cpu.Z, 0)
 
             # test overflow
-            if r == 127: # V is set if SUB $80 to $7f
+            if r == 127:  # V is set if SUB $80 to $7f
                 self.assertEqual(self.cpu.V, 1)
             else:
                 self.assertEqual(self.cpu.V, 0)
@@ -495,7 +496,7 @@ loop:
             self.cpu.set_cc(0x00)
             self.cpu.accu_a.set(a)
             self.cpu_test_run(start=0x1000, end=None, mem=[
-                0x4a, # DECA
+                0x4a,  # DECA
             ])
             r = self.cpu.accu_a.value
 #            print "%03s - %02x > DEC > %02x | CC:%s" % (
@@ -532,10 +533,10 @@ loop:
 
     def test_SBCA_immediate_01(self):
         a = 0x80
-        self.cpu.set_cc(0x00) # CC:........
+        self.cpu.set_cc(0x00)  # CC:........
         self.cpu.accu_a.set(a)
         self.cpu_test_run(start=0x1000, end=None, mem=[
-            0x82, 0x40, # SBC
+            0x82, 0x40,  # SBC
         ])
         r = self.cpu.accu_a.value
 #        print "%02x > SBC > %02x | CC:%s" % (
@@ -546,10 +547,10 @@ loop:
 
     def test_SBCA_immediate_02(self):
         a = 0x40
-        self.cpu.set_cc(0xff) # CC:EFHINZVC
+        self.cpu.set_cc(0xff)  # CC:EFHINZVC
         self.cpu.accu_a.set(a)
         self.cpu_test_run(start=0x1000, end=None, mem=[
-            0x82, 0x20, # SBC
+            0x82, 0x20,  # SBC
         ])
         r = self.cpu.accu_a.value
 #        print "%02x > SBC > %02x | CC:%s" % (
@@ -564,15 +565,15 @@ loop:
         b_areas = list(range(0, 3)) + ["..."] + list(range(0x7e, 0x83)) + ["..."] + list(range(0xfd, 0x100))
         for a in a_areas:
             if a == "...":
-#                print "..."
+                #                print "..."
                 continue
             for b in b_areas:
                 if b == "...":
-#                    print "..."
+                    #                    print "..."
                     continue
                 self.cpu.set_cc(a)
                 self.cpu_test_run(start=0x1000, end=None, mem=[
-                    0x1a, b # ORCC $a
+                    0x1a, b  # ORCC $a
                 ])
                 r = self.cpu.get_cc_value()
                 expected_value = a | b
@@ -586,15 +587,15 @@ loop:
         b_areas = list(range(0, 3)) + ["..."] + list(range(0x7e, 0x83)) + ["..."] + list(range(0xfd, 0x100))
         for a in a_areas:
             if a == "...":
-#                print "..."
+                #                print "..."
                 continue
             for b in b_areas:
                 if b == "...":
-#                    print "..."
+                    #                    print "..."
                     continue
                 self.cpu.set_cc(a)
                 self.cpu_test_run(start=0x1000, end=None, mem=[
-                    0x1c, b # ANDCC $a
+                    0x1c, b  # ANDCC $a
                 ])
                 r = self.cpu.get_cc_value()
                 expected_value = a & b
@@ -611,16 +612,16 @@ loop:
 
         for x in x_areas:
             if x == "...":
-#                print "..."
+                #                print "..."
                 continue
             for b in b_areas:
                 if b == "...":
-#                    print "..."
+                    #                    print "..."
                     continue
                 self.cpu.index_x.set(x)
                 self.cpu.accu_b.set(b)
                 self.cpu_test_run(start=0x1000, end=None, mem=[
-                    0x3a, # ABX (inherent)
+                    0x3a,  # ABX (inherent)
                 ])
                 r = self.cpu.index_x.value
                 expected_value = x + b & 0xffff
@@ -644,9 +645,9 @@ loop:
 
     def test_DAA(self):
         self.cpu_test_run(start=0x0100, end=None, mem=[
-            0x86, 0x67, #  LDA   #$67     ; A=$67
-            0x8b, 0x75, #  ADDA  #$75     ; A=$67+$75 = $DC
-            0x19, #        DAA   19       ; A=67+75=142 -> $42
+            0x86, 0x67,  # LDA   #$67     ; A=$67
+            0x8b, 0x75,  # ADDA  #$75     ; A=$67+$75 = $DC
+            0x19,  # DAA   19       ; A=67+75=142 -> $42
         ])
         self.assertEqualHexByte(self.cpu.accu_a.value, 0x42)
         self.assertEqual(self.cpu.C, 1)
@@ -656,8 +657,8 @@ loop:
             self.cpu.set_cc(0x00)
             self.cpu.accu_a.set(0x01)
             self.cpu_test_run(start=0x0100, end=None, mem=[
-                0x8b, add, #  ADDA  #$1
-                0x19, #       DAA
+                0x8b, add,  # ADDA  #$1
+                0x19,  # DAA
             ])
             r = self.cpu.accu_a.value
 #            print "$01 + $%02x = $%02x > DAA > $%02x | CC:%s" % (
@@ -701,10 +702,10 @@ if __name__ == '__main__':
     unittest.main(
         argv=(
             sys.argv[0],
-#            "Test6809_Arithmetic",
-#             "Test6809_Arithmetic.test_DAA2",
+            #            "Test6809_Arithmetic",
+            #             "Test6809_Arithmetic.test_DAA2",
         ),
-#         verbosity=1,
+        #         verbosity=1,
         verbosity=2,
-#         failfast=True,
+        #         failfast=True,
     )

@@ -16,16 +16,17 @@ import hashlib
 import logging
 import unittest
 
-try:
-    import queue # Python 3
-except ImportError:
-    import Queue as queue # Python 2
-
-from MC6809.utils.byte_word_values import bin2hexline
 from MC6809.components.cpu6809 import CPU
-from MC6809.components.memory import Memory
 from MC6809.components.cpu_utils.MC6809_registers import ValueStorage8Bit
+from MC6809.components.memory import Memory
 from MC6809.tests.test_config import TestCfg
+from MC6809.utils.byte_word_values import bin2hexline
+
+
+try:
+    import queue  # Python 3
+except ImportError:
+    import Queue as queue  # Python 2
 
 
 log = logging.getLogger("MC6809")
@@ -35,7 +36,7 @@ class BaseTestCase(unittest.TestCase):
     """
     Only some special assertments.
     """
-    maxDiff=3000
+    maxDiff = 3000
 
     def assertHexList(self, first, second, msg=None):
         first = [f"${value:x}" for value in first]
@@ -87,16 +88,17 @@ class BaseTestCase(unittest.TestCase):
 
 class BaseCPUTestCase(BaseTestCase):
     UNITTEST_CFG_DICT = {
-        "verbosity":None,
-        "display_cycle":False,
-        "trace":None,
-        "bus_socket_host":None,
-        "bus_socket_port":None,
-        "ram":None,
-        "rom":None,
-        "max_ops":None,
-        "use_bus":False,
+        "verbosity": None,
+        "display_cycle": False,
+        "trace": None,
+        "bus_socket_host": None,
+        "bus_socket_port": None,
+        "ram": None,
+        "rom": None,
+        "max_ops": None,
+        "use_bus": False,
     }
+
     def setUp(self):
         cfg = TestCfg(self.UNITTEST_CFG_DICT)
         memory = Memory(cfg)
@@ -107,13 +109,13 @@ class BaseCPUTestCase(BaseTestCase):
             self.assertLess(-1, cell, f"${cell:x} < 0")
             self.assertGreater(0x100, cell, f"${cell:x} > 0xff")
         log.debug("memory load at $%x: %s", start,
-            ", ".join(["$%x" % i for i in mem])
-        )
+                  ", ".join(["$%x" % i for i in mem])
+                  )
         self.cpu.memory.load(start, mem)
         if end is None:
             end = start + len(mem)
         self.cpu.test_run(start, end)
-    cpu_test_run.__test__=False # Exclude from nose
+    cpu_test_run.__test__ = False  # Exclude from nose
 
     def cpu_test_run2(self, start, count, mem):
         for cell in mem:
@@ -121,7 +123,7 @@ class BaseCPUTestCase(BaseTestCase):
             self.assertGreater(0x100, cell, f"${cell:x} > 0xff")
         self.cpu.memory.load(start, mem)
         self.cpu.test_run2(start, count)
-    cpu_test_run2.__test__=False # Exclude from nose
+    cpu_test_run2.__test__ = False  # Exclude from nose
 
     def assertMemory(self, start, mem):
         for index, should_byte in enumerate(mem):
@@ -135,6 +137,7 @@ class BaseCPUTestCase(BaseTestCase):
 class BaseStackTestCase(BaseCPUTestCase):
     INITIAL_SYSTEM_STACK_ADDR = 0x1000
     INITIAL_USER_STACK_ADDR = 0x2000
+
     def setUp(self):
         super(BaseStackTestCase, self).setUp()
         self.cpu.system_stack_pointer.set(self.INITIAL_SYSTEM_STACK_ADDR)
@@ -143,11 +146,10 @@ class BaseStackTestCase(BaseCPUTestCase):
 
 class TestCPU(object):
     def __init__(self):
-        self.accu_a = ValueStorage8Bit("A", 0) # A - 8 bit accumulator
-        self.accu_b = ValueStorage8Bit("B", 0) # B - 8 bit accumulator
+        self.accu_a = ValueStorage8Bit("A", 0)  # A - 8 bit accumulator
+        self.accu_b = ValueStorage8Bit("B", 0)  # B - 8 bit accumulator
         # 8 bit condition code register bits: E F H I N Z V C
         self.cc = ConditionCodeRegister()
-
 
 
 def print_cpu_state_data(state):
@@ -160,4 +162,3 @@ def print_cpu_state_data(state):
         if isinstance(v, int):
             v = f"${v:x}"
         print(f"\t{k!r}: {v}")
-
