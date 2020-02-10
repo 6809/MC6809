@@ -74,10 +74,10 @@ def cc_value2txt(status):
     >>> cc_value2txt(0x59)
     '.F.IN..C'
     """
-    return "".join([
+    return "".join(
         "." if status & x == 0 else char
         for char, x in zip("EFHINZVC", (128, 64, 32, 16, 8, 4, 2, 1))
-    ])
+    )
 
 
 def get_python_info():

@@ -54,10 +54,10 @@ class InstructionTrace(PrepagedInstructions):
 
         ob_bytes = op_code_data["bytes"]
 
-        op_bytes = "".join([
+        op_bytes = "".join(
             "%02x" % value
             for __, value in self.cpu.memory.iter_bytes(op_address, op_address + ob_bytes)
-        ])
+        )
 
         kwargs_info = []
         if "register" in kwargs:

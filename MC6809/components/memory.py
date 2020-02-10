@@ -173,7 +173,7 @@ class Memory:
             data = [ord(c) for c in data]
 
         log.debug("ROM load at $%04x: %s", address,
-                  ", ".join(["$%02x" % i for i in data])
+                  ", ".join("$%02x" % i for i in data)
                   )
         for ea, datum in enumerate(data, address):
             try:
@@ -325,4 +325,4 @@ class Memory:
     def print_dump(self, start, end):
         print(f"Memory dump from ${start:04x} to ${end:04x}:")
         dump_lines = self.get_dump(start, end)
-        print("\n".join(["\t%s" % line for line in dump_lines]))
+        print("\n".join("\t%s" % line for line in dump_lines))

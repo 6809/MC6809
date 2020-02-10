@@ -68,7 +68,7 @@ def print_unittest1(lines):
         code2 = line["code2"]
         doc = line["doc"]
 
-        hex_list = ", ".join(["0x%02x" % i for i in hex_list])
+        hex_list = ", ".join("0x%02x" % i for i in hex_list)
         if hex_list:
             hex_list += ", #"
         else:
@@ -91,7 +91,7 @@ def print_unittest2(lines):
         code2 = line["code2"]
         doc = line["doc"]
 
-        hex_list = ", ".join(["0x%02x" % i for i in hex_list])
+        hex_list = ", ".join("0x%02x" % i for i in hex_list)
         if hex_list:
             hex_list += ", #"
         else:
@@ -119,7 +119,7 @@ def print_bas(lines, line_no):
         print(line.upper())
         line_no += 10
 
-        line = f"{line_no} DATA {','.join([('%x' % i) for i in hex_list])}"
+        line = f"{line_no} DATA {','.join(('%x' % i) for i in hex_list)}"
         print(line.upper())
         line_no += 10
 

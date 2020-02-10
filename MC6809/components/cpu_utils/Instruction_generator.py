@@ -146,7 +146,7 @@ def generate_code(f):
 #                if (addr_mode and  needs_ea and  register and  read_from_memory and  write_to_memory) is None:
 
     variants = list(variants)
-    variants.sort(key=lambda x: "".join(["%s" % i for i in x]))
+    variants.sort(key=lambda x: "".join("%s" % i for i in x))
 
     # for no, data in enumerate(variants):
     #     print(no, data)

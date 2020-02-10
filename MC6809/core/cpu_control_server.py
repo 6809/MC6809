@@ -158,7 +158,7 @@ class ControlHandler(BaseHTTPRequestHandler):
             end = int(e)
         else:
             end = addr
-        self.response("".join([chr(self.cpu.read_byte(x)) for x in range(addr, end + 1)]))
+        self.response("".join(chr(self.cpu.read_byte(x)) for x in range(addr, end + 1)))
 
     def get_memory(self, m):
         addr = int(m.group(1), 16)
