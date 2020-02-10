@@ -62,5 +62,10 @@ update-rst-readme: ## update README.rst from README.creole
 publish: ## Release new version to PyPi
 	poetry run publish
 
+profile:  ## Profile the MC6809 emulation benchmark
+	poetry run MC6809 profile
+
+benchmark:  ## Run a MC6809 emulation benchmark
+	poetry run MC6809 benchmark
 
 .PHONY: help install lint fix test publish

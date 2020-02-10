@@ -2,9 +2,9 @@
 MC6809 CPU emulator written in Python
 -------------------------------------
 
-MC6809 is a Open source (GPL v3 or later) emulator for the legendary **6809** CPU, used in 30 years old homecomputer ``Dragon 32`` and ``Tandy TRS-80 Color Computer`` (CoCo)...
+MC6809 is a Open source (GPL v3 or later) emulator for the legendary **6809** CPU, used old homecomputer `Dragon 32/64 <https://en.wikipedia.org/wiki/Dragon_32/64>`_ and `Tandy TRS-80 Color Computer (CoCo) <https://en.wikipedia.org/wiki/TRS-80_Color_Computer>`_ built in the 1980s...
 
-Tested with Python 2.7, 3.4 and PyPy
+Tested with Python 3.6, 3.7, 3.8 and PyPy3
 
 +-----------------------------------+-------------------------------+
 | |Build Status on travis-ci.org|   | `travis-ci.org/6809/MC6809`_  |
@@ -19,39 +19,57 @@ Tested with Python 2.7, 3.4 and PyPy
 
 A example usage can be find in: `MC6809/example6809.py <https://github.com/6809/MC6809/blob/master/MC6809/example6809.py>`_
 
+usage:
+
+::
+
+    ~$ python3 -m venv MC6809
+    ~$ cd MC6809
+    ~/MC6809 $ source bin/activate
+    (MC6809) ~/MC6809 $ pip3 install MC6809
+    (MC6809) ~/MC6809$ MC6809 --help
+    Usage: MC6809 [OPTIONS] COMMAND [ARGS]...
+    
+      MC6809 is a Open source (GPL v3 or later) emulator for the legendary 6809
+      CPU, used in 30 years old homecomputer Dragon 32 and Tandy TRS-80 Color
+      Computer (CoCo)...
+    
+      Created by Jens Diemer
+    
+      Homepage: https://github.com/6809/MC6809
+    
+    Options:
+      --version  Show the version and exit.
+      --help     Show this message and exit.
+    
+    Commands:
+      benchmark  Run a 6809 Emulation benchmark
+
 There is a simple benchmark. Run e.g.:
 
 ::
 
-    ~$ MC6809 benchmark --help
-    
-    # run benchmark with default settings:
-    ~$ MC6809 benchmark
-    
-    # run with own settings:
-    ~$ MC6809 benchmark --loops 10 --multiply 20
-
-(**MC6809** is the cli installed by **setup.py**)
+    (MC6809) ~/MC6809$ MC6809 benchmark --help
 
 tests
 =====
 
-We use `nose <https://pypi.python.org/pypi/nose/>`_ to run the tests, e.g.:
-
 ::
 
-    ~$ cd MC6809
-    ~/MC6809 $ python2 setup.py nosetests
-    ~/MC6809 $ python3 setup.py nosetests
+    ~$ cd MC6809-clone
+    ~/MC6809-clone $ make pytest
+    or
+    ~/MC6809-clone $ poetry run pytest
 
 profile
 =======
 
 To profile, e.g.:
-
-::
-
-    ~$ python -m cProfile -s cumulative MC6809 benchmark
+$ cd MC6809-clone
+/MC6809-clone $ make profile
+or
+/MC6809-clone $ poetry run MC6809 profile
+}}}
 
 TODO
 ====
@@ -80,7 +98,7 @@ History
 
     * skip support for Python 2
 
-    * minimal Python v
+    * minimal Python v3.6
 
 * 19.10.2015 - `v0.5.0 <https://github.com/6809/MC6809/compare/v0.4.6...v0.5.0>`_ 
 
@@ -175,4 +193,4 @@ donation
 
 ------------
 
-``Note: this file is generated from README.creole 2020-02-10 16:58:42 with "python-creole"``
+``Note: this file is generated from README.creole 2020-02-10 21:04:15 with "python-creole"``
