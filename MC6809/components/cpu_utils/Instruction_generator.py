@@ -57,12 +57,12 @@ if __doc__:
 else:
     DOC = ""  # e.g.: run with --OO
 
-INIT_CODE = '''
-"""
-    This file was generated with: "%s"
+INIT_CODE = f'''
+""\"
+    This file was generated with: "{os.path.basename(__file__)}"
     Please don't change it directly ;)
-    %s
-"""
+    {DOC}
+""\"
 
 
 from MC6809.components.cpu_utils.instruction_base import InstructionBase
@@ -74,7 +74,7 @@ class PrepagedInstructions(InstructionBase):
         self.write_byte = self.cpu.memory.write_byte
         self.write_word = self.cpu.memory.write_word
 
-''' % (os.path.basename(__file__), DOC)
+'''
 
 
 def build_func_name(addr_mode, ea, register, read, write):
@@ -146,7 +146,7 @@ def generate_code(f):
 #                if (addr_mode and  needs_ea and  register and  read_from_memory and  write_to_memory) is None:
 
     variants = list(variants)
-    variants.sort(key=lambda x: "".join("%s" % i for i in x))
+    variants.sort(key=lambda x: "".join(f"{i}" for i in x))
 
     # for no, data in enumerate(variants):
     #     print(no, data)

@@ -76,4 +76,4 @@ def run_benchmark(loops, multiply):
         f"\nTotal of {loops:d} benchmak loops run in {total_duration:.2f} sec"
         f" {locale_format_number(total_cycles)} CPU cycles."
     )
-    print("\tavg.: %s CPU cycles/sec" % locale_format_number(total_cycles / total_duration))
+    print(f"\tavg.: {locale_format_number(total_cycles / total_duration)} CPU cycles/sec")

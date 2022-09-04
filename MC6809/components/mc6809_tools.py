@@ -21,13 +21,12 @@
 """
 
 
+import _thread
 import inspect
 import queue
 import threading
 import time
 import warnings
-
-import _thread
 
 
 class CPUStatusThread(threading.Thread):
@@ -93,7 +92,7 @@ class CPUTypeAssertMixin:
         )
 
     def __set_attr_dict(self):
-        for name, obj in inspect.getmembers(self, lambda x: not(inspect.isroutine(x))):
+        for name, obj in inspect.getmembers(self, lambda x: not (inspect.isroutine(x))):
             if name.startswith("_") or name == "cfg":
                 continue
             self.__ATTR_DICT[name] = type(obj)

@@ -118,8 +118,8 @@ class BaseConfig:
 
 def test_run():
     import os
-    import sys
     import subprocess
+    import sys
     cmd_args = [sys.executable,
                 os.path.join("..", "..", "DragonPy_CLI.py"),
 
@@ -133,7 +133,7 @@ def test_run():
                 #         "--machine=Simple6809",
                 "--machine=sbc09",
                 ]
-    print("Startup CLI with: %s" % " ".join(cmd_args[1:]))
+    print(f"Startup CLI with: {' '.join(cmd_args[1:])}")
     subprocess.Popen(cmd_args, cwd=".").wait()
 
 

@@ -54,7 +54,7 @@ class MC6809Example:
         assert isinstance(mem, bytearray), "given mem is not a bytearray!"
 
         print("memory load at $%x: %s", start,
-              ", ".join("$%x" % i for i in mem)
+              ", ".join(f"${i:x}" for i in mem)
               )
         self.cpu.memory.load(start, mem)
         if end is None:

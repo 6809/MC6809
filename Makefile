@@ -28,13 +28,16 @@ install-poetry: ## install or update poetry
 install: check-poetry ## install MC6809 via poetry
 	poetry install
 
+update: check-poetry  ## update requirements
+	poetry update
+
 lint: ## Run code formatters and linter
-	poetry run flynt --fail-on-change --line_length=${MAX_LINE_LENGTH} MC6809
+	poetry run flynt --fail-on-change --line-length=${MAX_LINE_LENGTH} MC6809
 	poetry run isort --check-only --recursive MC6809
 	poetry run flake8 MC6809
 
 fix-code-style: ## Fix code formatting
-	poetry run flynt --line_length=${MAX_LINE_LENGTH} MC6809
+	poetry run flynt --line-length=${MAX_LINE_LENGTH} MC6809
 	poetry run autopep8 --ignore-local-config --max-line-length=${MAX_LINE_LENGTH} --aggressive --aggressive --in-place --recursive MC6809
 	poetry run isort --apply --recursive MC6809
 

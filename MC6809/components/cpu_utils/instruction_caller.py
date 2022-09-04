@@ -78,10 +78,11 @@ class OpCollection:
 
 
 if __name__ == "__main__":
-    from MC6809.components.cpu6809 import CPU
-    from MC6809.tests.test_base import BaseCPUTestCase
     from dragonpy.Dragon32.config import Dragon32Cfg
+
+    from MC6809.components.cpu6809 import CPU
     from MC6809.components.memory import Memory
+    from MC6809.tests.test_base import BaseCPUTestCase
 
     cmd_args = BaseCPUTestCase.UNITTEST_CFG_DICT
     cfg = Dragon32Cfg(cmd_args)
