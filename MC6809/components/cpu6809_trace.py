@@ -90,9 +90,9 @@ class InstructionTrace(PrepagedInstructions):
 
 
 def test_run():
-    import sys
     import os
     import subprocess
+    import sys
     cmd_args = [
         sys.executable,
         os.path.join("..", "DragonPy_CLI.py"),

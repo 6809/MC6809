@@ -118,8 +118,8 @@ class BaseConfig:
 
 def test_run():
     import os
-    import sys
     import subprocess
+    import sys
     cmd_args = [sys.executable,
                 os.path.join("..", "..", "DragonPy_CLI.py"),
 

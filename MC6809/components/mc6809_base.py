@@ -778,6 +778,7 @@ class CPUBase:
         self.update_NZVC_8(0, x, r)
 
     _wrong_NEG = 0
+
     @opcode(0x0, 0x60, 0x70)  # NEG (direct, indexed, extended)
     def instruction_NEG_memory(self, opcode, ea, m):
         """ Negate memory """

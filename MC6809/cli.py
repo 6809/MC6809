@@ -43,6 +43,8 @@ def cli():
 
 DEFAULT_LOOPS = 5
 DEFAULT_MULTIPLY = 15
+
+
 @cli.command(help="Run a MC6809 emulation benchmark")
 @click.option("--loops", default=DEFAULT_LOOPS,
               help=f"How many benchmark loops should be run? (default: {DEFAULT_LOOPS:d})")
