@@ -6,12 +6,12 @@ Tested with Python 3.6, 3.7, 3.8 and PyPy3
 
 [![Test](https://github.com/6809/MC6809/actions/workflows/pythonapp.yml/badge.svg?branch=main)](https://github.com/6809/MC6809/actions/workflows/pythonapp.yml)
 [![Coverage Status on codecov.io](https://codecov.io/gh/6809/MC6809/branch/main/graph/badge.svg)](https://codecov.io/gh/6809/MC6809)
-[![MC6809 @ PyPi](https://img.shields.io/pypi/v/PyInventory?label=PyInventory%20%40%20PyPi)](https://pypi.org/project/PyInventory/)
-[![Python Versions](https://img.shields.io/pypi/pyversions/PyInventory)](https://github.com/6809/MC6809/blob/main/pyproject.toml)
-[![License GPL](https://img.shields.io/pypi/l/PyInventory)](https://github.com/6809/MC6809/blob/main/LICENSE)
+[![MC6809 @ PyPi](https://img.shields.io/pypi/v/MC6809?label=MC6809%20%40%20PyPi)](https://pypi.org/project/MC6809/)
+[![Python Versions](https://img.shields.io/pypi/pyversions/MC6809)](https://github.com/6809/MC6809/blob/main/pyproject.toml)
+[![License GPL](https://img.shields.io/pypi/l/MC6809)](https://github.com/6809/MC6809/blob/main/LICENSE)
 
 
-A example usage can be find in: [MC6809/example6809.py](https://github.com/6809/MC6809/blob/master/MC6809/example6809.py)
+A example usage can be find in: [MC6809/example6809.py](https://github.com/6809/MC6809/blob/main/MC6809/example6809.py)
 
 usage:
 ```bash
@@ -79,6 +79,7 @@ unimplemented OPs:
 
 
 * [*dev*](https://github.com/6809/MC6809/compare/v0.6.0...main)
+  * Rename git `master` to `main` branch
   * Replace Creole README with markdown
 * 10.02.2020 - [v0.6.0](https://github.com/6809/MC6809/compare/v0.5.0...v0.6.0)
   * modernize project and sources
