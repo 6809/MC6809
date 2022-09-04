@@ -22,7 +22,7 @@ install-poetry: ## install or update poetry
 		poetry self update ; \
 	else \
 		echo 'Install poetry' ; \
-		curl -sSL "https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py" | python3 ; \
+		curl -sSL https://install.python-poetry.org | python3 - ; \
 	fi
 
 install: check-poetry ## install MC6809 via poetry
