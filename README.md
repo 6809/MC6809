@@ -143,13 +143,6 @@ optional arguments:
 * 10.09.2013 - Start to implement the 6809 CPU with [591d2ed](https://github.com/jedie/DragonPy/commit/591d2ed2b6f1a5f913c14e56e1e37f5870510b0d)
 * 28.08.2013 - Fork "Apple ][ Emulator" written in Python: [https://github.com/jtauber/applepy](https://github.com/jtauber/applepy) to [https://github.com/jedie/DragonPy](https://github.com/jedie/DragonPy)
 
-## Links:
-
-| Forum  | [http://forum.pylucid.org/](http://forum.pylucid.org/)                       |
-| IRC    | [#pylucid on freenode.net](http://www.pylucid.org/permalink/304/irc-channel) |
-| Jabber | pylucid@conference.jabber.org                                                |
-| PyPi   | [https://pypi.python.org/pypi/MC6809](https://pypi.python.org/pypi/MC6809)   |
-| Github | [https://github.com/6809/MC6809](https://github.com/6809/MC6809)             |
 
 ## donation
 
