@@ -1,4 +1,6 @@
-name: test
+# https://github.com/actions/setup-python
+
+name: Test
 
 on:
   schedule:
@@ -8,16 +10,23 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      PYTHONUNBUFFERED: 1
     strategy:
-      max-parallel: 4
+      fail-fast: false
       matrix:
-        python-version: [3.8, 3.7, 3.6, pypy3]
+        python-version: ["3.10", "3.9", "3.8", "pypy3"]
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: 'Set up Python ${{ matrix.python-version }}'
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v2
       with:
         python-version: '${{ matrix.python-version }}'
+
+    - uses: actions/cache@v2
+      with:
+        path: ~/.cache/
+        key: dot-cache-files
 
     - name: 'Install package'
       run: |
@@ -47,4 +56,7 @@ jobs:
         make lint
 
     - name: 'Upload coverage report'
-      run: bash <(curl -s https://codecov.io/bash)
+      uses: codecov/codecov-action@v2
+      with:
+        fail_ci_if_error: false
+        verbose: true
