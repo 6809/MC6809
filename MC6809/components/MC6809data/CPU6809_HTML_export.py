@@ -145,7 +145,7 @@ th, td {padding:5px;}
         htmlfile.write("\t<tr>\n")
         for cell in row:
             if cell.rowspan is not None:
-                htmlfile.write("\t\t%s\n" % cell.html())
+                htmlfile.write(f"\t\t{cell.html()}\n")
         htmlfile.write("\t</tr>\n")
     htmlfile.write("</table>")
     htmlfile.write(

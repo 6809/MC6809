@@ -55,7 +55,7 @@ class InstructionTrace(PrepagedInstructions):
         ob_bytes = op_code_data["bytes"]
 
         op_bytes = "".join(
-            "%02x" % value
+            f"{value:02x}"
             for __, value in self.cpu.memory.iter_bytes(op_address, op_address + ob_bytes)
         )
 
@@ -107,7 +107,7 @@ def test_run():
         #        "--max_ops", "1",
         "--trace",
     ]
-    print("Startup CLI with: %s" % " ".join(cmd_args[1:]))
+    print(f"Startup CLI with: {' '.join(cmd_args[1:])}")
     subprocess.Popen(cmd_args, cwd="..").wait()
 
 
