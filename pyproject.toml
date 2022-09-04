@@ -33,23 +33,97 @@ readme="README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.8,<4.0"
-click = "*"
 
 [tool.poetry.dev-dependencies]
 #DragonPyEmulator = "*"  # run DragonPy tests, to. e.g. with BASIC Interpreter
+dev_shell = "*"  # https://github.com/jedie/dev-shell
+cmd2_ext_test = "*"
 poetry_publish = "*"
 tox = "*"
 pytest = "*"
 pytest-cov = "*"
+pytest-darker = "*"  # https://github.com/akaihola/pytest-darker
 isort = "*"
 flake8 = "*"
 flynt = "*"
-autopep8 = "*"
 
 [tool.poetry.scripts]
-publish = "MC6809.publish:publish"
-MC6809 = "MC6809.cli:cli"
+devshell = 'MC6809.dev_shell:devshell_cmdloop'
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+
+[tool.darker]
+src = ['.']
+revision = "origin/main..."
+line_length = 120
+verbose = true
+skip_string_normalization = true
+diff = false
+check = false
+stdout = false
+isort = true
+lint = [
+    "flake8",
+]
+log_level = "INFO"
+
+
+[tool.isort]
+# https://pycqa.github.io/isort/docs/configuration/config_files/#pyprojecttoml-preferred-format
+atomic=true
+profile='black'
+line_length=120
+skip_glob=[".*", "*/htmlcov/*",]
+known_first_party=["MC6809"]
+lines_after_imports=2
+
+
+[tool.coverage.run]
+omit = [".*"]
+
+
+[tool.pytest.ini_options]
+# https://docs.pytest.org/en/latest/customize.html#pyproject-toml
+minversion = "6.0"
+norecursedirs = ".* __pycache__ coverage* dist htmlcov"
+# sometimes helpfull "addopts" arguments:
+#    -vv
+#    --verbose
+#    --capture=no
+#    --trace-config
+#    --full-trace
+#    -p no:warnings
+addopts = """
+    --cov=.
+    --cov-report term-missing
+    --cov-report html
+    --cov-report xml
+    --no-cov-on-fail
+    --showlocals
+    --darker
+    --doctest-modules
+    --failed-first
+    --last-failed-no-failures all
+    --new-first
+"""
+# TODO: --mypy
+
+
+[tool.tox]
+# https://tox.readthedocs.io/en/latest/example/basic.html#pyproject-toml-tox-legacy-ini
+legacy_tox_ini = """
+[tox]
+isolated_build = True
+envlist = py310,py39,py38
+skip_missing_interpreters = True
+
+[testenv]
+passenv = *
+whitelist_externals = python
+commands =
+    python --version
+    python devshell.py pytest
+"""

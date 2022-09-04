@@ -6,18 +6,28 @@ on:
   schedule:
     - cron: '0 8 * * *'
   push:
+    branches:
+      - main
+  pull_request:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    name: 'Python ${{ matrix.python-version }} on ${{ matrix.os }}'
+    runs-on: ${{ matrix.os }}
     env:
       PYTHONUNBUFFERED: 1
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu-latest, macOS-latest, windows-latest]
         python-version: ["3.10", "3.9", "3.8", "pypy3"]
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: 'fetch main'
+      run: |
+        git fetch origin main
     - name: 'Set up Python ${{ matrix.python-version }}'
       uses: actions/setup-python@v2
       with:
@@ -28,32 +38,21 @@ jobs:
         path: ~/.cache/
         key: dot-cache-files
 
-    - name: 'Install package'
+    - name: 'pip cache information'
       run: |
-        make install-poetry
-        source $HOME/.poetry/env
-        make install
+        pip3 cache info
+
+    - name: 'Bootstrap'
+      run: |
+        python3 devshell.py quit
 
     - name: 'List installed packages'
       run: |
-        source $HOME/.poetry/env
-        poetry run pip freeze
-
-    - name: 'List all tox test environments'
-      run: |
-        source $HOME/.poetry/env
-        make tox-listenvs
+        python3 devshell.py list_venv_packages
 
     - name: 'Run tests with Python v${{ matrix.python-version }}'
       run: |
-        source $HOME/.poetry/env
-        make pytest
-
-    - name: 'Run linters'
-      if: matrix.python-version == '3.8'
-      run: |
-        source $HOME/.poetry/env
-        make lint
+        python3 devshell.py pytest -vv
 
     - name: 'Upload coverage report'
       uses: codecov/codecov-action@v2

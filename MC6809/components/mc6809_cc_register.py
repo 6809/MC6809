@@ -77,8 +77,9 @@ class CPUConditionCodeRegisterMixin:
             self.E << 7
 
     def set_cc(self, status):
-        self.E, self.F, self.H, self.I, self.N, self.Z, self.V, self.C = \
-            [0 if status & x == 0 else 1 for x in (128, 64, 32, 16, 8, 4, 2, 1)]
+        self.E, self.F, self.H, self.I, self.N, self.Z, self.V, self.C = (
+            0 if status & x == 0 else 1 for x in (128, 64, 32, 16, 8, 4, 2, 1)
+        )
 
     def get_cc_info(self):
         """

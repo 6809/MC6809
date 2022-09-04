@@ -2,76 +2,100 @@
 
 MC6809 is a Open source (GPL v3 or later) emulator for the legendary **6809** CPU, used old homecomputer [Dragon 32/64](https://en.wikipedia.org/wiki/Dragon_32/64) and [Tandy TRS-80 Color Computer (CoCo)](https://en.wikipedia.org/wiki/TRS-80_Color_Computer) built in the 1980s...
 
-Tested with Python 3.6, 3.7, 3.8 and PyPy3
+Tested with Python 3.8, 3.9, 3.10 and PyPy3
 
 [![Test](https://github.com/6809/MC6809/actions/workflows/pythonapp.yml/badge.svg?branch=main)](https://github.com/6809/MC6809/actions/workflows/pythonapp.yml)
 [![Coverage Status on codecov.io](https://codecov.io/gh/6809/MC6809/branch/main/graph/badge.svg)](https://codecov.io/gh/6809/MC6809)
-[![MC6809 @ PyPi](https://img.shields.io/pypi/v/PyInventory?label=PyInventory%20%40%20PyPi)](https://pypi.org/project/PyInventory/)
-[![Python Versions](https://img.shields.io/pypi/pyversions/PyInventory)](https://github.com/6809/MC6809/blob/main/pyproject.toml)
-[![License GPL](https://img.shields.io/pypi/l/PyInventory)](https://github.com/6809/MC6809/blob/main/LICENSE)
+[![MC6809 @ PyPi](https://img.shields.io/pypi/v/MC6809?label=MC6809%20%40%20PyPi)](https://pypi.org/project/MC6809/)
+[![Python Versions](https://img.shields.io/pypi/pyversions/MC6809)](https://github.com/6809/MC6809/blob/main/pyproject.toml)
+[![License GPL](https://img.shields.io/pypi/l/MC6809)](https://github.com/6809/MC6809/blob/main/LICENSE)
 
 
-A example usage can be find in: [MC6809/example6809.py](https://github.com/6809/MC6809/blob/master/MC6809/example6809.py)
+A example usage can be find in: [MC6809/example6809.py](https://github.com/6809/MC6809/blob/main/MC6809/example6809.py)
 
-usage:
+Getting started:
 ```bash
-~$ python3 -m venv MC6809
+~$ git clone https://github.com/6809/MC6809.git
 ~$ cd MC6809
-~/MC6809 $ source bin/activate
-(MC6809) ~/MC6809 $ pip3 install MC6809
-(MC6809) ~/MC6809$ MC6809 --help
-Usage: MC6809 [OPTIONS] COMMAND [ARGS]...
+~/MC6809 $ ./devshell.py
 
-  MC6809 is a Open source (GPL v3 or later) emulator for the legendary 6809
-  CPU, used in 30 years old homecomputer Dragon 32 and Tandy TRS-80 Color
-  Computer (CoCo)...
++ /home/jens/repos/MC6809/.venv/bin/python /home/jens/repos/MC6809/.venv/bin/devshell
 
-  Created by Jens Diemer
+Developer shell - MC6809 - v0.6.0
 
-  Homepage: https://github.com/6809/MC6809
 
-Options:
-  --version  Show the version and exit.
-  --help     Show this message and exit.
+Documented commands (use 'help -v' for verbose/'help <topic>' for details):
 
-Commands:
-  benchmark  Run a 6809 Emulation benchmark
+dev-shell commands
+==================
+fix_code_style      poetry   pytest     tox
+list_venv_packages  publish  pyupgrade  update
+
+MC6809 commands
+===============
+benchmark  profile
+
+Uncategorized
+=============
+alias  help  history  macro  quit  set  shortcuts
+
+
+(MC6809) benchmark
 ```
 
+You can use the devshell as a CLI, too, e.g.:
 There is a simple benchmark. Run e.g.:
 ```bash
-(MC6809) ~/MC6809$ MC6809 benchmark --help
+~/MC6809$ ./devshell.py benchmark --help
+
++ /home/jens/repos/MC6809/.venv/bin/python /home/jens/repos/MC6809/.venv/bin/devshell benchmark --help
+
+Usage: profile [-h] [--loops LOOPS] [--multiply MULTIPLY]
+
+Run a MC6809 emulation benchmark
+
+optional arguments:
+  -h, --help           show this help message and exit
+  --loops LOOPS        How many benchmark loops should be run? (default: 6)
+  --multiply MULTIPLY  Test data multiplier (default: 15)
 ```
 
 ### tests
+
 ```bash
-~$ cd MC6809-clone
-~/MC6809-clone $ make pytest
-or
-~/MC6809-clone $ poetry run pytest
+~/MC6809$ ./devshell.py pytest
 ```
 
 ### profile
 
-To profile, e.g.:
-$ cd MC6809-clone
-/MC6809-clone $ make profile
-or
-/MC6809-clone $ poetry run MC6809 profile
-}}}
+You can run the Python profiler against the benchmark, e.g.:
+
+```bash
+~/MC6809$ ./devshell.py profile --help
+
++ /home/jens/repos/MC6809/.venv/bin/python /home/jens/repos/MC6809/.venv/bin/devshell profile --help
+
+Usage: profile [-h] [--loops LOOPS] [--multiply MULTIPLY]
+
+Run a MC6809 emulation benchmark
+
+optional arguments:
+  -h, --help           show this help message and exit
+  --loops LOOPS        How many benchmark loops should be run? (default: 6)
+  --multiply MULTIPLY  Test data multiplier (default: 15)
+
+```
 
 ### TODO
 
 
-1. Update 'cpu6809_html_debug.py'
-1. Use bottle for http control server part
+* Update 'cpu6809_html_debug.py'
+* Use bottle for http control server part
+* unimplemented OPs:
+  * RESET
+  * SWI / SWI2 / SWI3
+  * SYNC
 
-unimplemented OPs:
-
-
-* RESET
-* SWI / SWI2 / SWI3
-* SYNC
 
 ## History
 
@@ -79,6 +103,9 @@ unimplemented OPs:
 
 
 * [*dev*](https://github.com/6809/MC6809/compare/v0.6.0...main)
+  * Replace the `Makefile` with a [dev-shell](https://github.com/jedie/dev-shell)
+  * Rename git `master` to `main` branch
+  * Run CI tests against Python 3.8, 3.9 and 3.10
   * Replace Creole README with markdown
 * 10.02.2020 - [v0.6.0](https://github.com/6809/MC6809/compare/v0.5.0...v0.6.0)
   * modernize project and sources
