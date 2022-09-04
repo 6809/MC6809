@@ -155,7 +155,7 @@ def generate_code(f):
     for line in INIT_CODE.splitlines():
         f.write(f"{line}\n")
 
-    for register in sorted([REGISTER_DICT[register] for register in registers]):
+    for register in sorted(REGISTER_DICT[register] for register in registers):
         f.write(
             "        self.{r}=self.cpu.{r}\n".format(
                 r=register,
