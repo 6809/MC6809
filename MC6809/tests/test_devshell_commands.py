@@ -66,5 +66,5 @@ class DragonPyDevShellTestCase(DevShellAppBaseTestCase):
         assert 'Start 1 CRC32 loops' in stdout
 
         assert 'function calls' in stdout
-        assert 'MC6809/components/mc6809_base.py' in stdout
-        assert 'MC6809/components/memory.py' in stdout
+        assert 'mc6809_base.py' in stdout
+        assert 'memory.py' in stdout
