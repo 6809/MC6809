@@ -4,11 +4,11 @@ MC6809 is a Open source (GPL v3 or later) emulator for the legendary **6809** CP
 
 Tested with Python 3.8, 3.9, 3.10 and PyPy3
 
-[![Test](https://github.com/6809/MC6809/actions/workflows/pythonapp.yml/badge.svg?branch=main)](https://github.com/6809/MC6809/actions/workflows/pythonapp.yml)
-[![Coverage Status on codecov.io](https://codecov.io/gh/6809/MC6809/branch/main/graph/badge.svg)](https://codecov.io/gh/6809/MC6809)
+[![tests](https://github.com/6809/MC6809/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/6809/MC6809/actions/workflows/tests.yml)
+[![codecov](https://codecov.io/github/jedie/MC6809/branch/main/graph/badge.svg)](https://app.codecov.io/github/jedie/MC6809)
 [![MC6809 @ PyPi](https://img.shields.io/pypi/v/MC6809?label=MC6809%20%40%20PyPi)](https://pypi.org/project/MC6809/)
 [![Python Versions](https://img.shields.io/pypi/pyversions/MC6809)](https://github.com/6809/MC6809/blob/main/pyproject.toml)
-[![License GPL](https://img.shields.io/pypi/l/MC6809)](https://github.com/6809/MC6809/blob/main/LICENSE)
+[![License GPL-3.0-or-later](https://img.shields.io/pypi/l/MC6809)](https://github.com/6809/MC6809/blob/main/LICENSE)
 
 
 A example usage can be find in: [MC6809/example6809.py](https://github.com/6809/MC6809/blob/main/MC6809/example6809.py)
@@ -17,30 +17,7 @@ Getting started:
 ```bash
 ~$ git clone https://github.com/6809/MC6809.git
 ~$ cd MC6809
-~/MC6809 $ ./devshell.py
-
-+ /home/jens/repos/MC6809/.venv/bin/python /home/jens/repos/MC6809/.venv/bin/devshell
-
-Developer shell - MC6809 - v0.6.0
-
-
-Documented commands (use 'help -v' for verbose/'help <topic>' for details):
-
-dev-shell commands
-==================
-fix_code_style      poetry   pytest     tox
-list_venv_packages  publish  pyupgrade  update
-
-MC6809 commands
-===============
-benchmark  profile
-
-Uncategorized
-=============
-alias  help  history  macro  quit  set  shortcuts
-
-
-(MC6809) benchmark
+~/MC6809 $ ./cli.py --help
 ```
 
 You can use the devshell as a CLI, too, e.g.:

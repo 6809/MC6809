@@ -1,16 +1,14 @@
-[tool.poetry]
+[project]
 name = "MC6809"
-version = "0.6.0"
+version = "0.7.0rc0"
 description = "MC6809 CPU emulator written in Python"
-authors = ["JensDiemer <git@jensdiemer.de>"]
-packages = [
-    { include = "MC6809" },
+readme = "README.md"
+authors = [
+    {name = 'Jens Diemer', email = 'git@jensdiemer.de'}
 ]
-keywords=["MC6809", "CPU", "Emulator"]
 classifiers = [
     # http://pypi.python.org/pypi?%3Aaction=list_classifiers
-    "Development Status :: 4 - Beta",
-#    "Development Status :: 5 - Production/Stable",
+    "Development Status :: 5 - Production/Stable",
     "Environment :: Console",
     "Environment :: MacOS X",
     "Environment :: Win32 (MS Windows)",
@@ -29,42 +27,70 @@ classifiers = [
     "Topic :: Software Development :: Assemblers",
     "Topic :: Software Development :: Testing",
 ]
-readme="README.md"
+requires-python = ">=3.9,<4"
+dependencies = [
+    "bx_py_utils",  # https://github.com/boxine/bx_py_utils
+    "click",  # https://github.com/pallets/click/
+    "rich-click",  # https://github.com/ewels/rich-click
+    "rich",  # https://github.com/Textualize/rich
+]
+[project.optional-dependencies]
+dev = [
+    "manageprojects",  # https://github.com/jedie/manageprojects
+    "pip-tools",  # https://github.com/jazzband/pip-tools/
+    "tox",  # https://github.com/tox-dev/tox
+    "coverage",  # https://github.com/nedbat/coveragepy
+    "darker>=1.7",  # https://github.com/akaihola/darker
+    "autopep8",  # https://github.com/hhatto/autopep8
+    "pyupgrade",  # https://github.com/asottile/pyupgrade
+    "isort",  # https://github.com/pycqa/isort
+    "flynt",  # https://github.com/ikamensh/flynt
+    "flake8",  # https://github.com/pycqa/flake8
+    "pyflakes",  # https://github.com/PyCQA/pyflakes
+    "codespell",  # https://github.com/codespell-project/codespell
+    "EditorConfig",  # https://github.com/editorconfig/editorconfig-core-py
+    "safety",  # https://github.com/pyupio/safety
+    "mypy",  # https://github.com/python/mypy
+    "twine",  # https://github.com/pypa/twine
 
-[tool.poetry.dependencies]
-python = ">=3.8,<4.0"
+    "tomli",  # https://github.com/hukkin/tomli
+    # tomli only needed for Python <3.11, but see bug:
+    # https://github.com/pypa/pip/issues/9644#issuecomment-1456583402
+    #"tomli;python_version<\"3.11\"",  # https://github.com/hukkin/tomli
 
-[tool.poetry.dev-dependencies]
-#DragonPyEmulator = "*"  # run DragonPy tests, to. e.g. with BASIC Interpreter
-dev_shell = "*"  # https://github.com/jedie/dev-shell
-cmd2_ext_test = "*"
-poetry_publish = "*"
-tox = "*"
-pytest = "*"
-pytest-cov = "*"
-pytest-darker = "*"  # https://github.com/akaihola/pytest-darker
-isort = "*"
-flake8 = "*"
-flynt = "*"
+    # Work-a-round for:
+    # https://github.com/jazzband/pip-tools/issues/994#issuecomment-1321226661
+    "typing-extensions>=3.10;python_version<\"3.10\"",
+]
 
-[tool.poetry.scripts]
-devshell = 'MC6809.dev_shell:devshell_cmdloop'
+[project.urls]
+Documentation = "https://github.com/6809/MC6809"
+Source = "https://github.com/6809/MC6809"
+
+[project.scripts]
+MC6809 = "MC6809.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["MC6809*"]
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
 
 
 [tool.darker]
 src = ['.']
 revision = "origin/main..."
-line_length = 120
+line_length = 119
 verbose = true
+color = true
 skip_string_normalization = true
 diff = false
 check = false
 stdout = false
 isort = true
+flynt = true
 lint = [
     "flake8",
 ]
@@ -75,55 +101,75 @@ log_level = "INFO"
 # https://pycqa.github.io/isort/docs/configuration/config_files/#pyprojecttoml-preferred-format
 atomic=true
 profile='black'
-line_length=120
-skip_glob=[".*", "*/htmlcov/*",]
-known_first_party=["MC6809"]
+skip_glob=['.*', '*/htmlcov/*']
+known_first_party=['MC6809']
+line_length=119
 lines_after_imports=2
 
 
 [tool.coverage.run]
-omit = [".*"]
+branch = true
+parallel = true
+source = ['.']
+command_line = '-m unittest --verbose --locals --buffer'
+
+[tool.coverage.report]
+omit = ['.*', '*/tests/*']
+skip_empty = true
+fail_under = 30
+show_missing = true
+exclude_lines = [
+    'if self.debug:',
+    'pragma: no cover',
+    'raise NotImplementedError',
+    'if __name__ == .__main__.:',
+]
 
 
-[tool.pytest.ini_options]
-# https://docs.pytest.org/en/latest/customize.html#pyproject-toml
-minversion = "6.0"
-norecursedirs = ".* __pycache__ coverage* dist htmlcov"
-# sometimes helpfull "addopts" arguments:
-#    -vv
-#    --verbose
-#    --capture=no
-#    --trace-config
-#    --full-trace
-#    -p no:warnings
-addopts = """
-    --cov=.
-    --cov-report term-missing
-    --cov-report html
-    --cov-report xml
-    --no-cov-on-fail
-    --showlocals
-    --darker
-    --doctest-modules
-    --failed-first
-    --last-failed-no-failures all
-    --new-first
-"""
-# TODO: --mypy
-
-
-[tool.tox]
-# https://tox.readthedocs.io/en/latest/example/basic.html#pyproject-toml-tox-legacy-ini
+[tool.tox]  # https://tox.wiki/en/latest/config.html#pyproject-toml
 legacy_tox_ini = """
 [tox]
 isolated_build = True
-envlist = py310,py39,py38
+envlist = py{311,310,39}
 skip_missing_interpreters = True
 
 [testenv]
 passenv = *
-whitelist_externals = python
+skip_install = true
+commands_pre =
+    pip install -U pip-tools
+    pip-sync requirements.dev.txt
 commands =
-    python --version
-    python devshell.py pytest
+    {envpython} -m coverage run --context='{envname}'
+    {envpython} -m coverage combine --append
+    {envpython} -m coverage xml
+    {envpython} -m coverage report
 """
+
+
+[tool.mypy]
+warn_unused_configs = true
+ignore_missing_imports = true
+allow_redefinition = true  # https://github.com/python/mypy/issues/7165
+show_error_codes = true
+plugins = []
+exclude = ['.venv', 'tests']
+
+
+[manageprojects] # https://github.com/jedie/manageprojects
+initial_revision = "47cac0a"
+initial_date = 2023-03-06T19:46:41+01:00
+cookiecutter_template = "https://github.com/jedie/cookiecutter_templates/"
+cookiecutter_directory = "piptools-python"
+
+[manageprojects.cookiecutter_context.cookiecutter]
+full_name = "Jens Diemer"
+github_username = "jedie"
+author_email = "git@jensdiemer.de"
+package_name = "MC6809"
+package_version = "0.7.0"
+package_description = "MC6809 CPU emulator written in Python"
+package_url = "https://github.com/6809/MC6809"
+issues_url = "https://github.com/6809/MC6809/issues"
+license = "GPL-3.0-or-later"
+_template = "https://github.com/jedie/cookiecutter_templates/"
