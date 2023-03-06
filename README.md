@@ -5,7 +5,7 @@ MC6809 is a Open source (GPL v3 or later) emulator for the legendary **6809** CP
 Tested with Python 3.8, 3.9, 3.10 and PyPy3
 
 [![tests](https://github.com/6809/MC6809/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/6809/MC6809/actions/workflows/tests.yml)
-[![codecov](https://codecov.io/github/jedie/MC6809/branch/main/graph/badge.svg)](https://app.codecov.io/github/jedie/MC6809)
+[![codecov](https://codecov.io/github/6809/MC6809/branch/main/graph/badge.svg)](https://app.codecov.io/github/6809/MC6809)
 [![MC6809 @ PyPi](https://img.shields.io/pypi/v/MC6809?label=MC6809%20%40%20PyPi)](https://pypi.org/project/MC6809/)
 [![Python Versions](https://img.shields.io/pypi/pyversions/MC6809)](https://github.com/6809/MC6809/blob/main/pyproject.toml)
 [![License GPL-3.0-or-later](https://img.shields.io/pypi/l/MC6809)](https://github.com/6809/MC6809/blob/main/LICENSE)
