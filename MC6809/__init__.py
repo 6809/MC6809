@@ -1,6 +1,7 @@
-__version__ = "0.6.0"
+"""MC6809 - MC6809 CPU emulator written in Python"""
 
-# used in own setup.py and in DragonPy "starter GUI":
-DISTRIBUTION_NAME = "MC6809"
-DIST_GROUP = "console_scripts"
-ENTRY_POINT = "MC6809"
+from importlib.metadata import version
+
+
+__version__ = version('MC6809')
+__author__ = 'Jens Diemer <git@jensdiemer.de>'
