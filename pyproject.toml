@@ -1,6 +1,6 @@
 [project]
 name = "MC6809"
-version = "0.7.0rc0"
+version = "0.7.0rc1"
 description = "MC6809 CPU emulator written in Python"
 readme = "README.md"
 authors = [
@@ -173,3 +173,6 @@ package_url = "https://github.com/6809/MC6809"
 issues_url = "https://github.com/6809/MC6809/issues"
 license = "GPL-3.0-or-later"
 _template = "https://github.com/jedie/cookiecutter_templates/"
+applied_migrations = [
+    "04d5a25", # 2023-03-07T16:25:36+01:00
+]
