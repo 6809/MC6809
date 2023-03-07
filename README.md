@@ -20,27 +20,76 @@ Getting started:
 ~/MC6809 $ ./cli.py --help
 ```
 
+```bash
+~$ git clone https://github.com/jedie/DragonPy.git
+~$ cd DragonPy/
+~/DragonPy$ ./cli.py --help
+```
+
+The output of `./cli.py --help` looks like:
+
+[comment]: <> (✂✂✂ auto generated main help start ✂✂✂)
+```
+Usage: ./cli.py [OPTIONS] COMMAND [ARGS]...
+
+╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
+│ --help      Show this message and exit.                                                          │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
+│ benchmark                   Run a MC6809 emulation benchmark                                     │
+│ check-code-style            Check code style by calling darker + flake8                          │
+│ coverage                    Run and show coverage.                                               │
+│ fix-code-style              Fix code style of all MC6809 source code files via darker            │
+│ install                     Run pip-sync and install 'MC6809' via pip as editable.               │
+│ mypy                        Run Mypy (configured in pyproject.toml)                              │
+│ profile                     Profile the MC6809 emulation benchmark                               │
+│ publish                     Build and upload this project to PyPi                                │
+│ safety                      Run safety check against current requirements files                  │
+│ test                        Run unittests                                                        │
+│ tox                         Run tox                                                              │
+│ update                      Update "requirements*.txt" dependencies files                        │
+│ update-test-snapshot-files  Update all test snapshot files (by remove and recreate all snapshot  │
+│                             files)                                                               │
+│ version                     Print version and exit                                               │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+```
+[comment]: <> (✂✂✂ auto generated main help end ✂✂✂)
+
+
+
+
 You can use the devshell as a CLI, too, e.g.:
 There is a simple benchmark. Run e.g.:
 ```bash
-~/MC6809$ ./devshell.py benchmark --help
-
-+ /home/jens/repos/MC6809/.venv/bin/python /home/jens/repos/MC6809/.venv/bin/devshell benchmark --help
-
-Usage: profile [-h] [--loops LOOPS] [--multiply MULTIPLY]
-
-Run a MC6809 emulation benchmark
-
-optional arguments:
-  -h, --help           show this help message and exit
-  --loops LOOPS        How many benchmark loops should be run? (default: 6)
-  --multiply MULTIPLY  Test data multiplier (default: 15)
+~/MC6809$ ./cli.py benchmark --help
 ```
+
+The output of `./cli.py benchmark --help` looks like:
+
+[comment]: <> (✂✂✂ auto generated benchmark help start ✂✂✂)
+```
+Usage: ./cli.py benchmark [OPTIONS]
+
+ Run a MC6809 emulation benchmark
+
+╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
+│ --loops       INTEGER  How many benchmark loops should be run? [default: 6]                      │
+│ --multiply    INTEGER  est data multiplier [default: 15]                                         │
+│ --help                 Show this message and exit.                                               │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+```
+[comment]: <> (✂✂✂ auto generated benchmark help end ✂✂✂)
+
+
 
 ### tests
 
 ```bash
-~/MC6809$ ./devshell.py pytest
+~/DragonPy$ ./cli.py coverage
+# or just:
+~/DragonPy$ ./cli.py test
+# or with different Python versions:
+~/DragonPy$ ./cli.py tox
 ```
 
 ### profile
@@ -48,20 +97,25 @@ optional arguments:
 You can run the Python profiler against the benchmark, e.g.:
 
 ```bash
-~/MC6809$ ./devshell.py profile --help
-
-+ /home/jens/repos/MC6809/.venv/bin/python /home/jens/repos/MC6809/.venv/bin/devshell profile --help
-
-Usage: profile [-h] [--loops LOOPS] [--multiply MULTIPLY]
-
-Run a MC6809 emulation benchmark
-
-optional arguments:
-  -h, --help           show this help message and exit
-  --loops LOOPS        How many benchmark loops should be run? (default: 6)
-  --multiply MULTIPLY  Test data multiplier (default: 15)
-
+~/MC6809$ ./cli.py profile --help
 ```
+
+The output of `./cli.py profile --help` looks like:
+
+[comment]: <> (✂✂✂ auto generated profile help start ✂✂✂)
+```
+Usage: ./cli.py profile [OPTIONS]
+
+ Profile the MC6809 emulation benchmark
+
+╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
+│ --loops       INTEGER  How many benchmark loops should be run? [default: 6]                      │
+│ --multiply    INTEGER  est data multiplier [default: 15]                                         │
+│ --help                 Show this message and exit.                                               │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+```
+[comment]: <> (✂✂✂ auto generated profile help end ✂✂✂)
+
 
 ### TODO
 
@@ -79,10 +133,13 @@ optional arguments:
 (Some of the points are related to [DragonPy Emulator](https://github.com/jedie/DragonPy))
 
 
-* [*dev*](https://github.com/6809/MC6809/compare/v0.6.0...main)
-  * Replace the `Makefile` with a [dev-shell](https://github.com/jedie/dev-shell)
+* [*dev*](https://github.com/6809/MC6809/compare/v0.7.0...main)
+  * TBC
+* 07.03.2023 - [v0.7.0](https://github.com/6809/MC6809/compare/v0.6.0...v0.7.0)
+  * Replace the `Makefile` with a click CLI
+  * Use pip-tools and https://github.com/jedie/manageprojects
   * Rename git `master` to `main` branch
-  * Run CI tests against Python 3.8, 3.9 and 3.10
+  * Run CI tests against Python 3.9, 3.10 and 3.11
   * Replace Creole README with markdown
 * 10.02.2020 - [v0.6.0](https://github.com/6809/MC6809/compare/v0.5.0...v0.6.0)
   * modernize project and sources

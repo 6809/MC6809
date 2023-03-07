@@ -1,6 +1,6 @@
 [project]
 name = "MC6809"
-version = "0.7.0rc0"
+version = "0.7.0rc1"
 description = "MC6809 CPU emulator written in Python"
 readme = "README.md"
 authors = [
