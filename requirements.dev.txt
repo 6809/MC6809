@@ -325,7 +325,7 @@ cryptography==41.0.3 \
     --hash=sha256:ce785cf81a7bdade534297ef9e490ddff800d956625020ab2ec2780a556c313e \
     --hash=sha256:d0d651aa754ef58d75cec6edfbd21259d93810b73f6ec246436a21b7841908de
     # via secretstorage
-darker==1.7.2 \
+darker[color,flynt,isort]==1.7.2 \
     --hash=sha256:ec5b7c382d9537611c164f3ecca2e1b8a7923bc5a02bf22f6e7f6c8bcbdf593a \
     --hash=sha256:ec9d130ab2a0f7fa49ab68a08fd231a5bec66147ecbbf94c92a1f33d97b5ef6f
     # via MC6809 (pyproject.toml)
@@ -355,10 +355,10 @@ flake8==6.1.0 \
     --hash=sha256:d5b3857f07c030bdb5bf41c7f53799571d75c4491748a3adcd47de929e34cd23 \
     --hash=sha256:ffdfce58ea94c6580c77888a86506937f9a1a227dfcd15f245d694ae20a6b6e5
     # via MC6809 (pyproject.toml)
-flynt==1.0.1 \
-    --hash=sha256:65d1c546434827275123222a98408e9561bcd67db832dd58f530ff17b8329ec1 \
-    --hash=sha256:988aac00672a5469726cc0a17cef7d1178c284a9fe8563458db2475d0aaed965
-    # via MC6809 (pyproject.toml)
+flynt==0.77 \
+    --hash=sha256:2863ac8ec19d6ec8d29e760546e6ced644baf6dff3c7cdc77e03abbd29b80f14 \
+    --hash=sha256:2bd1b37043ad88a3f3c3c34a76fc0b64d24e5f03d36ea6b48cb69cc642bff17e
+    # via darker
 idna==3.4 \
     --hash=sha256:814f528e8dead7d329833b91c5faa87d60bf71824cd12a7530b5526063d02cb4 \
     --hash=sha256:90b77e79eaa3eba6de819a0c442c0b4ceefc341a7a2ab77d7562bf49f425c5c2
@@ -372,7 +372,7 @@ importlib-metadata==6.8.0 \
 isort==5.12.0 \
     --hash=sha256:8bef7dde241278824a6d83f44a544709b065191b95b6e50894bdc722fcba0504 \
     --hash=sha256:f84c2818376e66cf843d497486ea8fed8700b340f308f076c6fb1229dff318b6
-    # via MC6809 (pyproject.toml)
+    # via darker
 jaraco-classes==3.3.0 \
     --hash=sha256:10afa92b6743f25c0cf5f37c6bb6e18e2c5bb84a16527ccfc0040ea377e7aaeb \
     --hash=sha256:c063dd08e89217cee02c8d5e5ec560f2c8ce6cdc2fcdc2e68f7b2e5547ed3621
@@ -550,6 +550,7 @@ pygments==2.15.1 \
     --hash=sha256:8ace4d3c1dd481894b2005f560ead0f9f19ee64fe983366be1a21e171d12775c \
     --hash=sha256:db2db3deb4b4179f399a09054b023b6a586b76499d36965813c71aa8ed7b5fd1
     # via
+    #   darker
     #   readme-renderer
     #   rich
 pyproject-api==1.5.3 \
