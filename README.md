@@ -149,9 +149,11 @@ Run tests, e.g.:
 (Some of the points are related to [DragonPy Emulator](https://github.com/jedie/DragonPy))
 
 
-* [*dev*](https://github.com/6809/MC6809/compare/v0.7.0...main)
-  * Split CLI in a app and dev version with different venvs.
+* [*dev*](https://github.com/6809/MC6809/compare/v0.7.1...main)
   * TBC
+* 05.08.2023 - [v0.7.1](https://github.com/6809/MC6809/compare/v0.7.0...v0.7.1)
+  * Split CLI in a app and dev version with different venvs.
+  * Update requirements
 * 07.03.2023 - [v0.7.0](https://github.com/6809/MC6809/compare/v0.6.0...v0.7.0)
   * Replace the `Makefile` with a click CLI
   * Use pip-tools and https://github.com/jedie/manageprojects
