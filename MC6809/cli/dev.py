@@ -168,7 +168,7 @@ def publish():
     publish_package(
         module=MC6809,
         package_path=PACKAGE_ROOT,
-        distribution_name='MC6809-connect',
+        distribution_name='MC6809',
     )
 
 
