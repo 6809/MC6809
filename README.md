@@ -20,12 +20,6 @@ Getting started:
 ~/MC6809 $ ./cli.py --help
 ```
 
-```bash
-~$ git clone https://github.com/jedie/DragonPy.git
-~$ cd DragonPy/
-~/DragonPy$ ./cli.py --help
-```
-
 The output of `./cli.py --help` looks like:
 
 [comment]: <> (✂✂✂ auto generated main help start ✂✂✂)
@@ -36,29 +30,14 @@ Usage: ./cli.py [OPTIONS] COMMAND [ARGS]...
 │ --help      Show this message and exit.                                                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
-│ benchmark                   Run a MC6809 emulation benchmark                                     │
-│ check-code-style            Check code style by calling darker + flake8                          │
-│ coverage                    Run and show coverage.                                               │
-│ fix-code-style              Fix code style of all MC6809 source code files via darker            │
-│ install                     Run pip-sync and install 'MC6809' via pip as editable.               │
-│ mypy                        Run Mypy (configured in pyproject.toml)                              │
-│ profile                     Profile the MC6809 emulation benchmark                               │
-│ publish                     Build and upload this project to PyPi                                │
-│ safety                      Run safety check against current requirements files                  │
-│ test                        Run unittests                                                        │
-│ tox                         Run tox                                                              │
-│ update                      Update "requirements*.txt" dependencies files                        │
-│ update-test-snapshot-files  Update all test snapshot files (by remove and recreate all snapshot  │
-│                             files)                                                               │
-│ version                     Print version and exit                                               │
+│ benchmark            Run a MC6809 emulation benchmark                                            │
+│ profile              Profile the MC6809 emulation benchmark                                      │
+│ version              Print version and exit                                                      │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ```
 [comment]: <> (✂✂✂ auto generated main help end ✂✂✂)
 
 
-
-
-You can use the devshell as a CLI, too, e.g.:
 There is a simple benchmark. Run e.g.:
 ```bash
 ~/MC6809$ ./cli.py benchmark --help
@@ -80,17 +59,6 @@ Usage: ./cli.py benchmark [OPTIONS]
 ```
 [comment]: <> (✂✂✂ auto generated benchmark help end ✂✂✂)
 
-
-
-### tests
-
-```bash
-~/DragonPy$ ./cli.py coverage
-# or just:
-~/DragonPy$ ./cli.py test
-# or with different Python versions:
-~/DragonPy$ ./cli.py tox
-```
 
 ### profile
 
@@ -117,6 +85,54 @@ Usage: ./cli.py profile [OPTIONS]
 [comment]: <> (✂✂✂ auto generated profile help end ✂✂✂)
 
 
+### development
+
+For development exists `dev-cli`, e.g.:
+
+```bash
+~/MC6809$ ./dev-cli.py --help
+```
+
+The output of `./dev-cli.py --help` looks like:
+
+[comment]: <> (✂✂✂ auto generated dev help start ✂✂✂)
+```
+Usage: ./dev-cli.py [OPTIONS] COMMAND [ARGS]...
+
+╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
+│ --help      Show this message and exit.                                                          │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
+│ check-code-style            Check code style by calling darker + flake8                          │
+│ coverage                    Run and show coverage.                                               │
+│ fix-code-style              Fix code style of all MC6809 source code files via darker            │
+│ install                     Run pip-sync and install 'MC6809' via pip as editable.               │
+│ mypy                        Run Mypy (configured in pyproject.toml)                              │
+│ publish                     Build and upload this project to PyPi                                │
+│ safety                      Run safety check against current requirements files                  │
+│ test                        Run unittests                                                        │
+│ tox                         Run tox                                                              │
+│ update                      Update "requirements*.txt" dependencies files                        │
+│ update-test-snapshot-files  Update all test snapshot files (by remove and recreate all snapshot  │
+│                             files)                                                               │
+│ version                     Print version and exit                                               │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+```
+[comment]: <> (✂✂✂ auto generated dev help end ✂✂✂)
+
+Run tests, e.g.:
+
+```bash
+~/DragonPy$ ./dev-cli.py coverage
+# or just:
+~/DragonPy$ ./dev-cli.py test
+# or with different Python versions:
+~/DragonPy$ ./dev-cli.py tox
+```
+
+
+
+
 ### TODO
 
 
@@ -134,6 +150,7 @@ Usage: ./cli.py profile [OPTIONS]
 
 
 * [*dev*](https://github.com/6809/MC6809/compare/v0.7.0...main)
+  * Split CLI in a app and dev version with different venvs.
   * TBC
 * 07.03.2023 - [v0.7.0](https://github.com/6809/MC6809/compare/v0.6.0...v0.7.0)
   * Replace the `Makefile` with a click CLI

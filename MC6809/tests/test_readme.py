@@ -5,6 +5,7 @@ from manageprojects.tests.base import BaseTestCase
 
 from MC6809 import constants
 from MC6809.cli.cli_app import PACKAGE_ROOT, cli
+from MC6809.cli.dev import cli as dev_cli
 
 
 def assert_cli_help_in_readme(text_block: str, marker: str):
@@ -34,6 +35,19 @@ class ReadmeTestCase(BaseTestCase):
             ),
         )
         assert_cli_help_in_readme(text_block=stdout, marker='main help')
+
+    def test_dev_cli_main_help(self):
+        stdout = invoke_click(dev_cli, '--help')
+        self.assert_in_content(
+            got=stdout,
+            parts=(
+                'Usage: ./dev-cli.py [OPTIONS] COMMAND [ARGS]...',
+                ' check-code-style ',
+                ' coverage ',
+                constants.CLI_EPILOG,
+            ),
+        )
+        assert_cli_help_in_readme(text_block=stdout, marker='dev help')
 
     def test_benchmark_help(self):
         stdout = invoke_click(cli, 'benchmark', '--help')

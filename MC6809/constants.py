@@ -1,1 +1,1 @@
-CLI_EPILOG = 'Project Homepage: https://github.com/john-doh/MC6809'
+CLI_EPILOG = 'Project Homepage: https://github.com/6809/MC6809'
