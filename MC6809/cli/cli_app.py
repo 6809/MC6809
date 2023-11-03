@@ -13,7 +13,7 @@ from rich import print  # noqa
 from rich_click import RichGroup
 
 import MC6809
-from MC6809 import constants
+from MC6809 import __version__, constants
 from MC6809.core.bechmark import run_benchmark
 
 
@@ -96,7 +96,7 @@ cli.add_command(profile)
 
 
 def main():
-    print(f'[bold][green]MC6809[/green] v[cyan]{MC6809.__version__}')
+    print(f'[bold][green]MC6809[/green] v[cyan]{__version__}')
 
     # Execute Click CLI:
     cli.name = './cli.py'
