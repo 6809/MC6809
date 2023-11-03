@@ -160,7 +160,7 @@ To make a new release, do this:
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
-* [**dev**](https://github.com/6809/MC6809/compare/v0.7.1...main)
+* [v0.7.2](https://github.com/6809/MC6809/compare/v0.7.1...v0.7.2)
   * 2023-11-03 - Auto generate README history
   * 2023-11-03 - Fix code style
   * 2023-11-03 - Apply manageprojects updates + Update requirements
