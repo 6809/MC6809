@@ -13,8 +13,8 @@ from rich import print  # noqa
 from rich_click import RichGroup
 
 import MC6809
+from MC6809 import __version__, constants
 from MC6809.core.bechmark import run_benchmark
-from MC6809 import constants, __version__
 
 
 logger = logging.getLogger(__name__)
