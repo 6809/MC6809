@@ -80,5 +80,5 @@ def print_exc_plus():
 
             try:
                 print(value)
-            except BaseException:
+            except Exception:
                 print("<ERROR WHILE PRINTING VALUE>")

@@ -104,7 +104,7 @@ Usage: ./dev-cli.py [OPTIONS] COMMAND [ARGS]...
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
 │ check-code-style            Check code style by calling darker + flake8                          │
-│ coverage                    Run and show coverage.                                               │
+│ coverage                    Run tests and show coverage report.                                  │
 │ fix-code-style              Fix code style of all MC6809 source code files via darker            │
 │ install                     Run pip-sync and install 'MC6809' via pip as editable.               │
 │ mypy                        Run Mypy (configured in pyproject.toml)                              │
@@ -160,6 +160,8 @@ To make a new release, do this:
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
+* [**dev**](https://github.com/6809/MC6809/compare/v0.7.2...main)
+  * 2023-11-29 - Update requirements + fix code style + manageprojects updates
 * [v0.7.2](https://github.com/6809/MC6809/compare/v0.7.1...v0.7.2)
   * 2023-11-03 - Auto generate README history
   * 2023-11-03 - Fix code style
@@ -190,6 +192,9 @@ To make a new release, do this:
   * 2022-09-04 - update github CI
   * 2022-09-04 - add "make update"
   * 2022-09-04 - fix editorconfig
+
+<details><summary>Expand older history entries ...</summary>
+
 * [v0.6.0](https://github.com/6809/MC6809/compare/v0.5.0...v0.6.0)
   * 2020-02-10 - update CLI Tests
   * 2020-02-10 - git ignore: +/publish.log
@@ -204,9 +209,6 @@ To make a new release, do this:
   * 2020-02-10 - apply code formatter
   * 2020-02-10 - f-strings convert
   * 2020-02-10 - WIP
-
-<details><summary>Expand older history entries ...</summary>
-
 * [v0.5.0](https://github.com/6809/MC6809/compare/v0.4.6...v0.5.0)
   * 2015-10-19 - update release info/Version
   * 2015-09-10 - try to install python on osx

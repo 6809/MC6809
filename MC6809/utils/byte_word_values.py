@@ -108,7 +108,7 @@ def bin2hexline(data, add_addr=True, width=16):
             line = []
 
         ascii_block = ""
-        for i in range(width):
+        for _ in range(width):
             b = data[addr]
 
             if chr(b) in string.printable:
