@@ -88,7 +88,8 @@ class CPUTypeAssertMixin:
         super().__init__(*args, **kwargs)
         self.__set_attr_dict()
         warnings.warn(
-            "CPU TypeAssert used! (Should be only activated for debugging!)"
+            "CPU TypeAssert used! (Should be only activated for debugging!)",
+            stacklevel=2,
         )
 
     def __set_attr_dict(self):

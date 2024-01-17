@@ -20,8 +20,8 @@ from MC6809.components.MC6809data.MC6809_data_utils import MC6809OP_DATA_DICT
 def opcode(*opcodes):
     """A decorator for opcodes"""
     def decorator(func):
-        setattr(func, "_is_opcode", True)
-        setattr(func, "_opcodes", opcodes)
+        func._is_opcode = True
+        func._opcodes = opcodes
         return func
     return decorator
 
@@ -44,7 +44,7 @@ class OpCollection:
                 continue
 
             try:
-                opcodes = getattr(cls_method, "_opcodes")
+                opcodes = cls_method._opcodes
             except AttributeError:
                 continue
 

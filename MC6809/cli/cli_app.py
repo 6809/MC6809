@@ -9,11 +9,13 @@ from pathlib import Path
 
 import rich_click as click
 from bx_py_utils.path import assert_is_file
-from rich import print  # noqa
+from cli_base.cli_tools.version_info import print_version
+from rich.console import Console
+from rich.traceback import install as rich_traceback_install
 from rich_click import RichGroup
 
 import MC6809
-from MC6809 import __version__, constants
+from MC6809 import constants
 from MC6809.core.bechmark import run_benchmark
 
 
@@ -96,7 +98,15 @@ cli.add_command(profile)
 
 
 def main():
-    print(f'[bold][green]MC6809[/green] v[cyan]{__version__}')
+    print_version(MC6809)
+
+    console = Console()
+    rich_traceback_install(
+        width=console.size.width,  # full terminal width
+        show_locals=True,
+        suppress=[click],
+        max_frames=2,
+    )
 
     # Execute Click CLI:
     cli.name = './cli.py'

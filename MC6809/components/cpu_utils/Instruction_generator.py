@@ -118,7 +118,7 @@ def generate_code(f):
             write_to_memory = mnemonic_data["write_to_memory"]
             needs_ea = mnemonic_data["needs_ea"]
             register = mnemonic_data["register"]
-            for op_code, op_data in list(mnemonic_data["ops"].items()):
+            for op_code, op_data in list(mnemonic_data["ops"].items()):  # noqa: B007
                 addr_mode = op_data["addr_mode"]
 #                print(hex(op_code),
 
