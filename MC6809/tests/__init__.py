@@ -3,7 +3,7 @@ import unittest.util
 from pathlib import Path
 
 from bx_py_utils.test_utils.deny_requests import deny_any_real_request
-from cli_base.cli_tools.verbosity import setup_logging
+from cli_base.cli_tools.verbosity import MAX_LOG_LEVEL, setup_logging
 from rich import print  # noqa
 
 
@@ -19,7 +19,7 @@ def pre_configure_tests() -> None:
     deny_any_real_request()
 
     # Display DEBUG logs in tests:
-    setup_logging(verbosity=2)
+    setup_logging(verbosity=MAX_LOG_LEVEL)
 
 
 def load_tests(loader, tests, pattern):

@@ -7,9 +7,9 @@ readme = "README.md"
 authors = [
     {name = 'Jens Diemer', email = 'git@jensdiemer.de'}
 ]
-requires-python = ">=3.9,<4"
+requires-python = ">=3.11"
 dependencies = [
-    "cli-base-utilities>=0.3.0",  # https://github.com/jedie/cli-base-utilities
+    "cli-base-utilities",  # https://github.com/jedie/cli-base-utilities
     "bx_py_utils",  # https://github.com/boxine/bx_py_utils
     "click",  # https://github.com/pallets/click/
     "rich-click",  # https://github.com/ewels/rich-click
@@ -18,6 +18,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "manageprojects",  # https://github.com/jedie/manageprojects
+    "urllib3", # for bx_py_utils.test_utils.deny_requests.deny_any_real_request() in tests
     "pip-tools",  # https://github.com/jazzband/pip-tools/
     "tox",  # https://github.com/tox-dev/tox
     "coverage",  # https://github.com/nedbat/coveragepy
@@ -28,9 +29,10 @@ dev = [
     "pyflakes",  # https://github.com/PyCQA/pyflakes
     "codespell",  # https://github.com/codespell-project/codespell
     "EditorConfig",  # https://github.com/editorconfig/editorconfig-core-py
-    "safety",  # https://github.com/pyupio/safety
+    "pip-audit",  # https://github.com/pypa/pip-audit
     "mypy",  # https://github.com/python/mypy
     "twine",  # https://github.com/pypa/twine
+    "typeguard",  # https://github.com/agronholm/typeguard/
 
     # https://github.com/akaihola/darker
     # https://github.com/ikamensh/flynt
@@ -38,12 +40,20 @@ dev = [
     # https://github.com/pygments/pygments
     "darker[flynt, isort, color]",
 
-    "tomli",  # https://github.com/hukkin/tomli
-    #
-    # tomli only needed for Python <3.11, but see pip bug:
-    # https://github.com/pypa/pip/issues/9644 / https://github.com/jazzband/pip-tools/issues/1866
-    #'tomli;python_version<"3.11"',  # https://github.com/hukkin/tomli
+    # Work-a-round for: https://github.com/jazzband/pip-tools/issues/1866
+    # see also: https://github.com/jazzband/pip-tools/issues/994#issuecomment-1321226661
+    # backports.tarfile is needed for python <3.12
+    'backports.tarfile', # via jaraco-context -> keyring -> twine
 ]
+
+[tool.pip-tools.compile]
+index-url="https://pypi.org/simple"
+extra-index-url=["https://www.piwheels.org/simple"] # Add hashes of piwheels packages, too!
+generate-hashes = true
+# https://pip-tools.readthedocs.io/en/stable/#deprecations
+allow-unsafe = true
+resolver="backtracking"
+strip-extras = true
 
 [project.urls]
 Documentation = "https://github.com/6809/MC6809"
@@ -51,7 +61,7 @@ Source = "https://github.com/6809/MC6809"
 
 [project.scripts]
 MC6809_app = "MC6809.__main__:main"
-MC6809_dev = "MC6809.cli.dev:main"
+MC6809_dev = "MC6809.cli_dev:main"
 
 [build-system]
 requires = ["setuptools>=61.0", "setuptools_scm>=7.1"]
@@ -65,18 +75,23 @@ include = ["MC6809*"]
 version = {attr = "MC6809.__version__"}
 
 
+[tool.cli_base.pip_audit]
+requirements=["requirements.dev.txt"]
+strict=true
+require_hashes=true
+ignore-vuln=[]
+
+
 [tool.darker]
 src = ['.']
 revision = "origin/main..."
 line_length = 119
-verbose = true
 color = true
 skip_string_normalization = true
 diff = false
 check = false
 stdout = false
 isort = true
-flynt = true
 lint = [
     "flake8",
 ]
@@ -117,7 +132,7 @@ exclude_lines = [
 legacy_tox_ini = """
 [tox]
 isolated_build = True
-envlist = py{312,311,310,39}
+envlist = py{312,311}
 skip_missing_interpreters = True
 
 [testenv]
@@ -128,9 +143,6 @@ commands_pre =
     pip-sync requirements.dev.txt
 commands =
     {envpython} -m coverage run --context='{envname}'
-    {envpython} -m coverage combine --append
-    {envpython} -m coverage xml
-    {envpython} -m coverage report
 """
 
 
@@ -150,6 +162,7 @@ cookiecutter_template = "https://github.com/jedie/cookiecutter_templates/"
 cookiecutter_directory = "piptools-python"
 applied_migrations = [
     "a66e5ae", # 2024-01-16T19:13:13+01:00
+    "56c3caa", # 2024-09-22T16:52:30+02:00
 ]
 
 [manageprojects.cookiecutter_context.cookiecutter]

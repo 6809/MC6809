@@ -30,9 +30,10 @@ Usage: ./cli.py [OPTIONS] COMMAND [ARGS]...
 │ --help      Show this message and exit.                                                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
-│ benchmark            Run a MC6809 emulation benchmark                                            │
-│ profile              Profile the MC6809 emulation benchmark                                      │
-│ version              Print version and exit                                                      │
+│ benchmark                  Run a MC6809 emulation benchmark                                      │
+│ profile                    Profile the MC6809 emulation benchmark                                │
+│ update-readme-history      Update project history base on git commits/tags in README.md          │
+│ version                    Print version and exit                                                │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ```
 [comment]: <> (✂✂✂ auto generated main help end ✂✂✂)
@@ -105,11 +106,11 @@ Usage: ./dev-cli.py [OPTIONS] COMMAND [ARGS]...
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
 │ check-code-style            Check code style by calling darker + flake8                          │
 │ coverage                    Run tests and show coverage report.                                  │
-│ fix-code-style              Fix code style of all MC6809 source code files via darker            │
-│ install                     Run pip-sync and install 'MC6809' via pip as editable.               │
+│ fix-code-style              Fix code style of all cli_base source code files via darker          │
+│ install                     Run pip-sync and install 'cli_base' via pip as editable.             │
 │ mypy                        Run Mypy (configured in pyproject.toml)                              │
+│ pip-audit                   Run pip-audit check against current requirements files               │
 │ publish                     Build and upload this project to PyPi                                │
-│ safety                      Run safety check against current requirements files                  │
 │ test                        Run unittests                                                        │
 │ tox                         Run tox                                                              │
 │ update                      Update "requirements*.txt" dependencies files                        │
@@ -160,8 +161,9 @@ To make a new release, do this:
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
-* [**dev**](https://github.com/6809/MC6809/compare/v0.7.2...main)
-  * 2024-02-09 - Update requirements
+* [v0.7.3](https://github.com/6809/MC6809/compare/v0.7.2...v0.7.3)
+  * 2024-09-24 - Split CLI by manageprojects updates
+  * 2024-09-24 - Update requirements
   * 2023-11-29 - Update requirements + fix code style + manageprojects updates
 * [v0.7.2](https://github.com/6809/MC6809/compare/v0.7.1...v0.7.2)
   * 2023-11-03 - Auto generate README history
