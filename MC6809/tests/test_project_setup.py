@@ -7,7 +7,7 @@ from manageprojects.test_utils.project_setup import check_editor_config, get_py_
 from packaging.version import Version
 
 from MC6809 import __version__
-from MC6809.cli.dev import PACKAGE_ROOT
+from MC6809.cli_dev import PACKAGE_ROOT
 
 
 class ProjectSetupTestCase(TestCase):

@@ -4,8 +4,9 @@ from manageprojects.test_utils.click_cli_utils import invoke_click
 from manageprojects.tests.base import BaseTestCase
 
 from MC6809 import constants
-from MC6809.cli.cli_app import PACKAGE_ROOT, cli
-from MC6809.cli.dev import cli as dev_cli
+from MC6809.cli_app import cli
+from MC6809.cli_dev import PACKAGE_ROOT
+from MC6809.cli_dev import cli as dev_cli
 
 
 def assert_cli_help_in_readme(text_block: str, marker: str):
