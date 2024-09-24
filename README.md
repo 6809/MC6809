@@ -162,6 +162,7 @@ To make a new release, do this:
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [v0.7.3](https://github.com/6809/MC6809/compare/v0.7.2...v0.7.3)
+  * 2024-09-24 - + pre-commit hook
   * 2024-09-24 - Split CLI by manageprojects updates
   * 2024-09-24 - Update requirements
   * 2023-11-29 - Update requirements + fix code style + manageprojects updates

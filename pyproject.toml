@@ -32,6 +32,7 @@ dev = [
     "pip-audit",  # https://github.com/pypa/pip-audit
     "mypy",  # https://github.com/python/mypy
     "twine",  # https://github.com/pypa/twine
+    "pre-commit",  # https://github.com/pre-commit/pre-commit
     "typeguard",  # https://github.com/agronholm/typeguard/
 
     # https://github.com/akaihola/darker
@@ -62,6 +63,9 @@ Source = "https://github.com/6809/MC6809"
 [project.scripts]
 MC6809_app = "MC6809.__main__:main"
 MC6809_dev = "MC6809.cli_dev:main"
+
+[tool.cli_base]
+version_module_name = "MC6809"  # Used by "update-readme-history" git hook
 
 [build-system]
 requires = ["setuptools>=61.0", "setuptools_scm>=7.1"]
