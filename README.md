@@ -30,10 +30,11 @@ Usage: ./cli.py [OPTIONS] COMMAND [ARGS]...
 │ --help      Show this message and exit.                                                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
-│ benchmark                  Run a MC6809 emulation benchmark                                      │
-│ profile                    Profile the MC6809 emulation benchmark                                │
-│ update-readme-history      Update project history base on git commits/tags in README.md          │
-│ version                    Print version and exit                                                │
+│ benchmark                 Run a MC6809 emulation benchmark                                       │
+│ example                   Just run the MC6809/example6809.py example (CRC32 calculation)         │
+│ profile                   Profile the MC6809 emulation benchmark                                 │
+│ update-readme-history     Update project history base on git commits/tags in README.md           │
+│ version                   Print version and exit                                                 │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ```
 [comment]: <> (✂✂✂ auto generated main help end ✂✂✂)
@@ -162,6 +163,7 @@ To make a new release, do this:
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [v0.7.3](https://github.com/6809/MC6809/compare/v0.7.2...v0.7.3)
+  * 2024-09-24 - Add "example" command to app CLI
   * 2024-09-24 - + pre-commit hook
   * 2024-09-24 - Split CLI by manageprojects updates
   * 2024-09-24 - Update requirements

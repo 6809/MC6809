@@ -6,6 +6,7 @@ import rich_click as click
 
 from MC6809.cli_app import cli
 from MC6809.core.bechmark import run_benchmark
+from MC6809.example6809 import run_example
 
 
 logger = logging.getLogger(__name__)
@@ -31,3 +32,11 @@ def profile(loops, multiply):
     with cProfile.Profile() as pr:
         run_benchmark(loops=loops, multiply=multiply)
     pstats.Stats(pr).sort_stats('tottime', 'cumulative', 'calls').print_stats(20)
+
+
+@cli.command()
+def example():
+    """
+    Just run the MC6809/example6809.py example (CRC32 calculation)
+    """
+    run_example()
