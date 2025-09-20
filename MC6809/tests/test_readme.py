@@ -22,7 +22,6 @@ def assert_cli_help_in_readme(text_block: str, marker: str):
 
 
 class ReadmeTestCase(BaseTestCase):
-
     def test_main_help(self):
         with NoColorEnvRich():
             stdout = invoke(cli_bin=PACKAGE_ROOT / 'cli.py', args=['--help'], strip_line_prefix='usage: ')
@@ -54,11 +53,12 @@ class ReadmeTestCase(BaseTestCase):
         assert_cli_help_in_readme(text_block=stdout, marker='dev help')
 
     def test_benchmark_help(self):
-        stdout = invoke_click(cli, 'benchmark', '--help')
+        with NoColorEnvRich():
+            stdout = invoke(cli_bin=PACKAGE_ROOT / 'cli.py', args=['benchmark', '--help'], strip_line_prefix='usage: ')
         self.assert_in_content(
             got=stdout,
             parts=(
-                'Usage: ./cli.py benchmark [OPTIONS]',
+                'usage: ./cli.py benchmark ',
                 ' --loops ',
                 ' --multiply ',
             ),
@@ -66,11 +66,12 @@ class ReadmeTestCase(BaseTestCase):
         assert_cli_help_in_readme(text_block=stdout, marker='benchmark help')
 
     def test_profile_help(self):
-        stdout = invoke_click(cli, 'profile', '--help')
+        with NoColorEnvRich():
+            stdout = invoke(cli_bin=PACKAGE_ROOT / 'cli.py', args=['profile', '--help'], strip_line_prefix='usage: ')
         self.assert_in_content(
             got=stdout,
             parts=(
-                'Usage: ./cli.py profile [OPTIONS]',
+                'usage: ./cli.py profile ',
                 ' --loops ',
                 ' --multiply ',
             ),

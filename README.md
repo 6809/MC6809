@@ -24,18 +24,20 @@ The output of `./cli.py --help` looks like:
 
 [comment]: <> (✂✂✂ auto generated main help start ✂✂✂)
 ```
-Usage: ./cli.py [OPTIONS] COMMAND [ARGS]...
+usage: ./cli.py [-h] {benchmark,example,profile,version}
 
-╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help      Show this message and exit.                                                          │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
-│ benchmark                 Run a MC6809 emulation benchmark                                       │
-│ example                   Just run the MC6809/example6809.py example (CRC32 calculation)         │
-│ profile                   Profile the MC6809 emulation benchmark                                 │
-│ update-readme-history     Update project history base on git commits/tags in README.md           │
-│ version                   Print version and exit                                                 │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+
+╭─ options ────────────────────────────────────────────────────────────────────────╮
+│ -h, --help        show this help message and exit                                │
+╰──────────────────────────────────────────────────────────────────────────────────╯
+╭─ subcommands ────────────────────────────────────────────────────────────────────╮
+│ {benchmark,example,profile,version}                                              │
+│     benchmark     Run a MC6809 emulation benchmark                               │
+│     example       Just run the MC6809/example6809.py example (CRC32 calculation) │
+│     profile       Profile the MC6809 emulation benchmark                         │
+│     version       Print version and exit                                         │
+╰──────────────────────────────────────────────────────────────────────────────────╯
 ```
 [comment]: <> (✂✂✂ auto generated main help end ✂✂✂)
 
@@ -49,15 +51,16 @@ The output of `./cli.py benchmark --help` looks like:
 
 [comment]: <> (✂✂✂ auto generated benchmark help start ✂✂✂)
 ```
-Usage: ./cli.py benchmark [OPTIONS]
+usage: ./cli.py benchmark [-h] [--loops INT] [--multiply INT] [-v]
 
- Run a MC6809 emulation benchmark
+Run a MC6809 emulation benchmark
 
-╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --loops       INTEGER  How many benchmark loops should be run? [default: 6]                      │
-│ --multiply    INTEGER  est data multiplier [default: 15]                                         │
-│ --help                 Show this message and exit.                                               │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ options ──────────────────────────────────────────────────────────────────────╮
+│ -h, --help             show this help message and exit                         │
+│ --loops INT            How many benchmark loops should be run? (default: 6)    │
+│ --multiply INT         Process data multiplier (default: 15)                   │
+│ -v, --verbosity        Verbosity level; e.g.: -v, -vv, -vvv, etc. (repeatable) │
+╰────────────────────────────────────────────────────────────────────────────────╯
 ```
 [comment]: <> (✂✂✂ auto generated benchmark help end ✂✂✂)
 
@@ -74,15 +77,16 @@ The output of `./cli.py profile --help` looks like:
 
 [comment]: <> (✂✂✂ auto generated profile help start ✂✂✂)
 ```
-Usage: ./cli.py profile [OPTIONS]
+usage: ./cli.py profile [-h] [--loops INT] [--multiply INT] [-v]
 
- Profile the MC6809 emulation benchmark
+Profile the MC6809 emulation benchmark
 
-╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --loops       INTEGER  How many benchmark loops should be run? [default: 6]                      │
-│ --multiply    INTEGER  est data multiplier [default: 15]                                         │
-│ --help                 Show this message and exit.                                               │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ options ──────────────────────────────────────────────────────────────────────╮
+│ -h, --help             show this help message and exit                         │
+│ --loops INT            How many benchmark loops should be run? (default: 6)    │
+│ --multiply INT         Process data multiplier (default: 15)                   │
+│ -v, --verbosity        Verbosity level; e.g.: -v, -vv, -vvv, etc. (repeatable) │
+╰────────────────────────────────────────────────────────────────────────────────╯
 ```
 [comment]: <> (✂✂✂ auto generated profile help end ✂✂✂)
 
@@ -174,6 +178,7 @@ To make a new release, do this:
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [v0.8.0](https://github.com/6809/MC6809/compare/v0.7.3...v0.8.0)
+  * 2025-09-20 - Update CLI
   * 2025-09-20 - Add PyCharm run config files
   * 2025-09-20 - manageprojects template "piptools" -> "uv"
   * 2025-09-20 - Update requirements
