@@ -8,7 +8,6 @@ __pycache__
 
 !.github
 !.editorconfig
-!.flake8
 !.gitignore
 !.pre-commit-config.yaml
 !.pre-commit-hooks.yaml

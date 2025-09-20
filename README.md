@@ -162,7 +162,8 @@ To make a new release, do this:
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
-* [**dev**](https://github.com/6809/MC6809/compare/v0.7.3...main)
+* [v0.8.0](https://github.com/6809/MC6809/compare/v0.7.3...v0.8.0)
+  * 2025-09-20 - manageprojects template "piptools" -> "uv"
   * 2025-09-20 - Update requirements
 * [v0.7.3](https://github.com/6809/MC6809/compare/v0.7.2...v0.7.3)
   * 2024-09-24 - Bugfix "publish" command
