@@ -162,6 +162,8 @@ To make a new release, do this:
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
+* [**dev**](https://github.com/6809/MC6809/compare/v0.7.3...main)
+  * 2025-09-20 - Update requirements
 * [v0.7.3](https://github.com/6809/MC6809/compare/v0.7.2...v0.7.3)
   * 2024-09-24 - Bugfix "publish" command
   * 2024-09-24 - Add "example" command to app CLI
@@ -179,6 +181,9 @@ To make a new release, do this:
   * 2023-08-05 - fix publish call
   * 2023-08-05 - Split CLI by apply manageprojects update
   * 2023-08-04 - Update requirements
+
+<details><summary>Expand older history entries ...</summary>
+
 * [v0.7.0](https://github.com/6809/MC6809/compare/v0.6.0...v0.7.0)
   * 2023-03-07 - Add "benchmark" and "profile" to CLI and remove dev-shell add DocTests
   * 2023-03-07 - Apply managedprojects update: Add DocTests via bx_py_utils helper
@@ -199,9 +204,6 @@ To make a new release, do this:
   * 2022-09-04 - update github CI
   * 2022-09-04 - add "make update"
   * 2022-09-04 - fix editorconfig
-
-<details><summary>Expand older history entries ...</summary>
-
 * [v0.6.0](https://github.com/6809/MC6809/compare/v0.5.0...v0.6.0)
   * 2020-02-10 - update CLI Tests
   * 2020-02-10 - git ignore: +/publish.log
