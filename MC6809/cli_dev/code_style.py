@@ -1,26 +1,12 @@
-import rich_click as click
-from cli_base.cli_tools import code_style
-from cli_base.cli_tools.verbosity import OPTION_KWARGS_VERBOSE
-from cli_base.click_defaults import OPTION_ARGS_DEFAULT_TRUE
+from cli_base.cli_tools.code_style import assert_code_style
+from cli_base.tyro_commands import TyroVerbosityArgType
 
-from MC6809.cli_dev import PACKAGE_ROOT, cli
+from MC6809.cli_dev import PACKAGE_ROOT, app
 
 
-@cli.command()
-@click.option('--color/--no-color', **OPTION_ARGS_DEFAULT_TRUE)
-@click.option('-v', '--verbosity', **OPTION_KWARGS_VERBOSE)
-def fix_code_style(color: bool, verbosity: int):
+@app.command
+def lint(verbosity: TyroVerbosityArgType = 1):
     """
-    Fix code style of all cli_base source code files via darker
+    Check/fix code style by run: "ruff check --fix"
     """
-    code_style.fix(package_root=PACKAGE_ROOT, darker_color=color, darker_verbose=verbosity > 0)
-
-
-@cli.command()
-@click.option('--color/--no-color', **OPTION_ARGS_DEFAULT_TRUE)
-@click.option('-v', '--verbosity', **OPTION_KWARGS_VERBOSE)
-def check_code_style(color: bool, verbosity: int):
-    """
-    Check code style by calling darker + flake8
-    """
-    code_style.check(package_root=PACKAGE_ROOT, darker_color=color, darker_verbose=verbosity > 0)
+    assert_code_style(package_root=PACKAGE_ROOT, verbose=bool(verbosity), sys_exit=True)
