@@ -178,6 +178,7 @@ To make a new release, do this:
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [**dev**](https://github.com/6809/MC6809/compare/v0.8.0...main)
+  * 2025-11-29 - fix CRC16 and CRC32 assembly code format
   * 2025-11-29 - Apply manageprojects updates
   * 2025-11-29 - Update requirements
 * [v0.8.0](https://github.com/6809/MC6809/compare/v0.7.3...v0.8.0)
