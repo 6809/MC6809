@@ -177,6 +177,7 @@ To make a new release, do this:
 
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
+* [**dev**](https://github.com/6809/MC6809/compare/v0.8.0...main)
 * [v0.8.0](https://github.com/6809/MC6809/compare/v0.7.3...v0.8.0)
   * 2025-09-20 - Update CLI
   * 2025-09-20 - Add PyCharm run config files
@@ -195,13 +196,13 @@ To make a new release, do this:
   * 2023-11-03 - Apply manageprojects updates + Update requirements
   * 2023-11-03 - Use verbose_check_call from cli_base
   * 2023-11-02 - Bump pip from 23.2.1 to 23.3
+
+<details><summary>Expand older history entries ...</summary>
+
 * [v0.7.1](https://github.com/6809/MC6809/compare/v0.7.0...v0.7.1)
   * 2023-08-05 - fix publish call
   * 2023-08-05 - Split CLI by apply manageprojects update
   * 2023-08-04 - Update requirements
-
-<details><summary>Expand older history entries ...</summary>
-
 * [v0.7.0](https://github.com/6809/MC6809/compare/v0.6.0...v0.7.0)
   * 2023-03-07 - Add "benchmark" and "profile" to CLI and remove dev-shell add DocTests
   * 2023-03-07 - Apply managedprojects update: Add DocTests via bx_py_utils helper
