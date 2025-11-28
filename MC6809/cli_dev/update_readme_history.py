@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 @app.command
-def update_readme_history(auto_commit: bool = True, verbosity: TyroVerbosityArgType = 1) -> None:
+def update_readme_history(verbosity: TyroVerbosityArgType):
     """
     Update project history base on git commits/tags in README.md
 
@@ -26,10 +26,7 @@ def update_readme_history(auto_commit: bool = True, verbosity: TyroVerbosityArgT
     setup_logging(verbosity=verbosity)
 
     logger.debug('%s called. CWD: %s', __name__, Path.cwd())
-    updated = git_history.update_readme_history(
-        auto_commit=auto_commit,
-        verbosity=verbosity,
-    )
+    updated = git_history.update_readme_history(verbosity=verbosity)
     exit_code = 1 if updated else 0
     if verbosity:
         print(f'{exit_code=}')
