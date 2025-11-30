@@ -35,7 +35,9 @@ OPCODE_LOOKUP = build_opcode_lookup()
 @dataclasses.dataclass
 class LineInfo:
     pc: int
-    hex_bytes: str
+    effective_address: int
+    op_code: int
+    op_args: Sequence[int]
     op_info: dict | None = None
 
     def __str__(self):
@@ -43,29 +45,44 @@ class LineInfo:
             mnemonic = self.op_info['mnemonic']
         else:
             mnemonic = '???'
-        return f'{self.pc:04X}| {self.hex_bytes:<10} {mnemonic}'
+        hex_bytes = [self.op_code] + list(self.op_args)
+        hex_bytes = ' '.join(f'{b:02X}' for b in hex_bytes)
+        if self.op_args:
+            op_args = ''.join(f'{b:02X}' for b in self.op_args)
+            op_args = f' ${op_args}'
+        else:
+            op_args = ''
+        return f'{self.effective_address:04X}| {hex_bytes:<11} {mnemonic}{op_args}'
 
 
-def disassemble(assembly: Sequence[int]):
+def disassemble(assembly: Sequence[int], start_address=0x0):
     pc = 0
     code_len = len(assembly)
     while pc < code_len:
-        opcode = assembly[pc]
-        try:
-            op_info = OPCODE_LOOKUP[opcode]
-        except KeyError:
-            yield LineInfo(
-                pc=pc,
-                hex_bytes=f'{assembly[pc]:02X}',
-                op_info=None,
-            )
-            pc += 1
+        op_code = assembly[pc]
+
+        if op_code in {0x10, 0x11}:
+            # Handle two-byte opcodes
+            op_code_len = 2
+            try:
+                op_code = (op_code << 8) | assembly[pc + 1]
+            except KeyError:
+                raise RuntimeError('Unexpected end of assembly while reading two-byte opcode')
         else:
-            instr_bytes = assembly[pc : pc + op_info['bytes']]
-            hex_bytes = ' '.join(f'{b:02X}' for b in instr_bytes)
-            yield LineInfo(
-                pc=pc,
-                hex_bytes=hex_bytes,
-                op_info=op_info,
-            )
-            pc += op_info['bytes']
+            op_code_len = 1
+
+        try:
+            op_info = OPCODE_LOOKUP[op_code]
+        except KeyError:
+            raise RuntimeError(f'Unknown opcode {op_code:02X} at address {pc + start_address:04X}')
+
+        num_bytes = op_info['bytes']
+        op_args = assembly[pc + op_code_len: pc + num_bytes]
+        yield LineInfo(
+            pc=pc,
+            effective_address=pc + start_address,
+            op_code=op_code,
+            op_args=op_args,
+            op_info=op_info,
+        )
+        pc += num_bytes
