@@ -90,6 +90,27 @@ class StackMixin:
 
     ####
 
+    def postbyte2registers(self, post_byte):
+        """Convert postbyte to list of registers to push/pull"""
+        if post_byte & 0x01:
+            yield REG_CC  # 8 bit condition code register
+        if post_byte & 0x02:
+            yield REG_A  # 8 bit accumulator
+        if post_byte & 0x04:
+            yield REG_B  # 8 bit accumulator
+        if post_byte & 0x08:
+            yield REG_DP  # 8 bit direct page register
+        if post_byte & 0x10:
+            yield REG_X  # 16 bit index register
+        if post_byte & 0x20:
+            yield REG_Y  # 16 bit index register
+        if post_byte & 0x40:
+            yield REG_U  # 16 bit user-stack pointer
+        if post_byte & 0x80:
+            yield REG_PC  # 16 bit program counter register
+
+    ####
+
     @opcode(  # Push A, B, CC, DP, D, X, Y, U, or PC onto stack
         0x36,  # PSHU (immediate)
         0x34,  # PSHS (immediate)
@@ -113,33 +134,18 @@ class StackMixin:
             register_obj = self.register_str2object[register_str]
             data = register_obj.value
 
-#             log.debug("\tpush %s with data $%x", register_obj.name, data)
+            # log.debug("\tpush %s with data $%x", register_obj.name, data)
 
             if register_obj.WIDTH == 8:
-                self.push_byte(register, data)
+                self.push_byte(stack_pointer, data)
             else:
                 assert register_obj.WIDTH == 16
-                self.push_word(register, data)
+                self.push_word(stack_pointer, data)
 
-#        log.debug("$%x PSH%s post byte: $%x", self.program_counter, register.name, m)
+        # log.debug("$%x PSH%s post byte: $%x", self.program_counter, register.name, m)
 
-        # m = postbyte
-        if m & 0x80:
-            push(REG_PC, register)  # 16 bit program counter register
-        if m & 0x40:
-            push(REG_U, register)  # 16 bit user-stack pointer
-        if m & 0x20:
-            push(REG_Y, register)  # 16 bit index register
-        if m & 0x10:
-            push(REG_X, register)  # 16 bit index register
-        if m & 0x08:
-            push(REG_DP, register)  # 8 bit direct page register
-        if m & 0x04:
-            push(REG_B, register)  # 8 bit accumulator
-        if m & 0x02:
-            push(REG_A, register)  # 8 bit accumulator
-        if m & 0x01:
-            push(REG_CC, register)  # 8 bit condition code register
+        for register_str in reversed(list(self.postbyte2registers(post_byte=m))):
+            push(register_str, stack_pointer=register)
 
     @opcode(  # Pull A, B, CC, DP, D, X, Y, U, or PC from stack
         0x37,  # PULU (immediate)
@@ -160,8 +166,8 @@ class StackMixin:
         """
         assert register in (self.system_stack_pointer, self.user_stack_pointer)
 
-        def pull(register_str, stack_pointer):
-            reg_obj = self.register_str2object[register_str]
+        def pull(stack_pointer, destination_reg: str):
+            reg_obj = self.register_str2object[destination_reg]
 
             reg_width = reg_obj.WIDTH  # 8 / 16
             if reg_width == 8:
@@ -172,22 +178,7 @@ class StackMixin:
 
             reg_obj.set(data)
 
-#        log.debug("$%x PUL%s:", self.program_counter, register.name)
+        # log.debug("$%x PUL%s:", self.program_counter, register.name)
 
-        # m = postbyte
-        if m & 0x01:
-            pull(REG_CC, register)  # 8 bit condition code register
-        if m & 0x02:
-            pull(REG_A, register)  # 8 bit accumulator
-        if m & 0x04:
-            pull(REG_B, register)  # 8 bit accumulator
-        if m & 0x08:
-            pull(REG_DP, register)  # 8 bit direct page register
-        if m & 0x10:
-            pull(REG_X, register)  # 16 bit index register
-        if m & 0x20:
-            pull(REG_Y, register)  # 16 bit index register
-        if m & 0x40:
-            pull(REG_U, register)  # 16 bit user-stack pointer
-        if m & 0x80:
-            pull(REG_PC, register)  # 16 bit program counter register
+        for dest_register in self.postbyte2registers(post_byte=m):
+            pull(register, dest_register)
