@@ -1512,3 +1512,6 @@ OP_DATA = {
         }
     },
 }
+
+
+ALL_MNEMONIC = frozenset(key for data in OP_DATA.values() for key in data['mnemonic'].keys())
