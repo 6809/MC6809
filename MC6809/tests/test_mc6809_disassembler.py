@@ -185,3 +185,13 @@ class TestDisassemble(unittest.TestCase):
             assembly2lines(0x35, 0x92, with_header=False),
             ['0000|                 35 92            PULS A,X,PC']
         )
+
+    def test_handle_unknown_op_code(self):
+        self.assertEqual(
+            assembly2lines(0xC4, 0x52, 0x55, 0xCE, 0x52, 0x45, with_header=False),
+            [
+                '0000|                 C4 52            ANDB $52',
+                '0002|                 55               ???',
+                '0003|                 CE 52 45         LDU $5245',
+            ],
+        )
