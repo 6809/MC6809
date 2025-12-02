@@ -54,14 +54,16 @@ def iter_opcodes(assembly: Sequence[int], start_address=0x0):
         try:
             op_info = OPCODE_LOOKUP[op_code]
         except KeyError:
-            raise RuntimeError(
+            print(
                 f'Unknown opcode ${op_code:02X} at address ${start_address + pc:04X} (Position {pc} bytes)'
             )
-
-        num_bytes = op_info['bytes']
-        op_args = tuple(assembly[pc + op_code_len : pc + num_bytes])
-        yield (pc, op_code, op_info, op_args)
-        pc += num_bytes
+            yield (pc, op_code, None, None)
+            pc += op_code_len
+        else:
+            num_bytes = op_info['bytes']
+            op_args = tuple(assembly[pc + op_code_len : pc + num_bytes])
+            yield (pc, op_code, op_info, op_args)
+            pc += num_bytes
 
 
 @dataclasses.dataclass
@@ -75,11 +77,13 @@ class LineInfo:
     op_info: dict | None = None
 
     def __str__(self):
+        hex_bytes = [self.op_code]
         if self.op_info:
             mnemonic = self.op_info['mnemonic']
+            hex_bytes += list(self.op_args)
         else:
             mnemonic = '???'
-        hex_bytes = [self.op_code] + list(self.op_args)
+
         hex_bytes = ' '.join(f'{b:02X}' for b in hex_bytes)
 
         if self.op_args_label:
@@ -126,6 +130,9 @@ def disassemble(assembly: Sequence[int], start_address=0x0) -> Disassembly:
 
     branch_addresses = set()
     for pc, op_code, op_info, op_args in parsed:
+        if op_info is None:
+            continue
+
         mnemonic = op_info['mnemonic']
         if mnemonic in BRANCH_MNEMONICS:
             addr_mode = op_info['addr_mode']
