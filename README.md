@@ -179,6 +179,8 @@ To make a new release, do this:
 [comment]: <> (✂✂✂ auto generated history start ✂✂✂)
 
 * [**dev**](https://github.com/6809/MC6809/compare/v0.8.0...main)
+  * 2025-12-02 - fix tests
+  * 2025-12-02 - Expand CLI with "disassemble" sub command
   * 2025-11-30 - disassember: generic branch labels
   * 2025-11-30 - reformat OP_DATA
   * 2025-11-30 - Handle two-byte opcodes and display op arguments

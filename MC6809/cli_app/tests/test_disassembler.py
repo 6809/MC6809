@@ -4,6 +4,7 @@ import unittest
 from bx_py_utils.test_utils.redirect import RedirectOut
 from bx_py_utils.test_utils.snapshot import assert_text_snapshot
 from cli_base.cli_tools.test_utils.assertion import assert_in
+from cli_base.cli_tools.test_utils.rich_test_utils import NoColorEnvRich
 
 from MC6809 import cli_app
 
@@ -29,7 +30,7 @@ class DisassembleCliTestCase(unittest.TestCase):
             ]))
             temp_file.flush()
 
-            with RedirectOut() as buffer:
+            with NoColorEnvRich(), RedirectOut() as buffer:
                 cli_app.main(args=('disassemble', temp_file.name, '--start-address', str(0x1000)))
 
         self.assertEqual(buffer.stderr, '')
