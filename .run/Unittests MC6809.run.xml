@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Unittests MC6809" type="tests" factoryName="Unittests">
+  <configuration default="false" name="Unittests MC6809 ***all***" type="tests" factoryName="Unittests">
     <module name="MC6809" />
     <option name="ENV_FILES" value="" />
     <option name="INTERPRETER_OPTIONS" value="" />

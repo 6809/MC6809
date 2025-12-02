@@ -24,7 +24,7 @@ The output of `./cli.py --help` looks like:
 
 [comment]: <> (✂✂✂ auto generated main help start ✂✂✂)
 ```
-usage: ./cli.py [-h] {benchmark,example,profile,version}
+usage: ./cli.py [-h] {benchmark,disassemble,example,profile,version}
 
 
 
@@ -32,8 +32,9 @@ usage: ./cli.py [-h] {benchmark,example,profile,version}
 │ -h, --help        show this help message and exit                                │
 ╰──────────────────────────────────────────────────────────────────────────────────╯
 ╭─ subcommands ────────────────────────────────────────────────────────────────────╮
-│ {benchmark,example,profile,version}                                              │
+│ {benchmark,disassemble,example,profile,version}                                  │
 │     benchmark     Run a MC6809 emulation benchmark                               │
+│     disassemble   Run a MC6809 emulation benchmark                               │
 │     example       Just run the MC6809/example6809.py example (CRC32 calculation) │
 │     profile       Profile the MC6809 emulation benchmark                         │
 │     version       Print version and exit                                         │

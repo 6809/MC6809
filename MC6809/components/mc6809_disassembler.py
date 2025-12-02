@@ -54,7 +54,9 @@ def iter_opcodes(assembly: Sequence[int], start_address=0x0):
         try:
             op_info = OPCODE_LOOKUP[op_code]
         except KeyError:
-            raise RuntimeError(f'Unknown opcode {op_code:02X} at address {start_address + pc:04X}')
+            raise RuntimeError(
+                f'Unknown opcode ${op_code:02X} at address ${start_address + pc:04X} (Position {pc} bytes)'
+            )
 
         num_bytes = op_info['bytes']
         op_args = tuple(assembly[pc + op_code_len : pc + num_bytes])
